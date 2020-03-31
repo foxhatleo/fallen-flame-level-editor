@@ -1,6 +1,7 @@
 import React, {FunctionComponent} from "react";
 import {Col, Nav, Row, Tab} from "react-bootstrap";
 import LevelModel from "models/LevelModel";
+import Canvas from "./Canvas";
 
 type TabScreenProps = {levels: Array<LevelModel>, onSelect: (v: number) => void};
 
@@ -8,8 +9,8 @@ const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
     return <React.Fragment>
         <Tab.Container onSelect={i => { p.onSelect(parseInt(i.substr(2))); }}
                        id="left-tabs-example" defaultActiveKey={"i-0"}>
-            <Row className={"pl-2 vh-100 tab-screen"}>
-                <Col sm={2} className="py-2 pr-1">
+            <Row className={"mx-0 w-100 vh-100 tab-screen"}>
+                <Col sm={2} className="py-1 pr-1 pl-1">
                     <Nav variant="pills" className="flex-column">
                         {p.levels.map((c, i) => <Nav.Item key={i}>
                             <Nav.Link eventKey={"i-" + i}>
@@ -21,7 +22,7 @@ const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
                 <Col sm={10} className="h-100 pl-1">
                     <Tab.Content>
                         {p.levels.map((c, i) => <Tab.Pane eventKey={"i-" + i} key={i}>
-                            ASD
+                            <Canvas />
                         </Tab.Pane>)}
                     </Tab.Content>
                 </Col>

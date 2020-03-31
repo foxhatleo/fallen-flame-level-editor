@@ -12,7 +12,7 @@ const Navigation: FunctionComponent<{
     currentlySelecting: boolean;
 }> = (p) => {
     return <React.Fragment>
-        <Navbar fixed="top" className="mb-2" bg="light" variant="light">
+        <Navbar fixed="top" className="mb-2" bg="dark" variant="dark">
             <Nav className="mr-auto">
                 <NavDropdown title="File" id={"file-nav"}>
                     <NavDropdown.Item onClick={p.onNew}>New empty level</NavDropdown.Item>
