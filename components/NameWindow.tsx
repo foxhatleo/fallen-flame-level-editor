@@ -1,32 +1,46 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
+import LevelModel from "../models/LevelModel";
 
-type NameWindowProps = {show: boolean; new?: boolean; ok: (v: string) => void; no: () => void; value?: string};
+const NameWindow: FunctionComponent<{
+    show: boolean;
+    newLevelMode?: boolean;
+    onOK: (v: string) => void;
+    onCancel: () => void;
+    selectedLevel?: LevelModel
+}> = (p) => {
 
-const NameWindow: FunctionComponent<NameWindowProps> = (p) => {
+    const [value, setValue] = useState("");
 
-    const [name, setName] = useState("");
+    useEffect(() => {
+        setValue(!p.newLevelMode && p.selectedLevel ? p.selectedLevel.name : "");
+    }, [p.show]);
 
-    const no = () => { setName(""); p.no(); };
-    const ok = () => { p.ok(name); setName(""); };
+    const emptyValue = !value || value.trim() === "";
+    const checkOK = () => {
+        if (!emptyValue) p.onOK(value);
+    };
 
-    return <Modal show={p.show} onHide={no}>
+    return <Modal show={p.show} onHide={p.onCancel}>
         <Modal.Header closeButton>
-            <Modal.Title>{p.new ? "New level" : "Edit level name"}</Modal.Title>
+            <Modal.Title>{p.newLevelMode ? "New level name" : "Edit level name"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form>
+            <Form onSubmit={e => { e.preventDefault(); checkOK(); }}>
                 <Form.Group controlId="exampleForm.ControlInput1">
                     <Form.Label>Level name</Form.Label>
-                    <Form.Control defaultValue={p.value} type="text" value={name} onChange={e => { setName(e.target.value); }}/>
+                    <Form.Control required={true}
+                                  type="text"
+                                  value={value}
+                                  onChange={e => { setValue(e.target.value); }}/>
                 </Form.Group>
             </Form>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={no}>
+            <Button variant="secondary" onClick={p.onCancel}>
                 Cancel
             </Button>
-            <Button variant="primary" onClick={() => {ok}}>
+            <Button disabled={emptyValue} variant="primary" onClick={checkOK}>
                 OK
             </Button>
         </Modal.Footer>

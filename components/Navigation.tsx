@@ -1,16 +1,16 @@
 import React, {FunctionComponent} from "react";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 
-type NavigationProps = {
+const Navigation: FunctionComponent<{
     onNew: () => void;
     onImport: () => void;
     onExport: () => void;
     onClose: () => void;
     onLevelBound: () => void;
+    onLevelName: () => void;
+    onLevelAdvanced: () => void;
     currentlySelecting: boolean;
-};
-
-const Navigation: FunctionComponent<NavigationProps> = (p) => {
+}> = (p) => {
     return <React.Fragment>
         <Navbar fixed="top" className="mb-2" bg="light" variant="light">
             <Nav className="mr-auto">
@@ -24,7 +24,12 @@ const Navigation: FunctionComponent<NavigationProps> = (p) => {
                 </NavDropdown>
                 <NavDropdown title="Setting" id={"setting-nav"}>
                     <NavDropdown.Item disabled={!p.currentlySelecting}
+                                      onClick={p.onLevelName}>Level name</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentlySelecting}
                                       onClick={p.onLevelBound}>Level bound</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item disabled={!p.currentlySelecting}
+                                      onClick={p.onLevelAdvanced}>Advanced</NavDropdown.Item>
                 </NavDropdown>
             </Nav>
         </Navbar>

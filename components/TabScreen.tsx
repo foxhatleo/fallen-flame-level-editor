@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from "react";
 import {Col, Nav, Row, Tab} from "react-bootstrap";
-import LevelModel from "models/LevelEditor";
+import LevelModel from "models/LevelModel";
 
 type TabScreenProps = {levels: Array<LevelModel>, onSelect: (v: number) => void};
 
@@ -13,7 +13,7 @@ const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
                     <Nav variant="pills" className="flex-column">
                         {p.levels.map((c, i) => <Nav.Item key={i}>
                             <Nav.Link eventKey={"i-" + i}>
-                                {c.name}
+                                {c.name + (c.changed ? "*" : "")}
                             </Nav.Link>
                         </Nav.Item>)}
                     </Nav>
