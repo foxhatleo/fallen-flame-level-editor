@@ -8,6 +8,10 @@ import CloseWarnWindow from "./CloseWarnWindow";
 import AdvancedWindow, {AdvancedResult} from "./AdvancedWindow";
 import ImportWindow from "./ImportWindow";
 import download from "utils/download";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faHandPaper, faMousePointer} from "@fortawesome/free-solid-svg-icons";
+
+library.add(faHandPaper, faMousePointer);
 
 enum CurrentAction {
     NO_ACTION,
@@ -116,7 +120,10 @@ class App extends React.Component<{}, {
     private boundWindowOK(x: number, y: number): void {
         switch (this.state.action) {
             case CurrentAction.NEW_LEVEL_BOUND_PROMPT:
-                this.setState({levels: this.state.levels.concat([new LevelModel(this._cachedName, x, y)])});
+                this.setState({
+                    select: this.state.levels.length,
+                    levels: this.state.levels.concat([new LevelModel(this._cachedName, x, y)])
+                });
                 break;
             case CurrentAction.BOUND_SETTING:
                 this.currentSelect.boundX = x;
@@ -129,7 +136,10 @@ class App extends React.Component<{}, {
     }
 
     private importWindowOK(level: LevelModel): void {
-        this.setState({levels: this.state.levels.concat([level])});
+        this.setState({
+            select: this.state.levels.length,
+            levels: this.state.levels.concat([level])
+        });
         this.clearAction();
     }
 
@@ -152,6 +162,7 @@ class App extends React.Component<{}, {
                         onNew={this.onNew.bind(this)}
                         currentlySelecting={!!this.currentSelect} />
             <TabScreen levels={this.state.levels}
+                       select={this.state.select}
                        onSelect={i => { this.setState({select: i}); }}/>
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}

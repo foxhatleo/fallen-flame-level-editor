@@ -1,13 +1,18 @@
-import React, {FunctionComponent} from "react";
+import React, {FunctionComponent, useState} from "react";
 import {Col, Nav, Row, Tab} from "react-bootstrap";
 import LevelModel from "models/LevelModel";
 import Canvas from "./Canvas";
 
-type TabScreenProps = {levels: Array<LevelModel>, onSelect: (v: number) => void};
+type TabScreenProps = {select: number; levels: Array<LevelModel>, onSelect: (v: number) => void};
 
 const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
+    const iSel = "i-" + p.select;
+    if (p.select >= p.levels.length && p.levels.length > 0) {
+        p.onSelect(p.levels.length - 1);
+    }
     return <React.Fragment>
         <Tab.Container onSelect={i => { p.onSelect(parseInt(i.substr(2))); }}
+                       activeKey={iSel}
                        id="left-tabs-example" defaultActiveKey={"i-0"}>
             <Row className={"mx-0 w-100 vh-100 tab-screen"}>
                 <Col sm={2} className="py-1 pr-1 pl-1">
