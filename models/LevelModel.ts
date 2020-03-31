@@ -1,3 +1,17 @@
+export type RepVersion0 = {
+    physicsSize: [number, number];
+    graphicSize: [number, number];
+    fpsRange: [number, number];
+};
+
+export type RepVersion1 = {
+    name: string;
+    version: number;
+    physicsSize: [number, number];
+    graphicSize: [number, number];
+    fpsRange: [number, number];
+};
+
 class LevelModel {
     public changed: boolean;
 
@@ -25,6 +39,7 @@ class LevelModel {
     private _graphicsY: number;
     private _fpsUpper: number;
     private _fpsLower: number;
+    private _lastFilename: string;
 
     /** Get name of this level. */
     get name(): string { return this._name; }
@@ -32,6 +47,7 @@ class LevelModel {
     /** Set name of this level. */
     set name(v: string) {
         this.changed = true;
+        this._lastFilename = null;
         if (!v || v.trim() === "") {
             this._name = this.name || "Untitled";
         }
@@ -53,6 +69,55 @@ class LevelModel {
     get fpsUpper(): number { return this._fpsUpper; }
     set fpsUpper(v: number) { this.changed = true;
         this._fpsUpper = Math.round(Math.max(this.fpsLower + 1, v || 1)); }
+
+    setLastFilename(name: string): void {
+        this._lastFilename = name;
+    }
+
+    private get nameToFilename() {
+        return this.name.replace(new RegExp("\\s|\\\\|/|:", "g"), "-");
+    }
+
+    get filename(): string {
+        return this._lastFilename || (this.nameToFilename + ".json");
+    }
+
+    static fromRep(t: object, fn: string = "Untitled"): LevelModel {
+        try {
+            const lm = new LevelModel("_", 0, 0);
+            if (t.hasOwnProperty("version") && (t as any).version == 1) {
+                lm.name = (t as RepVersion1).name;
+            } else {
+                lm.name = fn.replace(new RegExp(".[a-z0-9]+$", "gi"), "");
+            }
+            const rep: RepVersion0 = t as RepVersion0;
+            lm.fpsLower = rep.fpsRange[0];
+            lm.fpsUpper = rep.fpsRange[1];
+            lm.boundX = rep.physicsSize[0];
+            lm.boundY = rep.physicsSize[1];
+            lm.graphicsX = rep.graphicSize[0];
+            lm.graphicsY = rep.graphicSize[1];
+            lm.changed = false;
+            return lm;
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    toRep(): RepVersion1 {
+        return {
+            name: this.name,
+            version: 1,
+            physicsSize: [this.boundX, this.boundY],
+            graphicSize: [this.graphicsX, this.graphicsY],
+            fpsRange: [this.fpsLower, this.fpsUpper],
+        };
+    }
+
+    toJSON(): string {
+        return JSON.stringify(this.toRep());
+    }
 }
 
 export default LevelModel;

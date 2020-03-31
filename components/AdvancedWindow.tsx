@@ -20,9 +20,10 @@ const AdvancedWindow: FunctionComponent<{
     const [gx, setGX] = useState(1);
     const [gy, setGY] = useState(1);
     const [fu, _setFU] = useState(1);
-    const [fl, setFL] = useState(1);
+    const [fl, _setFL] = useState(1);
 
-    const setFU = i => { _setFU(Math.max(fl + 1, i)); };
+    const setFL = i => { _setFL(i); setFU(fu, i); };
+    const setFU = (i, l = fl) => { _setFU(Math.max(l + 1, i)); };
 
     const graphicsRow = template(400, 2880, 10, true);
     const fpsRow = template(24, 120, 1, true);
@@ -30,8 +31,8 @@ const AdvancedWindow: FunctionComponent<{
     useEffect(() => {
         setGX(p.selectedLevel ? p.selectedLevel.graphicsX : 0);
         setGY(p.selectedLevel ? p.selectedLevel.graphicsY : 0);
-        setFU(p.selectedLevel ? p.selectedLevel.fpsUpper : 0);
-        setFL(p.selectedLevel ? p.selectedLevel.fpsLower : 0);
+        _setFU(p.selectedLevel ? p.selectedLevel.fpsUpper : 0);
+        _setFL(p.selectedLevel ? p.selectedLevel.fpsLower : 0);
     }, [p.show]);
 
     const checkOK = () => {
@@ -50,7 +51,7 @@ const AdvancedWindow: FunctionComponent<{
             </Alert>
             <Form onSubmit={e => { e.preventDefault(); checkOK(); }}>
                 {graphicsRow("gx", "Graphics Width", gx, setGX)}
-                {graphicsRow("gy", "Graphics Width", gx, setGX)}
+                {graphicsRow("gy", "Graphics Height", gy, setGY)}
                 {fpsRow("fl", "FPS Lower", fl, setFL)}
                 {fpsRow("fu", "FPS Upper", fu, setFU)}
             </Form>

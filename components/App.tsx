@@ -6,6 +6,8 @@ import NameWindow from "./NameWindow";
 import BoundWindow from "./BoundWindow";
 import CloseWarnWindow from "./CloseWarnWindow";
 import AdvancedWindow, {AdvancedResult} from "./AdvancedWindow";
+import ImportWindow from "./ImportWindow";
+import download from "utils/download";
 
 enum CurrentAction {
     NO_ACTION,
@@ -15,6 +17,7 @@ enum CurrentAction {
     NAME_SETTING,
     BOUND_SETTING,
     ADVANCED_SETTING,
+    IMPORT,
 }
 
 class App extends React.Component<{}, {
@@ -46,11 +49,14 @@ class App extends React.Component<{}, {
     }
 
     private onExport(): void {
-
+        if (!this.currentSelect) return;
+        download(this.currentSelect.toJSON(), this.currentSelect.filename);
+        this.currentSelect.changed = false;
+        this.forceUpdate();
     }
 
     private onImport(): void {
-
+        this.setState({action: CurrentAction.IMPORT});
     }
 
     private onLevelBound(): void {
@@ -95,7 +101,6 @@ class App extends React.Component<{}, {
                 break;
             case CurrentAction.NAME_SETTING:
                 this.currentSelect.name = this._cachedName;
-                this.forceUpdate();
                 this.clearAction();
                 break;
             default:
@@ -116,11 +121,15 @@ class App extends React.Component<{}, {
             case CurrentAction.BOUND_SETTING:
                 this.currentSelect.boundX = x;
                 this.currentSelect.boundY = y;
-                this.forceUpdate();
                 break;
             default:
                 throw new Error("Unknown bound window ok handled.");
         }
+        this.clearAction();
+    }
+
+    private importWindowOK(level: LevelModel): void {
+        this.setState({levels: this.state.levels.concat([level])});
         this.clearAction();
     }
 
@@ -161,6 +170,9 @@ class App extends React.Component<{}, {
                             onOK={this.advancedWindowOK.bind(this)}
                             onCancel={this.clearAction.bind(this)}
                             selectedLevel={this.currentSelect}/>
+            <ImportWindow   show={this.state.action == CurrentAction.IMPORT}
+                            onOK={this.importWindowOK.bind(this)}
+                            onCancel={this.clearAction.bind(this)}/>
         </React.Fragment>;
     }
 }
