@@ -48,7 +48,7 @@ class App extends React.Component<{}, {
     private closeImmediately(): void {
         this.clearAction();
         if (!this.currentSelect) return;
-        this.state.levels.splice(this.state.select, 1);
+        this.state.levels.splice(this.state.select, 1)[0].dispose();
         this.setState({levels: this.state.levels});
     }
 
@@ -56,7 +56,6 @@ class App extends React.Component<{}, {
         if (!this.currentSelect) return;
         download(this.currentSelect.toJSON(), this.currentSelect.filename);
         this.currentSelect.changed = false;
-        this.forceUpdate();
     }
 
     private onImport(): void {

@@ -26,7 +26,7 @@ const AdvancedWindow: FunctionComponent<{
     const setFU = (i, l = fl) => { _setFU(Math.max(l + 1, i)); };
 
     const graphicsRow = template(400, 2880, 10, true);
-    const fpsRow = template(24, 120, 1, true);
+    const fpsRow = template(15, 120, 1, true);
 
     useEffect(() => {
         setGX(p.selectedLevel ? p.selectedLevel.graphicsX : 0);

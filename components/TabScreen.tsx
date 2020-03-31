@@ -7,16 +7,20 @@ type TabScreenProps = {select: number; levels: Array<LevelModel>, onSelect: (v: 
 
 const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
     const iSel = "i-" + p.select;
+    const [_, setR] = useState<number>(0);
     if (p.select >= p.levels.length && p.levels.length > 0) {
         p.onSelect(p.levels.length - 1);
     }
+    p.levels.forEach(i => {
+        i.changeHandler = () => setR(Math.random());
+    });
     return <div className="tabs-container">
         <Tabs id="level-tabs" variant="pills" defaultActiveKey="i-0" activeKey={iSel}
               className="p-2"
               onSelect={i => { p.onSelect(parseInt(i.substr(2))); }}>
             {p.levels.map((c, i) =>
-            <Tab eventKey={"i-" + i} title={c.name}>
-                <Canvas />
+            <Tab eventKey={"i-" + i} title={c.name + (c.changed ? "*" : "")}>
+                <Canvas level={c} />
             </Tab>)}
         </Tabs>
         <style jsx global>{`

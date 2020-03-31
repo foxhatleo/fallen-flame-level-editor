@@ -13,7 +13,6 @@ export type RepVersion1 = {
 };
 
 class LevelModel {
-    public changed: boolean;
 
     /**
      * @constructor
@@ -40,6 +39,16 @@ class LevelModel {
     private _fpsUpper: number;
     private _fpsLower: number;
     private _lastFilename: string;
+    private _changed: boolean;
+    public changeHandler: (i: boolean) => void;
+
+    get changed(): boolean { return this._changed; }
+    set changed(v: boolean) {
+        const updated = this._changed != v;
+        this._changed = v;
+        if (updated && typeof this.changeHandler === "function")
+            this.changeHandler(this._changed);
+    }
 
     /** Get name of this level. */
     get name(): string { return this._name; }
@@ -117,6 +126,10 @@ class LevelModel {
 
     toJSON(): string {
         return JSON.stringify(this.toRep());
+    }
+
+    dispose() {
+        this.changeHandler = null;
     }
 }
 
