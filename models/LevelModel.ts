@@ -124,10 +124,6 @@ class LevelModel {
         };
     }
 
-    toJSON(): string {
-        return JSON.stringify(this.toRep());
-    }
-
     dispose() {
         this.changeHandler = null;
     }

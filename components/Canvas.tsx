@@ -1,8 +1,7 @@
 import React from "react";
 import Toolbar from "./Toolbar";
-import LevelModel from "models/LevelModel";
 
-class Canvas extends React.Component<{level: LevelModel}> {
+class Canvas extends React.Component {
     render() {
         return <div className={"canvas"}>
             <Toolbar />
@@ -16,7 +15,6 @@ class Canvas extends React.Component<{level: LevelModel}> {
                 margin-top: 56px;
                 background: rgb(99,148,237);
             }
-            <CanvasContent level={level} />
             `}</style>
         </div>;
     }

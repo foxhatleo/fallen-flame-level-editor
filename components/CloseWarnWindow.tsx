@@ -1,7 +1,9 @@
-import {FunctionComponent, useEffect, useState} from "react";
-import {Button, Form, Modal} from "react-bootstrap";
-import LevelModel from "../models/LevelModel";
+import {FunctionComponent} from "react";
+import {Button, Modal} from "react-bootstrap";
 
+/**
+ * Window warning the user when closing an unsaved level.
+ */
 const CloseWarnWindow: FunctionComponent<{
     show: boolean;
     onOK: () => void;

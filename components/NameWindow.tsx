@@ -1,19 +1,20 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
-import LevelModel from "../models/LevelModel";
+import EditorState, {LevelState} from "../redux/StateType";
+import {connect} from "react-redux";
 
 const NameWindow: FunctionComponent<{
     show: boolean;
     newLevelMode?: boolean;
     onOK: (v: string) => void;
     onCancel: () => void;
-    selectedLevel?: LevelModel
+    currentLevel: LevelState;
 }> = (p) => {
 
     const [value, setValue] = useState("");
 
     useEffect(() => {
-        setValue(!p.newLevelMode && p.selectedLevel ? p.selectedLevel.name : "");
+        setValue(!p.newLevelMode && p.currentLevel ? p.currentLevel.name : "");
     }, [p.show]);
 
     const emptyValue = !value || value.trim() === "";
@@ -47,4 +48,4 @@ const NameWindow: FunctionComponent<{
     </Modal>;
 };
 
-export default NameWindow;
+export default connect((s: EditorState) => ({currentLevel: s.currentLevel}))(NameWindow);

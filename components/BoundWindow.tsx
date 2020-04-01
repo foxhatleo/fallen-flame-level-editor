@@ -1,14 +1,15 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
-import LevelModel from "models/LevelModel";
 import {template} from "./NumberSliderRow";
+import EditorState, {LevelState} from "../redux/StateType";
+import {connect} from "react-redux";
 
 const BoundWindow: FunctionComponent<{
     show: boolean;
     newLevelMode?: boolean;
     onOK: (x: number, y: number) => void;
     onCancel: () => void;
-    selectedLevel?: LevelModel,
+    currentLevel: LevelState;
 }> = (p) => {
 
     const [x, setX] = useState(1);
@@ -17,8 +18,8 @@ const BoundWindow: FunctionComponent<{
     const boundRow = template(1, 60, .1, false);
 
     useEffect(() => {
-        setX(!p.newLevelMode && p.selectedLevel ? p.selectedLevel.boundX : 16);
-        setY(!p.newLevelMode && p.selectedLevel ? p.selectedLevel.boundY : 12);
+        setX(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[0] : 16);
+        setY(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[1] : 12);
     }, [p.show]);
 
     const checkOK = () => {
@@ -46,4 +47,4 @@ const BoundWindow: FunctionComponent<{
     </Modal>;
 };
 
-export default BoundWindow;
+export default connect((s: EditorState) => ({currentLevel: s.currentLevel}))(BoundWindow);

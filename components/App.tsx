@@ -1,5 +1,4 @@
 import React from "react";
-import LevelModel from "models/LevelModel";
 import Navigation from "./Navigation";
 import TabScreen from "./TabScreen";
 import NameWindow from "./NameWindow";
@@ -7,12 +6,19 @@ import BoundWindow from "./BoundWindow";
 import CloseWarnWindow from "./CloseWarnWindow";
 import AdvancedWindow, {AdvancedResult} from "./AdvancedWindow";
 import ImportWindow from "./ImportWindow";
-import download from "utils/download";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faHandPaper, faMousePointer} from "@fortawesome/free-solid-svg-icons";
+import {LevelStore} from "redux/LevelStore";
+import {connect} from "react-redux";
+import * as Actions from "../redux/Actions";
+import {bindActionCreators} from "redux";
+import EditorState, {LevelState} from "../redux/StateType";
 
 library.add(faHandPaper, faMousePointer);
 
+/**
+ * An enum that indicates what action state the app is in at the moment.
+ */
 enum CurrentAction {
     NO_ACTION,
     NEW_LEVEL_NAME_PROMPT,
@@ -24,86 +30,118 @@ enum CurrentAction {
     IMPORT,
 }
 
-class App extends React.Component<{}, {
-    select: number,
-    action: CurrentAction,
-    levels: Array<LevelModel>,
+class App extends React.Component<typeof Actions & {
+    /** Current chosen level. */    currentLevel: LevelState;
+}, {
+    /** Current action: */ action: CurrentAction;
 }> {
+
+    /** Cached level name input. */
     private _cachedName: string;
 
+    /**
+     * @constructor
+     * @param props
+     */
     constructor(props) {
         super(props);
-        this.state = {select: 0, action: CurrentAction.NO_ACTION, levels: []};
+        this.state = {action: CurrentAction.NO_ACTION};
     }
 
+    /**
+     * Triggered when "close" menu item is chosen.
+     */
     private onClose(): void {
-        if (!this.currentSelect) return;
-        if (this.currentSelect.changed) {
+        if (!this.props.currentLevel) return;
+        if (this.props.currentLevel.changed) {
             this.setState({action: CurrentAction.CLOSE_WARN});
         } else {
             this.closeImmediately();
         }
     }
 
+    /**
+     * Close current level immediately.
+     */
     private closeImmediately(): void {
         this.clearAction();
-        if (!this.currentSelect) return;
-        this.state.levels.splice(this.state.select, 1)[0].dispose();
-        this.setState({levels: this.state.levels});
+        if (!this.props.currentLevel) return;
+        this.props.editorCloseLevel();
     }
 
+    /**
+     * Triggered when "export" menu item is chosen.
+     */
     private onExport(): void {
-        if (!this.currentSelect) return;
-        download(this.currentSelect.toJSON(), this.currentSelect.filename);
-        this.currentSelect.changed = false;
+        if (!this.props.currentLevel) return;
+        // TODO: Download
+        // download(this.currentSelect.toRep(), this.currentSelect.filename);
+        this.props.markUnchanged();
     }
 
+    /**
+     * Triggered when "import" menu item is chosen.
+     */
     private onImport(): void {
         this.setState({action: CurrentAction.IMPORT});
     }
 
+    /**
+     * Triggered when "change level bound" menu item is chosen.
+     */
     private onLevelBound(): void {
         this.setState({action: CurrentAction.BOUND_SETTING});
     }
 
+    /**
+     * Triggered when "change level name" menu item is chosen.
+     */
     private onLevelName(): void {
         this.setState({action: CurrentAction.NAME_SETTING});
     }
 
+    /**
+     * Triggered when "change advanced setting" menu item is chosen.
+     */
     private onLevelAdvanced(): void {
         this.setState({action: CurrentAction.ADVANCED_SETTING});
     }
 
+    /**
+     * Triggered when "new level" menu item is chosen.
+     */
     private onNew(): void {
         this.setState({action: CurrentAction.NEW_LEVEL_NAME_PROMPT});
     }
 
-    private get currentSelect(): LevelModel | null {
-        return this.state.levels.length > this.state.select ?
-            this.state.levels[this.state.select] : null;
-    }
-
-    private get hasOpenLevels(): boolean {
-        return this.state.levels.length > 0;
-    }
-
+    /**
+     * Clear action.
+     */
     private clearAction(): void {
         this.setState({action: CurrentAction.NO_ACTION});
     }
 
+    /**
+     * Whether name window should be showing.
+     */
     private get nameWindowShowing(): boolean {
         return this.state.action == CurrentAction.NEW_LEVEL_NAME_PROMPT ||
             this.state.action == CurrentAction.NAME_SETTING;
     }
 
+    /**
+     * Triggered when clicked "OK" in name window.
+     *
+     * @param value {string} Value returned.
+     */
     private nameWindowOK(value: string): void {
         this._cachedName = value;
         switch (this.state.action) {
             case CurrentAction.NEW_LEVEL_NAME_PROMPT:
-                this.setState({action: CurrentAction.NEW_LEVEL_BOUND_PROMPT})
+                this.setState({action: CurrentAction.NEW_LEVEL_BOUND_PROMPT});
                 break;
             case CurrentAction.NAME_SETTING:
-                this.currentSelect.name = this._cachedName;
+                this.props.updateName(value);
                 this.clearAction();
                 break;
             default:
@@ -116,17 +154,20 @@ class App extends React.Component<{}, {
             this.state.action == CurrentAction.BOUND_SETTING;
     }
 
+    /**
+     * Triggered when clicked "OK" in bound window.
+     *
+     * @param x {number}
+     * @param y {number}
+     */
     private boundWindowOK(x: number, y: number): void {
         switch (this.state.action) {
             case CurrentAction.NEW_LEVEL_BOUND_PROMPT:
-                this.setState({
-                    select: this.state.levels.length,
-                    levels: this.state.levels.concat([new LevelModel(this._cachedName, x, y)])
-                });
+                this.props.editorNewLevel([this._cachedName, x, y]);
                 break;
             case CurrentAction.BOUND_SETTING:
-                this.currentSelect.boundX = x;
-                this.currentSelect.boundY = y;
+                this.props.updatePhysicsWidth(x);
+                this.props.updatePhysicsHeight(y);
                 break;
             default:
                 throw new Error("Unknown bound window ok handled.");
@@ -134,19 +175,26 @@ class App extends React.Component<{}, {
         this.clearAction();
     }
 
-    private importWindowOK(level: LevelModel): void {
-        this.setState({
-            select: this.state.levels.length,
-            levels: this.state.levels.concat([level])
-        });
+    /**
+     * Triggered when importing level.
+     *
+     * @param level {LevelStore}
+     */
+    private importWindowOK(level: any): void {
+        // TODO
         this.clearAction();
     }
 
+    /**
+     * Triggered when clicked "OK" in advanced setting.
+     *
+     * @param res {AdvancedResult}
+     */
     private advancedWindowOK(res: AdvancedResult): void {
-        this.currentSelect.graphicsX = res.graphicsX;
-        this.currentSelect.graphicsY = res.graphicsY;
-        this.currentSelect.fpsLower = res.fpsLower;
-        this.currentSelect.fpsUpper = res.fpsUpper;
+        this.props.updateGraphicWidth(res.graphicsX);
+        this.props.updateGraphicHeight(res.graphicsY);
+        this.props.updateFPSLower(res.fpsLower);
+        this.props.updateFPSUpper(res.fpsUpper);
         this.clearAction();
     }
 
@@ -158,28 +206,22 @@ class App extends React.Component<{}, {
                         onLevelBound={this.onLevelBound.bind(this)}
                         onLevelName={this.onLevelName.bind(this)}
                         onLevelAdvanced={this.onLevelAdvanced.bind(this)}
-                        onNew={this.onNew.bind(this)}
-                        currentlySelecting={!!this.currentSelect} />
-            <TabScreen levels={this.state.levels}
-                       select={this.state.select}
-                       onSelect={i => { this.setState({select: i}); }}/>
+                        onNew={this.onNew.bind(this)} />
+            <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
                         onCancel={this.clearAction.bind(this)}
-                        newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_NAME_PROMPT}
-                        selectedLevel={this.currentSelect}/>
+                        newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_NAME_PROMPT} />
             <BoundWindow show={this.boundWindowShowing}
                          onOK={this.boundWindowOK.bind(this)}
                          onCancel={this.clearAction.bind(this)}
-                         newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_BOUND_PROMPT}
-                         selectedLevel={this.currentSelect}/>
+                         newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_BOUND_PROMPT} />
             <CloseWarnWindow show={this.state.action == CurrentAction.CLOSE_WARN}
                              onOK={this.closeImmediately.bind(this)}
                              onCancel={this.clearAction.bind(this)}/>
             <AdvancedWindow show={this.state.action == CurrentAction.ADVANCED_SETTING}
                             onOK={this.advancedWindowOK.bind(this)}
-                            onCancel={this.clearAction.bind(this)}
-                            selectedLevel={this.currentSelect}/>
+                            onCancel={this.clearAction.bind(this)} />
             <ImportWindow   show={this.state.action == CurrentAction.IMPORT}
                             onOK={this.importWindowOK.bind(this)}
                             onCancel={this.clearAction.bind(this)}/>
@@ -187,4 +229,6 @@ class App extends React.Component<{}, {
     }
 }
 
-export default App;
+export default connect(
+    (s: EditorState) => ({currentLevel: s.currentLevel}),
+    d => bindActionCreators(Actions, d))(App);

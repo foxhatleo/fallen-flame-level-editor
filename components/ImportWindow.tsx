@@ -1,7 +1,7 @@
 import {FormEvent, FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Form, Modal} from "react-bootstrap";
 import LevelModel from "models/LevelModel";
-import JSONReader from "utils/JSONReader";
+import {load} from "utils/JSON";
 
 enum Error {
     NO_ERROR,
@@ -12,7 +12,7 @@ enum Error {
 
 const ImportWindow: FunctionComponent<{
     show: boolean;
-    onOK: (v: LevelModel) => void;
+    onOK: (v: any) => void;
     onCancel: () => void;
 }> = (p) => {
 
@@ -24,7 +24,7 @@ const ImportWindow: FunctionComponent<{
         setDisabled(false);
     }, [p.show]);
 
-    let levelModel: LevelModel = null;
+    let levelModel: any = null;
 
     const checkOK = () => {
         if (levelModel) p.onOK(levelModel);
@@ -39,7 +39,7 @@ const ImportWindow: FunctionComponent<{
             return;
         }
         setDisabled(true);
-        new JSONReader(files[0]).load().then(i => {
+        load(files[0]).then(i => {
             levelModel = LevelModel.fromRep(i, files[0].name);
             if (levelModel) {
                 levelModel.setLastFilename(files[0].name);

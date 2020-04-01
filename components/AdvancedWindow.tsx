@@ -1,7 +1,8 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Form, Modal} from "react-bootstrap";
-import LevelModel from "models/LevelModel";
 import {template} from "./NumberSliderRow";
+import EditorState, {LevelState} from "../redux/StateType";
+import {connect} from "react-redux";
 
 export type AdvancedResult = {
     fpsLower: number;
@@ -14,7 +15,7 @@ const AdvancedWindow: FunctionComponent<{
     show: boolean;
     onOK: (result: AdvancedResult) => void;
     onCancel: () => void;
-    selectedLevel: LevelModel,
+    currentLevel: LevelState;
 }> = (p) => {
 
     const [gx, setGX] = useState(1);
@@ -29,10 +30,10 @@ const AdvancedWindow: FunctionComponent<{
     const fpsRow = template(15, 120, 1, true);
 
     useEffect(() => {
-        setGX(p.selectedLevel ? p.selectedLevel.graphicsX : 0);
-        setGY(p.selectedLevel ? p.selectedLevel.graphicsY : 0);
-        _setFU(p.selectedLevel ? p.selectedLevel.fpsUpper : 0);
-        _setFL(p.selectedLevel ? p.selectedLevel.fpsLower : 0);
+        setGX(p.currentLevel ? p.currentLevel.graphicSize[0] : 0);
+        setGY(p.currentLevel ? p.currentLevel.graphicSize[1] : 0);
+        _setFU(p.currentLevel ? p.currentLevel.fpsRange[1] : 0);
+        _setFL(p.currentLevel ? p.currentLevel.fpsRange[0] : 0);
     }, [p.show]);
 
     const checkOK = () => {
@@ -67,4 +68,4 @@ const AdvancedWindow: FunctionComponent<{
     </Modal>;
 };
 
-export default AdvancedWindow;
+export default connect((s: EditorState) => ({currentLevel: s.currentLevel}))(AdvancedWindow);

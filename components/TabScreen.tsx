@@ -1,27 +1,21 @@
-import React, {FunctionComponent, useState} from "react";
-import {Col, Nav, Row, Tab, Tabs} from "react-bootstrap";
-import LevelModel from "models/LevelModel";
-import Canvas from "./Canvas";
+import React, {FunctionComponent} from "react";
+import {Tabs} from "react-bootstrap";
+import * as Actions from "../redux/Actions";
+import {connect} from "react-redux";
+import LevelTab from "./LevelTab";
+import {bindActionCreators} from "redux";
+import EditorState, {LevelState} from "../redux/StateType";
 
-type TabScreenProps = {select: number; levels: Array<LevelModel>, onSelect: (v: number) => void};
-
-const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
-    const iSel = "i-" + p.select;
-    const [_, setR] = useState<number>(0);
-    if (p.select >= p.levels.length && p.levels.length > 0) {
-        p.onSelect(p.levels.length - 1);
-    }
-    p.levels.forEach(i => {
-        i.changeHandler = () => setR(Math.random());
-    });
+const TabScreen: FunctionComponent<typeof Actions & {
+    current: number,
+    levels: LevelState[],
+}> = (p) => {
+    const iSel = "i-" + p.current;
     return <div className="tabs-container">
         <Tabs id="level-tabs" variant="pills" defaultActiveKey="i-0" activeKey={iSel}
               className="p-2"
-              onSelect={i => { p.onSelect(parseInt(i.substr(2))); }}>
-            {p.levels.map((c, i) =>
-            <Tab eventKey={"i-" + i} title={c.name + (c.changed ? "*" : "")}>
-                <Canvas level={c} />
-            </Tab>)}
+              onSelect={i => { p.editorOpenTab(Number(i.substr(2))); }}>
+            {p.levels.map((c, i) => LevelTab(i, p.levels))}
         </Tabs>
         <style jsx global>{`
         .tabs-container {
@@ -34,4 +28,7 @@ const TabScreen: FunctionComponent<TabScreenProps> = (p) => {
     </div>;
 };
 
-export default TabScreen;
+export default connect(
+    (s: EditorState) => ({current: s.current, levels: s.levels}),
+    d => bindActionCreators(Actions, d),
+)(TabScreen);
