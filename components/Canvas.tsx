@@ -17,7 +17,7 @@ class Canvas extends React.Component {
                 margin-top: 56px;
                 background: rgb(99,148,237);
             }
-            `}</style>
+        `}</style>
         </div>;
     }
 }
