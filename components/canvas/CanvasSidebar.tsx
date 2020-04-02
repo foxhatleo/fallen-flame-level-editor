@@ -1,50 +1,33 @@
 import React from "react";
+import styles from './CanvasSidebar.module.css';
 
 class CanvasSidebar extends React.Component {
     render() {
-        return <div className = {"sidebar"}>
-            <div className = {"content"}>
-                <div className = {"box"}>
+        return <div className = {styles.sidebar}>
+            <div className = {styles.content}>
+                <div className = {styles.box}>
                     <h3>Characters</h3>
                     <hr/>
-                    <div className = {"imageContainer"}>
-                       <img className = {"image"} src = '/../../player.png' alt = "Player image"/> 
+                    <div className = {styles.imageContainer}>
+                       <img className = {styles.image} src = '/../../player.png' alt = "Player image"/> 
                     </div>
                 </div>
-                <div className = {"box"}>
-                    <h3>Environment Tiles</h3>
+                <div className = {styles.box}>
+                    <h3>Walls</h3>
                     <hr/>
-                    <div className = {"imageContainer"}>
-                        <img className = {"image"} src = '/../../earthtile.png' alt = "Earth"/>
+                    <div className = {styles.imageContainer}>
+                        <img className = {styles.image} src = '/../../double-brick.png' alt = "Double Brick"/>
+                        <img className = {styles.image} src = '/../../single-brick.png' alt = "Single Brick"/>
+                    </div>
+                </div>
+                <div className = {styles.box}>
+                    <h3>Floors</h3>
+                    <hr/>
+                    <div className = {styles.imageContainer}>
+                        <img className = {styles.image} src = '/../../floor-tile.png' alt = "Tile"/>
                     </div>
                 </div>
             </div>
-            <style jsx>
-                {
-                    `.sidebar{
-                        display:fixed; 
-                        width:15%; 
-                        margin-top:10%;
-                        top:0; 
-                        bottom:0;
-                        overflow-y: scroll;
-                        background-color:red;
-                    
-                    }
-                    .content{
-                        display:flex; 
-                        width: 100%; 
-                        height:100%; 
-                        flex-direction:column; 
-                        flex-wrap:wrap; 
-                    }
-                    .box{
-                        width:100%; 
-                        flex-grow:1; 
-                    }
-                    
-                `}
-            </style>
         </div>;
     }
 }

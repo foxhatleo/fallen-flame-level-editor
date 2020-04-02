@@ -1,0 +1,37 @@
+.sidebar{
+    margin-top:5%;
+    display:fixed; 
+    width:15%; 
+    top:0; 
+    bottom:0;
+    overflow-y: scroll;
+    border: 1px solid black; 
+
+}
+.content{
+    display:flex; 
+    width: 100%; 
+    height:95%; 
+    flex-direction:column; 
+    flex-wrap:wrap; 
+    margin:auto;
+}
+.box{
+    width:100%; 
+    flex-grow:1; 
+    margin:auto; 
+    margin-bottom:3%;
+}
+
+.imageContainer{
+    display:flex;
+    flex-direction:row; 
+    flex-wrap:wrap; 
+}
+
+.image{
+    flex-shrink:1;
+    width:30%; 
+    height:30%; 
+    margin:auto; 
+}
