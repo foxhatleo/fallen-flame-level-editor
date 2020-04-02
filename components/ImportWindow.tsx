@@ -1,6 +1,5 @@
 import {FormEvent, FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Form, Modal} from "react-bootstrap";
-import LevelModel from "models/LevelModel";
 import {load} from "utils/JSON";
 
 enum Error {
@@ -8,7 +7,7 @@ enum Error {
     LOAD_ERROR,
     JSON_PARSE_ERROR,
     LEVEL_ERROR,
-};
+}
 
 const ImportWindow: FunctionComponent<{
     show: boolean;
@@ -40,14 +39,16 @@ const ImportWindow: FunctionComponent<{
         }
         setDisabled(true);
         load(files[0]).then(i => {
-            levelModel = LevelModel.fromRep(i, files[0].name);
-            if (levelModel) {
-                levelModel.setLastFilename(files[0].name);
-                checkOK();
-            } else {
-                setError(Error.LEVEL_ERROR);
-                setDisabled(false);
-            }
+            alert("Not implemented yet.");
+            // TODO
+            // levelModel = LevelModel.fromRep(i, files[0].name);
+            // if (levelModel) {
+            //     levelModel.setLastFilename(files[0].name);
+            //     checkOK();
+            // } else {
+            //     setError(Error.LEVEL_ERROR);
+            //     setDisabled(false);
+            // }
         }).catch((fromJSON) => {
             debugger;
             setError(fromJSON ? Error.JSON_PARSE_ERROR : Error.LOAD_ERROR);

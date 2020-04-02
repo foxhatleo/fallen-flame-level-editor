@@ -1,5 +1,4 @@
 import React from "react";
-import LevelModel from "models/LevelModel";
 import "./CanvasSidebar.css"
 
 class CanvasSidebar extends React.Component {

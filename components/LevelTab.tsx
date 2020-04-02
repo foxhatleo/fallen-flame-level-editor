@@ -1,8 +1,7 @@
 import Canvas from "./Canvas";
 import {Tab} from "react-bootstrap";
-import React, {FunctionComponent, ReactNode} from "react";
-import {connect} from "react-redux";
-import EditorState, {LevelState} from "../redux/StateType";
+import React, {ReactNode} from "react";
+import {LevelState} from "../redux/StateType";
 
 const LevelTab: (levelID: number, levels: LevelState[]) => ReactNode = (i, l) => {
     const level = l[i];

@@ -1,10 +1,12 @@
 import React from "react";
 import Toolbar from "./Toolbar";
+import CanvasContent from "./CanvasContent";
 
 class Canvas extends React.Component {
     render() {
         return <div className={"canvas"}>
             <Toolbar />
+            <CanvasContent />
             <style jsx>{`
             .canvas {
                 position: absolute;
