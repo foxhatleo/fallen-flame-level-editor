@@ -1,11 +1,10 @@
 import React from "react";
-import LevelModel from "models/LevelModel";
 import CanvasSizeBox from "./canvas/CanvasSizeBox";
 
-class CanvasContent extends React.Component<{level: LevelModel}> {
+class CanvasContent extends React.Component {
     render() {
         return <>
-            <CanvasSizeBox level={this.props.level} />
+            <CanvasSizeBox />
             </>;
     }
 }
