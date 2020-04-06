@@ -13,6 +13,7 @@ export enum ActionType {
     EDITOR_NEW_LEVEL,
     EDITOR_CLOSE_LEVEL,
     EDITOR_OPEN_TAB,
+    SELECT_IMAGE, 
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -44,4 +45,5 @@ export type Action =
     | SetterAction<ActionType.EDITOR_NEW_LEVEL, NewLevelInfo>
     | PureAction<ActionType.EDITOR_CLOSE_LEVEL>
     | LevelAction<ActionType.EDITOR_OPEN_TAB>
+    | StringSetterAction<ActionType.SELECT_IMAGE>
     ;

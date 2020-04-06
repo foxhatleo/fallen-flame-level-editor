@@ -4,7 +4,9 @@ export type LevelState = {
     graphicSize: [number, number];
     fpsRange: [number, number];
     changed: boolean;
+    selected: string;
 };
+
 
 declare type EditorState = {
     current: number;

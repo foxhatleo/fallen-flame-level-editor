@@ -1,8 +1,16 @@
 import React from "react";
 import styles from './CanvasSidebar.module.css';
+import {FunctionComponent} from "react";
+import {connect} from "react-redux";
+import {updateSelected} from "../../redux/Actions";
+import {bindActionCreators} from "redux";
 
-class CanvasSidebar extends React.Component {
-    render() {
+type CanvasSidebarProps = {
+    selected: string
+}
+const CanvasSidebar: FunctionComponent<CanvasSidebarProps> = (p) => {
+
+
         return <div className = {styles.sidebar}>
             <div className = {styles.content}>
                 <div className = {styles.box}>
@@ -28,8 +36,15 @@ class CanvasSidebar extends React.Component {
                     </div>
                 </div>
             </div>
-        </div>;
-    }
-}
+        </div>
+};
 
-export default CanvasSidebar;
+function mapStateToProps(state) {
+    return { selected: state.selected }
+  }
+  
+  function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ updateSelected }, dispatch)
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(CanvasSidebar)

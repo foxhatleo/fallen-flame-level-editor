@@ -19,3 +19,4 @@ export const markChanged = marker(ActionType.MARK_CHANGED);
 export const editorNewLevel = updater<NewLevelInfo>(ActionType.EDITOR_NEW_LEVEL);
 export const editorCloseLevel = pure(ActionType.EDITOR_CLOSE_LEVEL);
 export const editorOpenTab = marker(ActionType.EDITOR_OPEN_TAB);
+export const updateSelected = updater<string>(ActionType.SELECT_IMAGE);
