@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Button, Form, Modal} from "react-bootstrap";
-import EditorState, {LevelState} from "../redux/StateType";
+import EditorState, {LevelState} from "../../redux/StateType";
 import {connect} from "react-redux";
 
 const NameWindow: FunctionComponent<{

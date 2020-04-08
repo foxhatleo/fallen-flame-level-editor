@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from "react";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {connect} from "react-redux";
-import EditorState, {LevelState} from "../redux/StateType";
+import EditorState, {LevelState} from "../../redux/StateType";
 
 /**
  * The top navbar.

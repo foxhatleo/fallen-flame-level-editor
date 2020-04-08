@@ -1,10 +1,10 @@
 import React, {FunctionComponent} from "react";
 import {Tabs} from "react-bootstrap";
-import * as Actions from "../redux/Actions";
+import * as Actions from "../../redux/Actions";
 import {connect} from "react-redux";
 import LevelTab from "./LevelTab";
 import {bindActionCreators} from "redux";
-import EditorState, {LevelState} from "../redux/StateType";
+import EditorState, {LevelState} from "../../redux/StateType";
 
 const TabScreen: FunctionComponent<typeof Actions & {
     current: number,

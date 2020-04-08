@@ -1,11 +1,11 @@
 import React from "react";
-import Navigation from "./Navigation";
-import TabScreen from "./TabScreen";
-import NameWindow from "./NameWindow";
-import BoundWindow from "./BoundWindow";
-import CloseWarnWindow from "./CloseWarnWindow";
-import AdvancedWindow, {AdvancedResult} from "./AdvancedWindow";
-import ImportWindow from "./ImportWindow";
+import Navigation from "./editor/Navigation";
+import TabScreen from "./editor/TabScreen";
+import NameWindow from "./editor/NameWindow";
+import BoundWindow from "./editor/BoundWindow";
+import CloseWarnWindow from "./editor/CloseWarnWindow";
+import AdvancedWindow, {AdvancedResult} from "./editor/AdvancedWindow";
+import ImportWindow from "./editor/ImportWindow";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faHandPaper, faMousePointer} from "@fortawesome/free-solid-svg-icons";
 import {LevelStore} from "redux/LevelStore";
@@ -13,6 +13,7 @@ import {connect} from "react-redux";
 import * as Actions from "../redux/Actions";
 import {bindActionCreators} from "redux";
 import EditorState, {LevelState} from "../redux/StateType";
+import {newLevel} from "../redux/reducers/LevelReducer";
 
 library.add(faHandPaper, faMousePointer);
 
@@ -163,7 +164,9 @@ class App extends React.Component<typeof Actions & {
     private boundWindowOK(x: number, y: number): void {
         switch (this.state.action) {
             case CurrentAction.NEW_LEVEL_BOUND_PROMPT:
-                this.props.editorNewLevel([this._cachedName, x, y]);
+                const nl = newLevel(x, y);
+                nl.name = this._cachedName;
+                this.props.editorNewLevel(nl);
                 break;
             case CurrentAction.BOUND_SETTING:
                 this.props.updatePhysicsWidth(x);

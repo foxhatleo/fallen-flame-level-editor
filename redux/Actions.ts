@@ -1,10 +1,12 @@
-import {Action, ActionType, NewLevelInfo} from "./ActionType";
+import {Action, ActionType} from "./ActionType";
+import {LevelState} from "./StateType";
+import Item from "../components/canvas/Item";
 
 const updater = <T> (type: ActionType):
-    ((newValue: T, levelID?: number) => Action) => ((newValue: T, levelID?: number) =>
-    ({type, newValue, levelID} as Action));
-const marker = (type: ActionType): ((levelID?: number) => Action) => ((levelID?: number) =>
-    ({type, levelID} as Action));
+    ((newValue: T, level?: number | LevelState) => Action) => ((newValue: T, level?: number | LevelState) =>
+    ({type, newValue, level} as Action));
+const marker = (type: ActionType): ((level?: number | LevelState) => Action) => ((level?: number | LevelState) =>
+    ({type, level} as Action));
 const pure = (type: ActionType): (() => Action) => (() => ({type} as Action));
 
 export const updateName = updater<string>(ActionType.UPDATE_NAME);
@@ -16,6 +18,8 @@ export const updateFPSLower = updater<number>(ActionType.UPDATE_FPS_LOWER);
 export const updateFPSUpper = updater<number>(ActionType.UPDATE_FPS_UPPER);
 export const markUnchanged = marker(ActionType.MARK_UNCHANGED);
 export const markChanged = marker(ActionType.MARK_CHANGED);
-export const editorNewLevel = updater<NewLevelInfo>(ActionType.EDITOR_NEW_LEVEL);
+export const editorNewLevel = updater<LevelState>(ActionType.EDITOR_NEW_LEVEL);
 export const editorCloseLevel = pure(ActionType.EDITOR_CLOSE_LEVEL);
 export const editorOpenTab = marker(ActionType.EDITOR_OPEN_TAB);
+export const editorChangeTool = updater<string>(ActionType.EDITOR_CHANGE_TOOL);
+export const editorChoose = updater<number>(ActionType.EDITOR_CHOOSE);

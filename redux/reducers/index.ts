@@ -1,4 +1,4 @@
-import StateType from "../StateType";
+import StateType, {LevelState} from "../StateType";
 import {Action, ActionType} from "../ActionType";
 import LevelReducer, {newLevel} from "./LevelReducer";
 import {editorOpenTab} from "../Actions";
@@ -15,15 +15,17 @@ function guardLevelID(i: any, s: StateType): number {
     return (n >= 0) ? n : (s.levels.length + n);
 }
 
+function toLevelID(s: LevelState[], l: number | LevelState): number {
+    if (typeof l === "number") return l;
+    const i = s.indexOf(l);
+    return i < 0 ? undefined : 0;
+}
+
 export default function RootReducer(state: StateType = DEFAULT_STATE, action: Action): StateType {
     const updatedLevels = state.levels.concat();
     switch (action.type) {
         case ActionType.EDITOR_NEW_LEVEL:
-            const l = newLevel();
-            l.name = action.newValue[0];
-            l.physicsSize[0] = action.newValue[1];
-            l.physicsSize[1] = action.newValue[2];
-            updatedLevels.push(l);
+            updatedLevels.push(action.newValue);
             return RootReducer({
                 ...state,
                 levels: updatedLevels
@@ -35,19 +37,24 @@ export default function RootReducer(state: StateType = DEFAULT_STATE, action: Ac
                 levels: updatedLevels
             }, editorOpenTab(state.current));
         case ActionType.EDITOR_OPEN_TAB:
-            action.levelID = guardLevelID(action.levelID, state);
-            const newCurrent = guardRange(guardInt(action.levelID), 0, state.levels.length - 1);
+            let levelID1 = toLevelID(updatedLevels, action.level);
+            levelID1 = guardLevelID(levelID1, state);
+            const newCurrent = guardRange(guardInt(levelID1), 0, state.levels.length - 1);
             return {
                 ...state,
                 current: newCurrent,
                 currentLevel: state.levels.length > 0 ? state.levels[newCurrent] : null,
             };
         default:
-            action.levelID = guardLevelID(action.levelID, state);
-            if (!updatedLevels[action.levelID]) return state;
-            updatedLevels[action.levelID] = LevelReducer(updatedLevels[action.levelID], action);
+            let levelID2 = toLevelID(updatedLevels, action.level);
+            levelID2 = guardLevelID(levelID2, state);
+            if (!updatedLevels[levelID2]) return state;
+            updatedLevels[levelID2] = LevelReducer(updatedLevels[levelID2], action);
             return {
                 ...state,
+                ...((levelID2 == state.current) ? {
+                    currentLevel: updatedLevels[levelID2],
+                } : {}),
                 levels: updatedLevels
             };
     }
