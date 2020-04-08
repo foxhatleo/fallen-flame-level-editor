@@ -1,14 +1,20 @@
-import Item from "components/canvas/Item";
-
 export type LevelState = {
     name: string;
     physicsSize: [number, number];
     graphicSize: [number, number];
     fpsRange: [number, number];
+    playerpos: [number, number];
+    exitpos: [number, number];
+    enemies: EnemyInfo[];
     changed: boolean;
     lighting: LightingInfo;
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
+};
+
+export type EnemyInfo = {
+    enemytype: string;
+    enemypos: [number, number];
 };
 
 export type LightingInfo = {

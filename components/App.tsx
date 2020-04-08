@@ -14,6 +14,8 @@ import * as Actions from "../redux/Actions";
 import {bindActionCreators} from "redux";
 import EditorState, {LevelState} from "../redux/StateType";
 import {newLevel} from "../redux/reducers/LevelReducer";
+import {encode} from "../redux/LevelJSON";
+import {download} from "../utils/JSON";
 
 library.add(faHandPaper, faMousePointer);
 
@@ -49,6 +51,21 @@ class App extends React.Component<typeof Actions & {
         this.state = {action: CurrentAction.NO_ACTION};
     }
 
+    componentDidMount(): void {
+        if (typeof window !== "undefined") {
+            window.onkeypress = this.keyPress.bind(this);
+        }
+    }
+
+    private keyPress(evt: KeyboardEvent): void {
+        const key = evt.key.toLowerCase();
+        if (key == "a") {
+            this.props.editorChangeTool("hand");
+        } else if (key == "s") {
+            this.props.editorChangeTool("pointer");
+        }
+    }
+
     /**
      * Triggered when "close" menu item is chosen.
      */
@@ -75,8 +92,7 @@ class App extends React.Component<typeof Actions & {
      */
     private onExport(): void {
         if (!this.props.currentLevel) return;
-        // TODO: Download
-        // download(this.currentSelect.toRep(), this.currentSelect.filename);
+        download(encode(this.props.currentLevel), this.props.currentLevel.name);
         this.props.markUnchanged();
     }
 
@@ -183,8 +199,8 @@ class App extends React.Component<typeof Actions & {
      *
      * @param level {LevelStore}
      */
-    private importWindowOK(level: any): void {
-        // TODO
+    private importWindowOK(level: LevelState): void {
+        this.props.editorNewLevel(level);
         this.clearAction();
     }
 

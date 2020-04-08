@@ -1,6 +1,8 @@
 import {FormEvent, FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Form, Modal} from "react-bootstrap";
 import {load} from "utils/JSON";
+import {LevelState} from "../../redux/StateType";
+import {decode} from "../../redux/LevelJSON";
 
 enum Error {
     NO_ERROR,
@@ -23,7 +25,7 @@ const ImportWindow: FunctionComponent<{
         setDisabled(false);
     }, [p.show]);
 
-    let levelModel: any = null;
+    let levelModel: LevelState = null;
 
     const checkOK = () => {
         if (levelModel) p.onOK(levelModel);
@@ -39,16 +41,15 @@ const ImportWindow: FunctionComponent<{
         }
         setDisabled(true);
         load(files[0]).then(i => {
-            alert("Not implemented yet.");
-            // TODO
-            // levelModel = LevelModel.fromRep(i, files[0].name);
-            // if (levelModel) {
-            //     levelModel.setLastFilename(files[0].name);
-            //     checkOK();
-            // } else {
-            //     setError(Error.LEVEL_ERROR);
-            //     setDisabled(false);
-            // }
+            levelModel = decode(i);
+            if (levelModel) {
+                levelModel.name = levelModel.name ||
+                    files[0].name.replace(new RegExp("\.json$", "gi"), "");
+                checkOK();
+            } else {
+                setError(Error.LEVEL_ERROR);
+                setDisabled(false);
+            }
         }).catch((fromJSON) => {
             debugger;
             setError(fromJSON ? Error.JSON_PARSE_ERROR : Error.LOAD_ERROR);

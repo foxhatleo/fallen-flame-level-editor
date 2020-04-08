@@ -11,6 +11,8 @@ export function download(value: object,
     const w = window as any;
     const jsonValue: string = JSON.stringify(value);
 
+    name = name + ".json";
+
     let blob;
     if (typeof w.Blob == "function") {
         blob = new Blob([jsonValue], {type: type});
@@ -78,6 +80,6 @@ export function load(file: File): Promise<Object> {
             }
         };
         r.onabort = r.onerror = () => { reject(JsonLoadFailReason.IO_ERROR); };
-        r.readAsText(this.file);
+        r.readAsText(file);
     });
 }

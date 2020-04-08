@@ -10,16 +10,17 @@ import {LevelState} from "../../redux/StateType";
 const Toolbar: React.FunctionComponent<typeof Actions & {
     level: LevelState;
 }> = (p) => {
-    function item(id: string, icon: IconProp, defaultChecked: boolean = false) {
+    function item(id: string, icon: IconProp, shortcut: string, defaultChecked: boolean = false) {
         return <ToggleButton variant="light" type="radio" name="radio" defaultChecked={defaultChecked} value={id}>
             <FontAwesomeIcon icon={icon} />
+            ({shortcut})
         </ToggleButton>;
     }
 
     return <ToggleButtonGroup value={p.level._editorInfo.tool}
                               onChange={p.editorChangeTool} className="toolbar" type="radio" name="options" defaultValue="hand">
-        {item("hand", "hand-paper", true)}
-        {item("pointer", "mouse-pointer")}
+        {item("hand", "hand-paper", "A", true)}
+        {item("pointer", "mouse-pointer", "S")}
         <style jsx global>{`
         .toolbar {
           position: absolute;

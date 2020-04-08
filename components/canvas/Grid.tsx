@@ -8,9 +8,11 @@ const Grid: FunctionComponent<{
     const xs = l.graphicSize[0] / l.physicsSize[0];
     const ys = l.graphicSize[1] / l.physicsSize[1];
     return <table>
-        {[...Array(Math.ceil(l.physicsSize[1]))].map(_ => <tr className={"o"}>
-            {[...Array(Math.ceil(l.physicsSize[0]))].map(_ => <td className={"i"} />)}
+        <tbody>
+        {[...Array(Math.ceil(l.physicsSize[1]))].map((_, i) => <tr key={i} className={"o"}>
+            {[...Array(Math.ceil(l.physicsSize[0]))].map((_, i) => <td key={i} className={"i"} />)}
         </tr>)}
+        </tbody>
         <style jsx>{`
         .i {
             width: ${xs}px;

@@ -13,6 +13,12 @@ const Wall: FunctionComponent<typeof Actions & {
     function chooseWall() {
         p.editorChoose(10000 + p.id);
     }
+    function moveWall(x, y) {
+        p.moveWall([p.id, [x, y]])
+    }
+    function resizeWall(x, y) {
+        p.resizeWall([p.id, [x, y]])
+    }
     return (
         <Item chosen={p.level._editorInfo.chosen == 10000 + p.id}
               level={p.level}
@@ -22,7 +28,9 @@ const Wall: FunctionComponent<typeof Actions & {
               y={wall.pos[1]}
               resizable={true}
               movable={true}
-              onChoose={chooseWall}>
+              onChoose={chooseWall}
+              onMove={moveWall}
+              onResize={resizeWall}>
             <div className={"wall"} />
             <style jsx>{`
             .wall {
@@ -31,7 +39,8 @@ const Wall: FunctionComponent<typeof Actions & {
               left: 0;
               right: 0;
               bottom: 0;
-              background: red;
+              background: URL(/canvas/earthtile.png);
+              background-repeat: repeat;
             }
             `}</style>
         </Item>

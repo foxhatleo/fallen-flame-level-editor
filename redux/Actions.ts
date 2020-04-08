@@ -1,6 +1,5 @@
 import {Action, ActionType} from "./ActionType";
 import {LevelState} from "./StateType";
-import Item from "../components/canvas/Item";
 
 const updater = <T> (type: ActionType):
     ((newValue: T, level?: number | LevelState) => Action) => ((newValue: T, level?: number | LevelState) =>
@@ -23,3 +22,8 @@ export const editorCloseLevel = pure(ActionType.EDITOR_CLOSE_LEVEL);
 export const editorOpenTab = marker(ActionType.EDITOR_OPEN_TAB);
 export const editorChangeTool = updater<string>(ActionType.EDITOR_CHANGE_TOOL);
 export const editorChoose = updater<number>(ActionType.EDITOR_CHOOSE);
+export const moveWall = updater<[number, [number, number]]>(ActionType.MOVE_WALL);
+export const resizeWall = updater<[number, [number, number]]>(ActionType.RESIZE_WALL);
+export const movePlayer = updater<[number, number]>(ActionType.MOVE_PLAYER);
+export const moveExit = updater<[number, number]>(ActionType.MOVE_EXIT);
+export const moveEnemy = updater<[number, [number, number]]>(ActionType.MOVE_ENEMY);

@@ -3,6 +3,8 @@ import EditorState, {LevelState} from "../../redux/StateType";
 import Grid from "./Grid";
 import {connect} from "react-redux";
 import Wall from "./Wall";
+import Player from "./Player";
+import Exit from "./Exit";
 
 const CanvasContent: FunctionComponent<{
     level: LevelState;
@@ -11,7 +13,6 @@ const CanvasContent: FunctionComponent<{
     const [py, setPY] = useState(0);
     const tool = p.level._editorInfo.tool;
     function dragMouseDown(e) {
-        if (tool != "hand") return;
         e.preventDefault();
         document.onmouseup = closeDrag;
         document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, px, py);
@@ -34,7 +35,9 @@ const CanvasContent: FunctionComponent<{
         <div className={"in"}>
             <Grid level={p.level} />
             {[...Array(p.level.walls.length)].map((_, i) =>
-                <Wall level={p.level} id={i}/>)}
+                <Wall level={p.level} id={i} key={i}/>)}
+            <Player level={p.level} />
+            <Exit level={p.level} />
         </div>
         <style jsx>{`
             div.ctc {

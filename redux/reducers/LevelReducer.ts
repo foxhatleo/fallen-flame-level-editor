@@ -1,5 +1,5 @@
 import {Action, ActionType} from "../ActionType";
-import {LevelState, WallInfo} from "../StateType";
+import {LevelEditorInfo, LevelState, WallInfo} from "../StateType";
 import {guardNonEmptyString} from "../Validators";
 import PairReducer from "./PairReducer";
 
@@ -9,7 +9,10 @@ export const newLevel: (psx: number, psy: number) => LevelState =
     physicsSize: [psx, psy],
     graphicSize: [800, 600],
     fpsRange: [20, 60],
+    playerpos: [1.5, 1.5],
+    exitpos: [1.5, 5.35],
     changed: true,
+    enemies: [],
     lighting: {
         "color":	  	[0, 0, 0, 0],
         "gamma":		true,
@@ -22,11 +25,15 @@ export const newLevel: (psx: number, psy: number) => LevelState =
         newWall([psx / 2, psy - .25], [psx, .5]),
         newWall([psx - .25, psy / 2], [.5, psy]),
     ],
-    _editorInfo: {
+    _editorInfo: newEditorInfo(),
+});
+
+export const newEditorInfo = (): LevelEditorInfo => (
+    {
         chosen: -1,
         tool: "hand",
     }
-});
+);
 
 export const newWall = (pos: [number, number], size: [number, number]): WallInfo => (
     {pos: pos, size: size, texture: "earth"}
@@ -65,6 +72,38 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                     ...state._editorInfo,
                     chosen: action.newValue,
                 }};
+        case ActionType.MOVE_WALL:
+            const newWalls = state.walls.concat();
+            let wall = newWalls[action.newValue[0]];
+            wall = {
+                ...wall,
+                pos: action.newValue[1],
+            };
+            newWalls[action.newValue[0]] = wall;
+            return {...state,
+                walls: newWalls
+            };
+        case ActionType.MOVE_EXIT:
+            return {
+                ...state,
+                exitpos: action.newValue,
+            };
+        case ActionType.RESIZE_WALL:
+            const newWalls2 = state.walls.concat();
+            let wall2 = newWalls2[action.newValue[0]];
+            wall = {
+                ...wall2,
+                size: action.newValue[1],
+            };
+            newWalls2[action.newValue[0]] = wall;
+            return {...state,
+                walls: newWalls2
+            };
+        case ActionType.MOVE_PLAYER:
+            return {
+                ...state,
+                playerpos: action.newValue,
+            };
         case ActionType.UPDATE_FPS_LOWER:
         case ActionType.UPDATE_FPS_UPPER:
         case ActionType.UPDATE_GRAPHIC_WIDTH:

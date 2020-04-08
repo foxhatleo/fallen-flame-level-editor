@@ -17,6 +17,11 @@ export enum ActionType {
     EDITOR_OPEN_TAB,
     EDITOR_CHANGE_TOOL,
     EDITOR_CHOOSE,
+    MOVE_WALL,
+    RESIZE_WALL,
+    MOVE_PLAYER,
+    MOVE_EXIT,
+    MOVE_ENEMY,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -48,4 +53,9 @@ export type Action =
     | PureAction<ActionType.EDITOR_CLOSE_LEVEL>
     | LevelAction<ActionType.EDITOR_OPEN_TAB>
     | NumberSetterAction<ActionType.EDITOR_CHOOSE>
+    | SetterAction<ActionType.MOVE_WALL, [number, [number, number]]>
+    | SetterAction<ActionType.RESIZE_WALL, [number, [number, number]]>
+    | SetterAction<ActionType.MOVE_PLAYER, [number, number]>
+    | SetterAction<ActionType.MOVE_EXIT, [number, number]>
+    | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number]]>
     ;
