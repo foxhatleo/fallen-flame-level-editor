@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import Wall from "./Wall";
 import Player from "./Player";
 import Exit from "./Exit";
+import Enemy from "./Enemy";
 
 const CanvasContent: FunctionComponent<{
     level: LevelState;
@@ -38,6 +39,8 @@ const CanvasContent: FunctionComponent<{
                 <Wall level={p.level} id={i} key={i}/>)}
             <Player level={p.level} />
             <Exit level={p.level} />
+            {[...Array(p.level.enemies.length)].map((_, i) =>
+                <Enemy level={p.level} id={i} key={i}/>)}
         </div>
         <style jsx>{`
             div.ctc {

@@ -17,8 +17,8 @@ const Player: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 1}
               level={p.level}
-              width={.4}
-              height={.4}
+              width={1.3}
+              height={1.3}
               x={p.level.playerpos[0]}
               y={p.level.playerpos[1]}
               resizable={false}
@@ -28,7 +28,8 @@ const Player: FunctionComponent<typeof Actions & {
             <img src={"/canvas/player-walking.png"} />
             <style jsx>{`
             img {
-              object-fit: fill;
+            width :100%;
+            height: 100%;
             }
             `}</style>
         </Item>

@@ -63,6 +63,8 @@ class App extends React.Component<typeof Actions & {
             this.props.editorChangeTool("hand");
         } else if (key == "s") {
             this.props.editorChangeTool("pointer");
+        } else if (key == "d") {
+            this.onRemove();
         }
     }
 
@@ -217,6 +219,18 @@ class App extends React.Component<typeof Actions & {
         this.clearAction();
     }
 
+    private onAddEnemy(): void {
+        this.props.addEnemy();
+    }
+
+    private onAddWall(): void {
+        this.props.addWall();
+    }
+
+    private onRemove(): void {
+        this.props.remove();
+    }
+
     render() {
         return <React.Fragment>
             <Navigation onClose={this.onClose.bind(this)}
@@ -225,7 +239,10 @@ class App extends React.Component<typeof Actions & {
                         onLevelBound={this.onLevelBound.bind(this)}
                         onLevelName={this.onLevelName.bind(this)}
                         onLevelAdvanced={this.onLevelAdvanced.bind(this)}
-                        onNew={this.onNew.bind(this)} />
+                        onNew={this.onNew.bind(this)}
+                        onAddEnemy={this.onAddEnemy.bind(this)}
+                        onAddWall={this.onAddWall.bind(this)}
+                        onRemove={this.onRemove.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}

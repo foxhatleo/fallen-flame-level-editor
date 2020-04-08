@@ -70,7 +70,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.EDITOR_CHOOSE:
             return {...state, _editorInfo: {
                     ...state._editorInfo,
-                    chosen: action.newValue,
+                    chosen: state._editorInfo.tool === "pointer" ? action.newValue : -1,
                 }};
         case ActionType.MOVE_WALL:
             const newWalls = state.walls.concat();
@@ -80,23 +80,34 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 pos: action.newValue[1],
             };
             newWalls[action.newValue[0]] = wall;
-            return {...state,
+            return {...state,changed: true,
                 walls: newWalls
+            };
+        case ActionType.MOVE_ENEMY:
+            const newE = state.enemies.concat();
+            let e = newE[action.newValue[0]];
+            e = {
+                ...e,
+                enemypos: action.newValue[1],
+            };
+            newE[action.newValue[0]] = e;
+            return {...state,changed: true,
+                enemies: newE
             };
         case ActionType.MOVE_EXIT:
             return {
-                ...state,
+                ...state,changed: true,
                 exitpos: action.newValue,
             };
         case ActionType.RESIZE_WALL:
             const newWalls2 = state.walls.concat();
             let wall2 = newWalls2[action.newValue[0]];
-            wall = {
+            wall2 = {
                 ...wall2,
                 size: action.newValue[1],
             };
-            newWalls2[action.newValue[0]] = wall;
-            return {...state,
+            newWalls2[action.newValue[0]] = wall2;
+            return {...state,changed: true,
                 walls: newWalls2
             };
         case ActionType.MOVE_PLAYER:
@@ -104,6 +115,37 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 ...state,
                 playerpos: action.newValue,
             };
+        case ActionType.ADD_ENEMY:
+            const newnm = state.enemies.concat();
+            newnm.push({enemypos: [1, 1], enemytype: "enemyA"});
+            return LevelReducer({
+                ...state,changed: true,
+                enemies: newnm
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: 20000 + newnm.length - 1, level: action.level});
+        case ActionType.ADD_WALL:
+            const newwl = state.walls.concat();
+            newwl.push({pos: [2, 2], size: [2, 2], texture: "earth"});
+            return LevelReducer({
+                ...state,changed: true,
+                walls: newwl
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: 10000 + newwl.length - 1, level: action.level});
+        case ActionType.REMOVE:
+            const c = state._editorInfo.chosen;
+            if (c < 10000) return state;
+            let updates = {};
+            if (c >= 10000 && c < 20000) {
+                const newwl = state.walls.concat();
+                newwl.splice(c - 10000, 1);
+                updates["walls"] = newwl;
+            } else if (c >= 20000 && c < 30000) {
+                const newen = state.enemies.concat();
+                newen.splice(c - 20000, 1);
+                updates["enemies"] = newen;
+            }
+            return LevelReducer({
+                ...state,changed: true,
+                ...updates,
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: -1, level: action.level});
         case ActionType.UPDATE_FPS_LOWER:
         case ActionType.UPDATE_FPS_UPPER:
         case ActionType.UPDATE_GRAPHIC_WIDTH:

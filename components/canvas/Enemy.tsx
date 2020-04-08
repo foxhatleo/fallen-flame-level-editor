@@ -17,10 +17,10 @@ const Enemy: FunctionComponent<typeof Actions & {
         p.moveEnemy([p.id, [x, y]]);
     }
     return (
-        <Item chosen={p.level._editorInfo.chosen == 10000 + p.id}
+        <Item chosen={p.level._editorInfo.chosen == 20000 + p.id}
               level={p.level}
-              width={.4}
-              height={.4}
+              width={1.3}
+              height={1.3}
               x={enemy.enemypos[0]}
               y={enemy.enemypos[1]}
               resizable={false}
@@ -30,7 +30,8 @@ const Enemy: FunctionComponent<typeof Actions & {
             <img src={"/canvas/enemy-walking.png"} />
             <style jsx>{`
             img {
-              object-fit: fill;
+              width: 100%;
+              height: 100%;
             }
             `}</style>
         </Item>

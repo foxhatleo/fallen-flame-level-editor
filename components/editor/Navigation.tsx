@@ -14,6 +14,9 @@ const Navigation: FunctionComponent<{
     onLevelBound: () => void;
     onLevelName: () => void;
     onLevelAdvanced: () => void;
+    onAddEnemy: () => void;
+    onAddWall: () => void;
+    onRemove: () => void;
     currentLevel: LevelState;
 }> = (p) => {
     return <React.Fragment>
@@ -35,6 +38,15 @@ const Navigation: FunctionComponent<{
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelAdvanced}>Advanced</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Add/Remove..." id={"add-nav"}>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onAddWall}>Add wall</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onAddEnemy}>Add enemy</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
+                                      onClick={p.onRemove}>Remove selected... (S)</NavDropdown.Item>
                 </NavDropdown>
             </Nav>
         </Navbar>

@@ -22,6 +22,9 @@ export enum ActionType {
     MOVE_PLAYER,
     MOVE_EXIT,
     MOVE_ENEMY,
+    ADD_ENEMY,
+    ADD_WALL,
+    REMOVE,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -58,4 +61,7 @@ export type Action =
     | SetterAction<ActionType.MOVE_PLAYER, [number, number]>
     | SetterAction<ActionType.MOVE_EXIT, [number, number]>
     | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number]]>
+    | LevelAction<ActionType.ADD_ENEMY>
+    | LevelAction<ActionType.ADD_WALL>
+    | LevelAction<ActionType.REMOVE>
     ;

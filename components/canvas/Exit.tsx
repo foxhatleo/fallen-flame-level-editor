@@ -28,7 +28,8 @@ const Exit: FunctionComponent<typeof Actions & {
             <img src={"/canvas/helicopter.png"} />
             <style jsx>{`
             img {
-              object-fit: fill;
+              width: 100%;
+              height: 100%;
             }
             `}</style>
         </Item>
