@@ -47,7 +47,7 @@ const Navigation: FunctionComponent<{
                                       onClick={p.onAddEnemy}>Add enemy</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
-                                      onClick={p.onRemove}>Remove selected... (S)</NavDropdown.Item>
+                                      onClick={p.onRemove}>Remove selected... (D)</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown title="Background texture" id={"bg-t"}>
                     <NavDropdown.Item disabled={!p.currentLevel}
