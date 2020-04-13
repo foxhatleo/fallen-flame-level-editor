@@ -22,6 +22,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
     }
     const enet = enemy ? enemy.enemytype.substr(4) : "A";
     const wallt = wall ? wall.texture : "";
+    debugger;
 
     function item(id: string, icon: IconProp, shortcut: string, defaultChecked: boolean = false) {
         return <ToggleButton variant="light" type="radio" name="radio" defaultChecked={defaultChecked} value={id}>
@@ -47,11 +48,11 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         {item("hand", "hand-paper", "A", true)}
         {item("pointer", "mouse-pointer", "S")}
     </ToggleButtonGroup>
-        <ToggleButtonGroup onChange={chooseEnemyType} className="ml-1 enet" value={enet} type="radio" name="options" defaultValue={"A"}>
+        <ToggleButtonGroup onChange={chooseEnemyType} className={"ml-1" + (!enemy ? " toolbar-hide" : "")} value={enet} type="radio" name="options" defaultValue={"A"}>
             {simpleItem("A", "Regular (A)", true)}
             {simpleItem("B", "Shooting (B)")}
         </ToggleButtonGroup>
-        <ToggleButtonGroup onChange={chooseWallType} className="ml-1 wallt" value={wallt} type="radio" name="options" defaultValue={"wall-side-side"}>
+        <ToggleButtonGroup onChange={chooseWallType} className={"ml-1" + (!wall ? " toolbar-hide" : "")} value={wallt} type="radio" name="options" defaultValue={"wall-side-side"}>
             {simpleItem("wall-side", "Wall Side", true)}
             {simpleItem("wall-top", "Wall Top")}
         </ToggleButtonGroup>
@@ -62,11 +63,8 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
           left: 5px;
           z-index: 100;
         }
-        .enet {
-        display: ${enemy ? "inline-block" : "none"};
-        }
-        .wallt {
-        display: ${wall ? "inline-block" : "none"};
+        .toolbar-hide {
+        display: none;
         }
         `}</style>
     </div>;

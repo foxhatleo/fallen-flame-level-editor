@@ -123,7 +123,7 @@ export function decode(level: object): ImportedLevel {
     return {level: result ? ({
         ...(result as object),
         _editorInfo: newEditorInfo()
-    } as LevelState) : null, msg: msgs};
+    } as LevelState) : null, msg: msgs.length > 0 ? msgs : null};
 }
 
 export function encode(level: LevelState): object {

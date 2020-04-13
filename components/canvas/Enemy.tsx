@@ -11,6 +11,12 @@ const Enemy: FunctionComponent<typeof Actions & {
 }> = (p) => {
     const enemy = p.level.enemies[p.id];
     const t = enemy.enemytype.substr(4);
+    let texture = "/canvas/enemy-walking.png";
+    switch (t) {
+        case "B":
+            texture = "/canvas/enemyb-walking.png";
+            break;
+    }
     function chooseEnemy() {
         p.editorChoose(20000 + p.id);
     }
@@ -28,7 +34,7 @@ const Enemy: FunctionComponent<typeof Actions & {
               movable={true}
               onChoose={chooseEnemy}
               onMove={moveEnemy}>
-            <img src={"/canvas/enemy-walking.png"} />
+            <img src={texture} />
             <div className={"type"}>{t}</div>
             <style jsx>{`
             img {
