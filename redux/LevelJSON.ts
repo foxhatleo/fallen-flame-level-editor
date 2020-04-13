@@ -49,12 +49,13 @@ function checkBG(bg: {texture: string} | undefined, msgs: string[]): {texture: s
 }
 
 function checkEnemy(e: any, msgs: string[]): EnemyInfo {
-    const type = e["enemytype"];
+    let type = e["enemytype"];
     switch(type) {
         case "typeA":
         case "typeB":
             break;
         default:
+            type = "typeA";
             msgs.push("Unidentifiable enemy type. Using typeA by default.");
     }
     return {
@@ -64,12 +65,13 @@ function checkEnemy(e: any, msgs: string[]): EnemyInfo {
 }
 
 function checkWall(e: any, msgs: string[]): WallInfo {
-    const texture = e["texture"];
+    let texture = e["texture"];
     switch(texture) {
         case "wall-top":
         case "wall-side":
             break;
         default:
+            texture = "wall-side";
             msgs.push("Unidentifiable wall texture. Using wall-side by default.");
     }
     return {
