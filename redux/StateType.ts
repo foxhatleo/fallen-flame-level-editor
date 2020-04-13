@@ -8,6 +8,7 @@ export type LevelState = {
     enemies: EnemyInfo[];
     changed: boolean;
     lighting: LightingInfo;
+    background: {texture: string};
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
 };

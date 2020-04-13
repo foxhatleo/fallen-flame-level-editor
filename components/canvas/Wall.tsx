@@ -10,6 +10,15 @@ const Wall: FunctionComponent<typeof Actions & {
     id: number;
 }> = (p) => {
     const wall = p.level.walls[p.id];
+    let textureImage = "wall-side";
+    switch (wall.texture) {
+        case "wall-side":
+            textureImage = "wall-side";
+            break;
+        case "wall-top":
+            textureImage = "wall-top";
+            break;
+    }
     function chooseWall() {
         p.editorChoose(10000 + p.id);
     }
@@ -39,7 +48,7 @@ const Wall: FunctionComponent<typeof Actions & {
               left: 0;
               right: 0;
               bottom: 0;
-              background: URL(/canvas/earthtile.png);
+              background: URL(/canvas/${textureImage}.png);
               background-repeat: repeat;
             }
             `}</style>

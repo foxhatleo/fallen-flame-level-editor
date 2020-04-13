@@ -10,6 +10,7 @@ const Enemy: FunctionComponent<typeof Actions & {
     id: number;
 }> = (p) => {
     const enemy = p.level.enemies[p.id];
+    const t = enemy.enemytype.substr(4);
     function chooseEnemy() {
         p.editorChoose(20000 + p.id);
     }
@@ -28,10 +29,19 @@ const Enemy: FunctionComponent<typeof Actions & {
               onChoose={chooseEnemy}
               onMove={moveEnemy}>
             <img src={"/canvas/enemy-walking.png"} />
+            <div className={"type"}>{t}</div>
             <style jsx>{`
             img {
               width: 100%;
               height: 100%;
+            }
+            .type {
+                user-select:none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 30px;
             }
             `}</style>
         </Item>

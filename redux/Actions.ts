@@ -9,6 +9,7 @@ const marker = (type: ActionType): ((level?: number | LevelState) => Action) => 
 const pure = (type: ActionType): (() => Action) => (() => ({type} as Action));
 
 export const updateName = updater<string>(ActionType.UPDATE_NAME);
+export const setBackground = updater<string>(ActionType.SET_BACKGROUND);
 export const updatePhysicsWidth = updater<number>(ActionType.UPDATE_PHYSICS_WIDTH);
 export const updatePhysicsHeight = updater<number>(ActionType.UPDATE_PHYSICS_HEIGHT);
 export const updateGraphicWidth = updater<number>(ActionType.UPDATE_GRAPHIC_WIDTH);
@@ -27,6 +28,8 @@ export const resizeWall = updater<[number, [number, number]]>(ActionType.RESIZE_
 export const movePlayer = updater<[number, number]>(ActionType.MOVE_PLAYER);
 export const moveExit = updater<[number, number]>(ActionType.MOVE_EXIT);
 export const moveEnemy = updater<[number, [number, number]]>(ActionType.MOVE_ENEMY);
+export const changeEnemyType = updater<[number, string]>(ActionType.CHANGE_ENEMY_TYPE);
+export const changeWallTexture = updater<[number, string]>(ActionType.CHANGE_WALL_TEXTURE);
 export const addEnemy = marker(ActionType.ADD_ENEMY);
 export const addWall = marker(ActionType.ADD_WALL);
 export const remove = marker(ActionType.REMOVE);

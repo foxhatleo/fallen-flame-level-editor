@@ -1,7 +1,6 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent} from "react";
 import {LevelState} from "../../redux/StateType";
-import * as Actions from "../../redux/Actions";
-import {guardRange} from "../../redux/Validators";
+import {guardNumber, guardRange} from "../../redux/Validators";
 
 const Item: FunctionComponent<{
     level: LevelState;
@@ -9,6 +8,8 @@ const Item: FunctionComponent<{
     height: number;
     x: number;
     y: number;
+    xOffset?: number;
+    yOffset?: number;
     resizable?: boolean;
     movable?: boolean;
     chosen: boolean;
@@ -21,6 +22,7 @@ const Item: FunctionComponent<{
     const xs = p.level.graphicSize[0] / p.level.physicsSize[0];
     const ys = p.level.graphicSize[1] / p.level.physicsSize[1];
     const inArrow = p.level._editorInfo.tool == "pointer";
+    const xo = guardNumber(p.xOffset), yo = guardNumber(p.yOffset);
     function eleDrag(cx, cy, px, py, pw, ph, spot, e) {
         e.preventDefault();
         // calculate the new cursor position:
@@ -102,16 +104,17 @@ const Item: FunctionComponent<{
         <div className={"rs bl"} onMouseDown={resizeDown.bind(this, 5)} />
         <div className={"rs b"} onMouseDown={resizeDown.bind(this, 6)} />
         <div className={"rs br"} onMouseDown={resizeDown.bind(this, 7)} />
+        <div className={"rs ctr"} />
         <style jsx>{`
         .item-out {
         position: absolute;
         width: ${p.width * xs}px;
         height: ${p.height * ys}px;
-        left: ${3000 + (p.x - p.width / 2) * xs}px;
-        top: ${3000 + (p.level.physicsSize[1] - p.y - p.height / 2) * xs}px;
+        left: ${3000 + (p.x - p.width / 2) * xs + xo}px;
+        top: ${3000 + (p.level.physicsSize[1] - p.y - p.height / 2) * xs + yo}px;
         }
         .chosen {
-            outline: 2px solid black;
+            outline: 2px solid white;
             z-index: 1;
         }
         .rs {
@@ -119,10 +122,17 @@ const Item: FunctionComponent<{
            position: absolute;
            width: 6px;
            height: 6px;
-           background: black;
+           background: white;
            margin-top: -3px;
            margin-left: -3px;
         }
+        .rs.ctr {
+            top: 50%;
+            left: 50%;
+            display: ${p.chosen ? "block" : "none"};
+            margin-left: ${xo - 3}px;
+            margin-top: ${yo - 3}px;
+         }
         .tl { top: 0; left: 0; cursor: nwse-resize; }
         .t { top: 0; left: 50%; cursor: ns-resize; }
         .tr { top: 0; left: 100%; cursor: nesw-resize; }

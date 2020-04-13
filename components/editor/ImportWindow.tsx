@@ -2,7 +2,7 @@ import {FormEvent, FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Form, Modal} from "react-bootstrap";
 import {load} from "utils/JSON";
 import {LevelState} from "../../redux/StateType";
-import {decode} from "../../redux/LevelJSON";
+import {decode, ImportedLevel} from "../../redux/LevelJSON";
 
 enum Error {
     NO_ERROR,
@@ -18,14 +18,16 @@ const ImportWindow: FunctionComponent<{
 }> = (p) => {
 
     const [error, setError] = useState<Error>(Error.NO_ERROR);
+    const [errorMSG, setErrorMSG] = useState<string[]>(["Not available."]);
     const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         setError(Error.NO_ERROR);
         setDisabled(false);
+        setErrorMSG(["Not available."]);
     }, [p.show]);
 
-    let levelModel: LevelState = null;
+    let levelModel: ImportedLevel = null;
 
     const checkOK = () => {
         if (levelModel) p.onOK(levelModel);
@@ -42,12 +44,13 @@ const ImportWindow: FunctionComponent<{
         setDisabled(true);
         load(files[0]).then(i => {
             levelModel = decode(i);
-            if (levelModel) {
-                levelModel.name = levelModel.name ||
+            if (levelModel.level) {
+                levelModel.level.name = levelModel.level.name ||
                     files[0].name.replace(new RegExp("\.json$", "gi"), "");
                 checkOK();
             } else {
                 setError(Error.LEVEL_ERROR);
+                setErrorMSG(levelModel.msg);
                 setDisabled(false);
             }
         }).catch((fromJSON) => {
@@ -68,7 +71,10 @@ const ImportWindow: FunctionComponent<{
                         case Error.LOAD_ERROR:
                             return "Cannot load this file.";
                         case Error.LEVEL_ERROR:
-                            return "This file does not seem to be a valid level JSON.";
+                            return [
+                                "This file does not seem to be a valid level JSON. Detail info:" +
+                                    errorMSG.join("; ")
+                            ];
                         case Error.JSON_PARSE_ERROR:
                             return "Cannot parse this JSON file.";
                         default:

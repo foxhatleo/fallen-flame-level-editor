@@ -1,6 +1,5 @@
 import {Action as ReduxAction} from "redux";
 import {LevelState} from "./StateType";
-import Item from "../components/canvas/Item";
 
 export enum ActionType {
     UPDATE_NAME,
@@ -18,6 +17,7 @@ export enum ActionType {
     EDITOR_CHANGE_TOOL,
     EDITOR_CHOOSE,
     MOVE_WALL,
+    CHANGE_WALL_TEXTURE,
     RESIZE_WALL,
     MOVE_PLAYER,
     MOVE_EXIT,
@@ -25,6 +25,8 @@ export enum ActionType {
     ADD_ENEMY,
     ADD_WALL,
     REMOVE,
+    CHANGE_ENEMY_TYPE,
+    SET_BACKGROUND,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -64,4 +66,7 @@ export type Action =
     | LevelAction<ActionType.ADD_ENEMY>
     | LevelAction<ActionType.ADD_WALL>
     | LevelAction<ActionType.REMOVE>
+    | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string]>
+    | SetterAction<ActionType.CHANGE_WALL_TEXTURE, [number, string]>
+    | StringSetterAction<ActionType.SET_BACKGROUND>
     ;

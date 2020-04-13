@@ -11,6 +11,7 @@ export const newLevel: (psx: number, psy: number) => LevelState =
     fpsRange: [20, 60],
     playerpos: [1.5, 1.5],
     exitpos: [1.5, 5.35],
+    background: {texture: "floor-tile"},
     changed: true,
     enemies: [],
     lighting: {
@@ -36,7 +37,7 @@ export const newEditorInfo = (): LevelEditorInfo => (
 );
 
 export const newWall = (pos: [number, number], size: [number, number]): WallInfo => (
-    {pos: pos, size: size, texture: "earth"}
+    {pos: pos, size: size, texture: "wall-side"}
 )
 
 const PhysicsSizeReducer = PairReducer(
@@ -63,6 +64,9 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.UPDATE_NAME:
             return {...state, changed: true,
                 name: guardNonEmptyString(action.newValue, "Untitled")};
+        case ActionType.SET_BACKGROUND:
+            return {...state, changed: true,
+                background: {texture: guardNonEmptyString(action.newValue, "floor-tile")}};
         case ActionType.MARK_CHANGED:
             return {...state, changed: true};
         case ActionType.MARK_UNCHANGED:
@@ -83,6 +87,19 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...state,changed: true,
                 walls: newWalls
             };
+        case ActionType.CHANGE_WALL_TEXTURE: {
+            const newWalls2 = state.walls.concat();
+            let wall2 = newWalls2[action.newValue[0]];
+            wall2 = {
+                ...wall2,
+                texture: guardNonEmptyString(action.newValue[1], "wall-side"),
+            };
+            newWalls2[action.newValue[0]] = wall2;
+            return {
+                ...state, changed: true,
+                walls: newWalls2
+            };
+        }
         case ActionType.MOVE_ENEMY:
             const newE = state.enemies.concat();
             let e = newE[action.newValue[0]];
@@ -93,6 +110,17 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             newE[action.newValue[0]] = e;
             return {...state,changed: true,
                 enemies: newE
+            };
+        case ActionType.CHANGE_ENEMY_TYPE:
+            const newE2 = state.enemies.concat();
+            let e2 = newE2[action.newValue[0]];
+            e2 = {
+                ...e2,
+                enemytype: action.newValue[1],
+            };
+            newE2[action.newValue[0]] = e2;
+            return {...state,changed: true,
+                enemies: newE2
             };
         case ActionType.MOVE_EXIT:
             return {
@@ -117,7 +145,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             };
         case ActionType.ADD_ENEMY:
             const newnm = state.enemies.concat();
-            newnm.push({enemypos: [1, 1], enemytype: "enemyA"});
+            newnm.push({enemypos: [1, 1], enemytype: "typeA"});
             return LevelReducer({
                 ...state,changed: true,
                 enemies: newnm

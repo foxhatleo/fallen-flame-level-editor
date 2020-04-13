@@ -17,6 +17,7 @@ const Navigation: FunctionComponent<{
     onAddEnemy: () => void;
     onAddWall: () => void;
     onRemove: () => void;
+    onBG: (string) => void;
     currentLevel: LevelState;
 }> = (p) => {
     return <React.Fragment>
@@ -47,6 +48,13 @@ const Navigation: FunctionComponent<{
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
                                       onClick={p.onRemove}>Remove selected... (S)</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Background texture" id={"bg-t"}>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={() => p.onBG("floor-tile")}
+                                      active={p.currentLevel && p.currentLevel.background.texture == "floor-tile" }>
+                        Floor Tile
+                    </NavDropdown.Item>
                 </NavDropdown>
             </Nav>
         </Navbar>

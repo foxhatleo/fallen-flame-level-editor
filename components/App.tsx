@@ -14,8 +14,9 @@ import * as Actions from "../redux/Actions";
 import {bindActionCreators} from "redux";
 import EditorState, {LevelState} from "../redux/StateType";
 import {newLevel} from "../redux/reducers/LevelReducer";
-import {encode} from "../redux/LevelJSON";
+import {encode, ImportedLevel} from "../redux/LevelJSON";
 import {download} from "../utils/JSON";
+import ImportWarnWindow from "./editor/ImportWarnWindow";
 
 library.add(faHandPaper, faMousePointer);
 
@@ -31,10 +32,12 @@ enum CurrentAction {
     BOUND_SETTING,
     ADVANCED_SETTING,
     IMPORT,
+    IMPORT_WARN,
 }
 
 class App extends React.Component<typeof Actions & {
     /** Current chosen level. */    currentLevel: LevelState;
+    anyChanged: boolean;
 }, {
     /** Current action: */ action: CurrentAction;
 }> {
@@ -54,6 +57,16 @@ class App extends React.Component<typeof Actions & {
     componentDidMount(): void {
         if (typeof window !== "undefined") {
             window.onkeypress = this.keyPress.bind(this);
+            window.onbeforeunload = this.systemSaveWarn.bind(this);
+        }
+    }
+
+    private systemSaveWarn(e: BeforeUnloadEvent): void {
+        if (this.props.anyChanged) {
+            e.preventDefault();
+            e.returnValue = "It seems that you have not yet saved your work. If you exit now, you will lose your " +
+                "progress. Levels do not save themselves automatically due to technical restriction. You must export " +
+                "them every time you make changes.";
         }
     }
 
@@ -196,14 +209,32 @@ class App extends React.Component<typeof Actions & {
         this.clearAction();
     }
 
+    private _tempImport: ImportedLevel;
+
     /**
      * Triggered when importing level.
      *
      * @param level {LevelStore}
      */
-    private importWindowOK(level: LevelState): void {
-        this.props.editorNewLevel(level);
+    private importWindowOK(level: ImportedLevel): void {
+        this._tempImport = level;
+        if (level.msg) {
+            this.showWarning();
+        } else {
+            this.importAnyway();
+        }
+    }
+
+    private importAnyway(): void {
+        this.props.editorNewLevel(this._tempImport.level);
         this.clearAction();
+    }
+
+    /**
+     * Show warning screen.
+     */
+    private showWarning(): void {
+        this.setState({action: CurrentAction.IMPORT_WARN});
     }
 
     /**
@@ -242,7 +273,8 @@ class App extends React.Component<typeof Actions & {
                         onNew={this.onNew.bind(this)}
                         onAddEnemy={this.onAddEnemy.bind(this)}
                         onAddWall={this.onAddWall.bind(this)}
-                        onRemove={this.onRemove.bind(this)}/>
+                        onRemove={this.onRemove.bind(this)}
+                        onBG={this.props.setBackground}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
@@ -255,6 +287,10 @@ class App extends React.Component<typeof Actions & {
             <CloseWarnWindow show={this.state.action == CurrentAction.CLOSE_WARN}
                              onOK={this.closeImmediately.bind(this)}
                              onCancel={this.clearAction.bind(this)}/>
+            <ImportWarnWindow show={this.state.action == CurrentAction.IMPORT_WARN}
+                                 onOK={this.importAnyway.bind(this)}
+                                 onCancel={this.clearAction.bind(this)}
+                                 messages={(this._tempImport ? this._tempImport.msg : null) || []}/>
             <AdvancedWindow show={this.state.action == CurrentAction.ADVANCED_SETTING}
                             onOK={this.advancedWindowOK.bind(this)}
                             onCancel={this.clearAction.bind(this)} />
@@ -266,5 +302,5 @@ class App extends React.Component<typeof Actions & {
 }
 
 export default connect(
-    (s: EditorState) => ({currentLevel: s.currentLevel}),
+    (s: EditorState) => ({currentLevel: s.currentLevel, anyChanged: s.levels.some((s) => s.changed)}),
     d => bindActionCreators(Actions, d))(App);

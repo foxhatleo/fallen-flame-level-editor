@@ -6,8 +6,10 @@ import Wall from "./Wall";
 import Player from "./Player";
 import Exit from "./Exit";
 import Enemy from "./Enemy";
+import {bindActionCreators} from "redux";
+import * as Actions from "../../redux/Actions";
 
-const CanvasContent: FunctionComponent<{
+const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
 }> = (p) => {
     const [px, setPX] = useState(0);
@@ -15,6 +17,7 @@ const CanvasContent: FunctionComponent<{
     const tool = p.level._editorInfo.tool;
     function dragMouseDown(e) {
         e.preventDefault();
+        p.editorChoose(-1);
         document.onmouseup = closeDrag;
         document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, px, py);
     }
@@ -62,4 +65,5 @@ const CanvasContent: FunctionComponent<{
     </div>;
 };
 
-export default CanvasContent;
+export default connect(null,
+    d => bindActionCreators(Actions, d))(CanvasContent);

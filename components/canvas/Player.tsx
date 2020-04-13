@@ -17,15 +17,17 @@ const Player: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 1}
               level={p.level}
-              width={1.3}
-              height={1.3}
+              width={1.14}
+              height={1.14}
+              xOffset={0}//4}
+              yOffset={20}
               x={p.level.playerpos[0]}
               y={p.level.playerpos[1]}
               resizable={false}
               movable={true}
               onChoose={choosePlayer}
               onMove={movePlayer}>
-            <img src={"/canvas/player-walking.png"} />
+            <img src={"/canvas/new-player.png"} />
             <style jsx>{`
             img {
             width :100%;
