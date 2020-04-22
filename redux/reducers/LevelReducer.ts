@@ -1,6 +1,6 @@
 import {Action, ActionType} from "../ActionType";
 import {LevelEditorInfo, LevelState, WallInfo} from "../StateType";
-import {guardNonEmptyString} from "../Validators";
+import {guardInt, guardNonEmptyString, guardRange} from "../Validators";
 import PairReducer from "./PairReducer";
 
 export const newLevel: (psx: number, psy: number) => LevelState =
@@ -64,6 +64,10 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.UPDATE_NAME:
             return {...state, changed: true,
                 name: guardNonEmptyString(action.newValue, "Untitled")};
+        case ActionType.UPDATE_SNEAL_VAL:
+            const {startSneakVal, ...stateDel} = state;
+            const v = guardRange(guardInt(action.newValue), -1, 100000);
+            return {...stateDel, changed: true, ...(v < 0 ? {} : {startSneakVal: v})};
         case ActionType.SET_BACKGROUND:
             return {...state, changed: true,
                 background: {texture: guardNonEmptyString(action.newValue, "floor-tile")}};

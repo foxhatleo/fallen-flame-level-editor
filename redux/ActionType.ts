@@ -27,6 +27,7 @@ export enum ActionType {
     REMOVE,
     CHANGE_ENEMY_TYPE,
     SET_BACKGROUND,
+    UPDATE_SNEAL_VAL,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -48,6 +49,7 @@ export type Action =
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_WIDTH>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_HEIGHT>
     | NumberSetterAction<ActionType.UPDATE_GRAPHIC_WIDTH>
+    | NumberSetterAction<ActionType.UPDATE_SNEAL_VAL>
     | NumberSetterAction<ActionType.UPDATE_GRAPHIC_HEIGHT>
     | NumberSetterAction<ActionType.UPDATE_FPS_LOWER>
     | NumberSetterAction<ActionType.UPDATE_FPS_UPPER>

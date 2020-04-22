@@ -13,21 +13,23 @@ const Item: FunctionComponent<{
     resizable?: boolean;
     movable?: boolean;
     chosen: boolean;
+    divisible?: number;
     onResize?: (w: number, h: number) => void;
     onMove?: (x: number, y: number) => void;
     onChoose?: () => void;
 }> = (p) => {
     const resizable = typeof p.resizable === "undefined" ? false : p.resizable;
     const movable = typeof p.movable === "undefined" ? true : p.movable;
-    const xs = p.level.graphicSize[0] / p.level.physicsSize[0];
-    const ys = p.level.graphicSize[1] / p.level.physicsSize[1];
+    const xs = 50;//p.level.graphicSize[0] / p.level.physicsSize[0];
+    const ys = 50;//p.level.graphicSize[1] / p.level.physicsSize[1];
     const inArrow = p.level._editorInfo.tool == "pointer";
     const xo = guardNumber(p.xOffset), yo = guardNumber(p.yOffset);
-    function eleDrag(cx, cy, px, py, pw, ph, spot, e) {
+    const roundTo = (num: number, divisible: number, atLeastOne: boolean = true): number =>
+        (divisible * Math.max(atLeastOne ? 1 : -Infinity, Math.round(num / divisible)));
+    function eleDrag(cx, cy, px, py, pw, ph, div, spot, e) {
         e.preventDefault();
         // calculate the new cursor position:
-        let newX = px;
-        let newY = py;
+        let newX: number, newY: number;
         const vx = p.level.physicsSize[0], vy = p.level.physicsSize[1];
         if (spot < 0) {
             newX = px + (e.clientX - cx) / xs;
@@ -36,33 +38,73 @@ const Item: FunctionComponent<{
             newY = Math.min(vy - p.height / 2, Math.max(p.height / 2, newY));
         } else {
             let fourLines = [
-                px - pw / 2, // LEFT
-                px + pw / 2, // RIGHT
-                py + ph / 2, // TOP
-                py - ph / 2, // BOTTOM
+                px - pw / 2, // [0] LEFT
+                px + pw / 2, // [1] RIGHT
+                py + ph / 2, // [2] TOP
+                py - ph / 2, // [3] BOTTOM
             ];
             if (spot == 0 || spot == 1 || spot == 2) {
                 let orig = fourLines[2];
-                fourLines[2] = guardRange(fourLines[2] - (e.clientY - cy) / ys, py + .25, vy);
-                fourLines[3] = guardRange(fourLines[3] - (fourLines[2] - orig), 0, vy);
+                fourLines[2] = fourLines[2] - (e.clientY - cy) / ys;
+                fourLines[3] = fourLines[3] - (fourLines[2] - orig);
             }
             if (spot == 0 || spot == 3 || spot == 5) {
                 let orig = fourLines[0];
-                fourLines[0] = guardRange(fourLines[0] + (e.clientX - cx) / xs, 0, px - .25);
-                fourLines[1] = guardRange(fourLines[1] - (fourLines[0] - orig), 0, vx);
+                fourLines[0] = fourLines[0] + (e.clientX - cx) / xs;
+                fourLines[1] = fourLines[1] - (fourLines[0] - orig);
             }
             if (spot == 2 || spot == 4 || spot == 7) {
                 let orig = fourLines[1];
-                fourLines[1] = guardRange(fourLines[1] + (e.clientX - cx) / xs, px + .25, vx);
-                fourLines[0] = guardRange(fourLines[0] - (fourLines[1] - orig), 0, vx);
+                fourLines[1] = fourLines[1] + (e.clientX - cx) / xs;
+                fourLines[0] = fourLines[0] - (fourLines[1] - orig);
             }
             if (spot == 5 || spot == 6 || spot == 7) {
                 let orig = fourLines[3];
-                fourLines[3] = guardRange(fourLines[3] - (e.clientY - cy) / ys, 0, py - .25);
-                fourLines[2] = guardRange(fourLines[2] - (fourLines[3] - orig), 0, vy);
+                fourLines[3] = fourLines[3] - (e.clientY - cy) / ys;
+                fourLines[2] = fourLines[2] - (fourLines[3] - orig);
             }
-            const newH = fourLines[2] - fourLines[3],
+
+            let newH = fourLines[2] - fourLines[3],
                 newW = fourLines[1] - fourLines[0];
+
+            if (div) {
+                let oldNewW = newW;
+                newW = roundTo(newW, div);
+                let a = fourLines[0], b = fourLines[1];
+                fourLines[0] = fourLines[0] + (oldNewW - newW) / 2;
+                fourLines[1] = fourLines[1] - (oldNewW - newW) / 2;
+                console.log(oldNewW, newW, a, fourLines[0], b, fourLines[1], fourLines[1] - fourLines[0]);
+                let oldNewH = newH;
+                newH = roundTo(newH, div);
+                fourLines[2] = fourLines[2] - (oldNewH - newH) / 2;
+                fourLines[3] = fourLines[3] + (oldNewH - newH) / 2;
+
+                if (fourLines[0] < 0) {
+                    fourLines[1] -= fourLines[0];
+                    fourLines[0] = 0;
+                }
+                if (fourLines[1] > vx) {
+                    fourLines[0] -= (vx - fourLines[1]);
+                    fourLines[1] = vx;
+                }
+                if (fourLines[3] < 0) {
+                    fourLines[2] -= fourLines[3];
+                    fourLines[3] = 0;
+                }
+                if (fourLines[2] > vy) {
+                    fourLines[3] -= (vy - fourLines[2]);
+                    fourLines[2] = vx;
+                }
+            }
+
+            fourLines[2] = guardRange(fourLines[2], py + .25, vy);
+            fourLines[3] = guardRange(fourLines[3], 0, vy);
+            fourLines[0] = guardRange(fourLines[0], 0, px - .25);
+            fourLines[1] = guardRange(fourLines[1], 0, vx);
+
+            newH = fourLines[2] - fourLines[3];
+            newW = fourLines[1] - fourLines[0];
+
             if (p.onResize) p.onResize(newW, newH);
             newY = (fourLines[2] + fourLines[3]) / 2;
             newX = (fourLines[0] + fourLines[1]) / 2;
@@ -81,7 +123,7 @@ const Item: FunctionComponent<{
         e.stopPropagation();
         e.preventDefault();
         document.onmouseup = closeDrag;
-        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, -1);
+        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, 1, -1);
     }
 
     function resizeDown(spot: number, e: MouseEvent) {
@@ -91,7 +133,7 @@ const Item: FunctionComponent<{
         e.stopPropagation();
         e.preventDefault();
         document.onmouseup = closeDrag;
-        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, spot);
+        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, p.divisible, spot);
     }
 
     return <div onMouseDown={mouseDown} className={"item-out" + (p.chosen ? " chosen" : "")}>

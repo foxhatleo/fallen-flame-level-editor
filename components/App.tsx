@@ -17,6 +17,7 @@ import {newLevel} from "../redux/reducers/LevelReducer";
 import {encode, ImportedLevel} from "../redux/LevelJSON";
 import {download} from "../utils/JSON";
 import ImportWarnWindow from "./editor/ImportWarnWindow";
+import SneakValWindow from "./editor/SneakValWindow";
 
 library.add(faHandPaper, faMousePointer);
 
@@ -31,6 +32,7 @@ enum CurrentAction {
     NAME_SETTING,
     BOUND_SETTING,
     ADVANCED_SETTING,
+    SNEAK_VAL,
     IMPORT,
     IMPORT_WARN,
 }
@@ -126,6 +128,13 @@ class App extends React.Component<typeof Actions & {
     }
 
     /**
+     * Triggered when "sneak val" menu item is chosen.
+     */
+    private onSneakVal(): void {
+        this.setState({action: CurrentAction.SNEAK_VAL});
+    }
+
+    /**
      * Triggered when "change level name" menu item is chosen.
      */
     private onLevelName(): void {
@@ -179,6 +188,11 @@ class App extends React.Component<typeof Actions & {
             default:
                 throw new Error("Unknown name window ok handled.");
         }
+    }
+
+    private sneakValOK(value: number): void {
+        this.props.updateSneakVal(value);
+        this.clearAction();
     }
 
     private get boundWindowShowing(): boolean {
@@ -270,6 +284,7 @@ class App extends React.Component<typeof Actions & {
                         onLevelBound={this.onLevelBound.bind(this)}
                         onLevelName={this.onLevelName.bind(this)}
                         onLevelAdvanced={this.onLevelAdvanced.bind(this)}
+                        onSneakVal={this.onSneakVal.bind(this)}
                         onNew={this.onNew.bind(this)}
                         onAddEnemy={this.onAddEnemy.bind(this)}
                         onAddWall={this.onAddWall.bind(this)}
@@ -280,6 +295,9 @@ class App extends React.Component<typeof Actions & {
                         onOK={this.nameWindowOK.bind(this)}
                         onCancel={this.clearAction.bind(this)}
                         newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_NAME_PROMPT} />
+            <SneakValWindow show={this.state.action == CurrentAction.SNEAK_VAL}
+                            onOK={this.sneakValOK.bind(this)}
+                            onCancel={this.clearAction.bind(this)} />
             <BoundWindow show={this.boundWindowShowing}
                          onOK={this.boundWindowOK.bind(this)}
                          onCancel={this.clearAction.bind(this)}

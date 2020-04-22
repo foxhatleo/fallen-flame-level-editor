@@ -9,6 +9,7 @@ export type LevelState = {
     changed: boolean;
     lighting: LightingInfo;
     background: {texture: string};
+    startSneakVal?: number;
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
 };

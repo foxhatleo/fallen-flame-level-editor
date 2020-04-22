@@ -16,6 +16,7 @@ export const updateGraphicWidth = updater<number>(ActionType.UPDATE_GRAPHIC_WIDT
 export const updateGraphicHeight = updater<number>(ActionType.UPDATE_GRAPHIC_HEIGHT);
 export const updateFPSLower = updater<number>(ActionType.UPDATE_FPS_LOWER);
 export const updateFPSUpper = updater<number>(ActionType.UPDATE_FPS_UPPER);
+export const updateSneakVal = updater<number>(ActionType.UPDATE_SNEAL_VAL);
 export const markUnchanged = marker(ActionType.MARK_UNCHANGED);
 export const markChanged = marker(ActionType.MARK_CHANGED);
 export const editorNewLevel = updater<LevelState>(ActionType.EDITOR_NEW_LEVEL);

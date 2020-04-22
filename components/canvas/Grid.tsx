@@ -5,8 +5,8 @@ const Grid: FunctionComponent<{
     level: LevelState
 }> = (p) => {
     const l = p.level;
-    const xs = l.graphicSize[0] / l.physicsSize[0];
-    const ys = l.graphicSize[1] / l.physicsSize[1];
+    const xs = 50;//l.graphicSize[0] / l.physicsSize[0];
+    const ys = 50;//l.graphicSize[1] / l.physicsSize[1];
     let textureImage = null;
     switch(p.level.background.texture) {
         case "floor-tile":

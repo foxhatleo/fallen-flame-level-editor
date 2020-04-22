@@ -12,6 +12,7 @@ const Navigation: FunctionComponent<{
     onExport: () => void;
     onClose: () => void;
     onLevelBound: () => void;
+    onSneakVal: () => void;
     onLevelName: () => void;
     onLevelAdvanced: () => void;
     onAddEnemy: () => void;
@@ -36,6 +37,8 @@ const Navigation: FunctionComponent<{
                                       onClick={p.onLevelName}>Level name</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelBound}>Level bound</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onSneakVal}>Starting sneak value</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelAdvanced}>Advanced</NavDropdown.Item>

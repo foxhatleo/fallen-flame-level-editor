@@ -35,6 +35,7 @@ const Wall: FunctionComponent<typeof Actions & {
               height={wall.size[1]}
               x={wall.pos[0]}
               y={wall.pos[1]}
+              divisible={1.28}
               resizable={true}
               movable={true}
               onChoose={chooseWall}
