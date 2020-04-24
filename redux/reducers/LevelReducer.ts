@@ -1,5 +1,5 @@
 import {Action, ActionType} from "../ActionType";
-import {LevelEditorInfo, LevelState, WallInfo} from "../StateType";
+import {EnemyInfo, LevelEditorInfo, LevelState, WallInfo} from "../StateType";
 import {guardInt, guardNonEmptyString, guardRange} from "../Validators";
 import PairReducer from "./PairReducer";
 
@@ -7,10 +7,9 @@ export const newLevel: (psx: number, psy: number) => LevelState =
     (psx = 16, psy = 12) => ({
     name: "Untitled",
     physicsSize: [psx, psy],
-    graphicSize: [800, 600],
     fpsRange: [20, 60],
-    playerpos: [1.5, 1.5],
-    exitpos: [1.5, 5.35],
+    playerpos: [3, 3],
+    exitpos: [3, 5.35],
     background: {texture: "floor-tile"},
     changed: true,
     enemies: [],
@@ -21,18 +20,35 @@ export const newLevel: (psx: number, psy: number) => LevelState =
         "blur":			1
     },
     walls: [
-        newWall([.25, psy / 2], [.5, psy]),
-        newWall([psx / 2, .25], [psx, .5]),
-        newWall([psx / 2, psy - .25], [psx, .5]),
-        newWall([psx - .25, psy / 2], [.5, psy]),
+        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28]),
+        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28]),
+        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28]),
+        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28]),
     ],
     _editorInfo: newEditorInfo(),
 });
+
+const newPathCoorsIfNecessary = (p: [number, number][], e: EnemyInfo): [number, number][] => {
+    if (!p || p.length < 2) {
+        return [
+            [e.enemypos[0] + 4, e.enemypos[1]]
+        ];
+    }
+    return p;
+}
+
+const newItemPos = (l: LevelState): [number, number] => {
+    return [
+        guardRange(- l._editorInfo.view[0] / 50 + 1.2, 0, l.physicsSize[0]),
+        guardRange((l.physicsSize[1] + l._editorInfo.view[1] / 50) - 4, 0, l.physicsSize[1]),
+    ];
+};
 
 export const newEditorInfo = (): LevelEditorInfo => (
     {
         chosen: -1,
         tool: "hand",
+        view: [0, 0],
     }
 );
 
@@ -43,12 +59,12 @@ export const newWall = (pos: [number, number], size: [number, number]): WallInfo
 const PhysicsSizeReducer = PairReducer(
     ActionType.UPDATE_PHYSICS_WIDTH, ActionType.UPDATE_PHYSICS_HEIGHT,
     1, 100, false);
-const GraphicSizeReducer = PairReducer(
-    ActionType.UPDATE_GRAPHIC_WIDTH, ActionType.UPDATE_GRAPHIC_HEIGHT,
-    100, 5000, true);
 const FPSRangeReducer = PairReducer(
     ActionType.UPDATE_FPS_LOWER, ActionType.UPDATE_FPS_UPPER,
     1, 500, true, true);
+const ViewReducer = PairReducer(
+    ActionType.SET_VIEW_X, ActionType.SET_VIEW_Y,
+    -Infinity, Infinity, false, false);
 
 export default function LevelReducer(state: LevelState, action: Action): LevelState {
     switch (action.type) {
@@ -78,7 +94,8 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.EDITOR_CHOOSE:
             return {...state, _editorInfo: {
                     ...state._editorInfo,
-                    chosen: state._editorInfo.tool === "pointer" ? action.newValue : -1,
+                    ...(action.newValue < 0 ? {} : {tool: "pointer"}),
+                    chosen: action.newValue,
                 }};
         case ActionType.MOVE_WALL:
             const newWalls = state.walls.concat();
@@ -107,20 +124,37 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.MOVE_ENEMY:
             const newE = state.enemies.concat();
             let e = newE[action.newValue[0]];
+            const [px, py] = e.enemypos.concat();
             e = {
                 ...e,
                 enemypos: action.newValue[1],
+                ...(e.pathCoors && (action.newValue.length < 2 || !action.newValue[2]) ? {pathCoors: e.pathCoors
+                        .map(([x, y]) => [x + action.newValue[1][0] - px, y + action.newValue[1][1] - py])} : {})
             };
             newE[action.newValue[0]] = e;
             return {...state,changed: true,
                 enemies: newE
             };
-        case ActionType.CHANGE_ENEMY_TYPE:
+        case ActionType.UPDATE_PATH_COORS: {
             const newE2 = state.enemies.concat();
             let e2 = newE2[action.newValue[0]];
             e2 = {
                 ...e2,
+                pathCoors: action.newValue[1],
+            };
+            newE2[action.newValue[0]] = e2;
+            return {...state, changed: true,
+                enemies: newE2
+            };
+        }
+        case ActionType.CHANGE_ENEMY_TYPE:
+            const newE2 = state.enemies.concat();
+            let e2 = newE2[action.newValue[0]];
+            const {subtype, pathCoors, ...e2v} = e2;
+            e2 = {
+                ...e2v,
                 enemytype: action.newValue[1],
+                ...(action.newValue[2] ? {subtype: "pathing", pathCoors: newPathCoorsIfNecessary(pathCoors, e2)} : {}),
             };
             newE2[action.newValue[0]] = e2;
             return {...state,changed: true,
@@ -149,14 +183,14 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             };
         case ActionType.ADD_ENEMY:
             const newnm = state.enemies.concat();
-            newnm.push({enemypos: [1, 1], enemytype: "typeA"});
+            newnm.push({enemypos: newItemPos(state), enemytype: "typeA"});
             return LevelReducer({
                 ...state,changed: true,
                 enemies: newnm
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 20000 + newnm.length - 1, level: action.level});
         case ActionType.ADD_WALL:
             const newwl = state.walls.concat();
-            newwl.push({pos: [2, 2], size: [2, 2], texture: "earth"});
+            newwl.push({pos: newItemPos(state), size: [1.28 * 2, 1.28 * 2], texture: "earth"});
             return LevelReducer({
                 ...state,changed: true,
                 walls: newwl
@@ -180,15 +214,18 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             }, {type: ActionType.EDITOR_CHOOSE, newValue: -1, level: action.level});
         case ActionType.UPDATE_FPS_LOWER:
         case ActionType.UPDATE_FPS_UPPER:
-        case ActionType.UPDATE_GRAPHIC_WIDTH:
-        case ActionType.UPDATE_GRAPHIC_HEIGHT:
         case ActionType.UPDATE_PHYSICS_HEIGHT:
         case ActionType.UPDATE_PHYSICS_WIDTH:
             return {...state, changed: true,
                 physicsSize: PhysicsSizeReducer(state.physicsSize, action),
-                graphicSize: GraphicSizeReducer(state.graphicSize, action),
                 fpsRange: FPSRangeReducer(state.fpsRange, action),
             };
+        case ActionType.SET_VIEW_X:
+        case ActionType.SET_VIEW_Y:
+            return {...state, _editorInfo: {
+                    ...state._editorInfo,
+                    view: ViewReducer(state._editorInfo.view, action),
+                }}
         default:
             throw new Error("Reducer hasn't implemented this action.");
     }

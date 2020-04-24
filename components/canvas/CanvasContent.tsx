@@ -8,13 +8,16 @@ import Exit from "./Exit";
 import Enemy from "./Enemy";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
+import PathCoors from "./PathCoors";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
 }> = (p) => {
-    const [px, setPX] = useState(0);
-    const [py, setPY] = useState(0);
+    const px = p.level._editorInfo.view[0];
+    const py = p.level._editorInfo.view[1];
     const tool = p.level._editorInfo.tool;
+    window["vx"] = p.editorUpdateViewX;
+    window["vy"] = p.editorUpdateViewY;
     function dragMouseDown(e) {
         e.preventDefault();
         p.editorChoose(-1);
@@ -24,8 +27,8 @@ const CanvasContent: FunctionComponent<typeof Actions & {
     function eleDrag(cx, cy, px, py, e) {
         e.preventDefault();
         // calculate the new cursor position:
-        setPX(px - cx + e.clientX);
-        setPY(py - cy + e.clientY);
+        p.editorUpdateViewX(px - cx + e.clientX);
+        p.editorUpdateViewY(py - cy + e.clientY);
         // set the element's new position:
         // elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
@@ -39,11 +42,12 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         <div className={"in"}>
             <Grid level={p.level} />
             {[...Array(p.level.walls.length)].map((_, i) =>
-                <Wall level={p.level} id={i} key={i}/>)}
+                <Wall level={p.level} id={i} key={i + 10000}/>)}
             <Player level={p.level} />
             <Exit level={p.level} />
             {[...Array(p.level.enemies.length)].map((_, i) =>
-                <Enemy level={p.level} id={i} key={i}/>)}
+                [<Enemy level={p.level} id={i} key={i + 20000}/>, <PathCoors level={p.level} id={i} key={i}/>]
+                )}
         </div>
         <style jsx>{`
             div.ctc {

@@ -5,8 +5,6 @@ export enum ActionType {
     UPDATE_NAME,
     UPDATE_PHYSICS_WIDTH,
     UPDATE_PHYSICS_HEIGHT,
-    UPDATE_GRAPHIC_WIDTH,
-    UPDATE_GRAPHIC_HEIGHT,
     UPDATE_FPS_LOWER,
     UPDATE_FPS_UPPER,
     MARK_UNCHANGED,
@@ -28,6 +26,9 @@ export enum ActionType {
     CHANGE_ENEMY_TYPE,
     SET_BACKGROUND,
     UPDATE_SNEAL_VAL,
+    SET_VIEW_X,
+    SET_VIEW_Y,
+    UPDATE_PATH_COORS,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -48,9 +49,7 @@ export type Action =
     | StringSetterAction<ActionType.UPDATE_NAME>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_WIDTH>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_HEIGHT>
-    | NumberSetterAction<ActionType.UPDATE_GRAPHIC_WIDTH>
     | NumberSetterAction<ActionType.UPDATE_SNEAL_VAL>
-    | NumberSetterAction<ActionType.UPDATE_GRAPHIC_HEIGHT>
     | NumberSetterAction<ActionType.UPDATE_FPS_LOWER>
     | NumberSetterAction<ActionType.UPDATE_FPS_UPPER>
     | LevelAction<ActionType.MARK_CHANGED>
@@ -60,15 +59,18 @@ export type Action =
     | PureAction<ActionType.EDITOR_CLOSE_LEVEL>
     | LevelAction<ActionType.EDITOR_OPEN_TAB>
     | NumberSetterAction<ActionType.EDITOR_CHOOSE>
+    | NumberSetterAction<ActionType.SET_VIEW_X>
+    | NumberSetterAction<ActionType.SET_VIEW_Y>
     | SetterAction<ActionType.MOVE_WALL, [number, [number, number]]>
     | SetterAction<ActionType.RESIZE_WALL, [number, [number, number]]>
     | SetterAction<ActionType.MOVE_PLAYER, [number, number]>
     | SetterAction<ActionType.MOVE_EXIT, [number, number]>
-    | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number]]>
+    | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number], boolean?]>
     | LevelAction<ActionType.ADD_ENEMY>
     | LevelAction<ActionType.ADD_WALL>
     | LevelAction<ActionType.REMOVE>
-    | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string]>
+    | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>
+    | SetterAction<ActionType.UPDATE_PATH_COORS, [number, [number, number][]]>
     | SetterAction<ActionType.CHANGE_WALL_TEXTURE, [number, string]>
     | StringSetterAction<ActionType.SET_BACKGROUND>
     ;

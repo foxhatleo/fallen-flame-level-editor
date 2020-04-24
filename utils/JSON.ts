@@ -9,7 +9,7 @@ export function download(value: object,
                                  name: string,
                                  type: string = "application/json") {
     const w = window as any;
-    const jsonValue: string = JSON.stringify(value);
+    const jsonValue: string = JSON.stringify(value, undefined, 2);
 
     name = name + ".json";
 

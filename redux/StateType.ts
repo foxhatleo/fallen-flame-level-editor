@@ -1,7 +1,6 @@
 export type LevelState = {
     name: string;
     physicsSize: [number, number];
-    graphicSize: [number, number];
     fpsRange: [number, number];
     playerpos: [number, number];
     exitpos: [number, number];
@@ -16,6 +15,8 @@ export type LevelState = {
 
 export type EnemyInfo = {
     enemytype: string;
+    subtype?: "pathing";
+    pathCoors?: [number, number][];
     enemypos: [number, number];
 };
 
@@ -35,6 +36,7 @@ export type WallInfo = {
 export type LevelEditorInfo = {
     tool: string;
     chosen: number;
+    view: [number, number];
 };
 
 declare type EditorState = {

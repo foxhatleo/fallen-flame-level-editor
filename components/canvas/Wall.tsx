@@ -28,6 +28,10 @@ const Wall: FunctionComponent<typeof Actions & {
     function resizeWall(x, y) {
         p.resizeWall([p.id, [x, y]])
     }
+    const wrongSize = (...p) => p.every((i) => {
+        const a = i / 1.28 % 1;
+        return (a >= 0.99 || a <= 0.01);
+    });
     return (
         <Item chosen={p.level._editorInfo.chosen == 10000 + p.id}
               level={p.level}
@@ -42,6 +46,7 @@ const Wall: FunctionComponent<typeof Actions & {
               onMove={moveWall}
               onResize={resizeWall}>
             <div className={"wall"} />
+            <div className={"warning"} style={wrongSize(...wall.size) ? {display: "none"} : {}} />
             <style jsx>{`
             .wall {
               position: absolute;
@@ -51,6 +56,14 @@ const Wall: FunctionComponent<typeof Actions & {
               bottom: 0;
               background: URL(/canvas/${textureImage}.png);
               background-repeat: repeat;
+            }
+            .warning {
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              position: absolute;
+              border: 3px solid red;
             }
             `}</style>
         </Item>

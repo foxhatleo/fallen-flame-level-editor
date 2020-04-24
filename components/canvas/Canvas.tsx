@@ -2,6 +2,7 @@ import React, {FunctionComponent} from "react";
 import Toolbar from "./Toolbar";
 import CanvasContent from "./CanvasContent";
 import {LevelState} from "../../redux/StateType";
+import Warning from "./Warning";
 
 const Canvas: FunctionComponent<{
     level: LevelState;
@@ -9,6 +10,7 @@ const Canvas: FunctionComponent<{
     return <div className={"canvas"}>
         <Toolbar level={p.level} />
         <CanvasContent level={p.level} />
+        <Warning level={p.level} />
         <style jsx>{`
         .canvas {
             position: absolute;

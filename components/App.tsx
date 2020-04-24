@@ -7,7 +7,7 @@ import CloseWarnWindow from "./editor/CloseWarnWindow";
 import AdvancedWindow, {AdvancedResult} from "./editor/AdvancedWindow";
 import ImportWindow from "./editor/ImportWindow";
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faHandPaper, faMousePointer} from "@fortawesome/free-solid-svg-icons";
+import {faHandPaper, faMousePointer, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {LevelStore} from "redux/LevelStore";
 import {connect} from "react-redux";
 import * as Actions from "../redux/Actions";
@@ -19,7 +19,7 @@ import {download} from "../utils/JSON";
 import ImportWarnWindow from "./editor/ImportWarnWindow";
 import SneakValWindow from "./editor/SneakValWindow";
 
-library.add(faHandPaper, faMousePointer);
+library.add(faHandPaper, faMousePointer, faProjectDiagram);
 
 /**
  * An enum that indicates what action state the app is in at the moment.
@@ -58,7 +58,8 @@ class App extends React.Component<typeof Actions & {
 
     componentDidMount(): void {
         if (typeof window !== "undefined") {
-            window.onkeypress = this.keyPress.bind(this);
+            document.onkeypress = this.keyPress.bind(this);
+            window.onkeydown = this.keyDown.bind(this);
             window.onbeforeunload = this.systemSaveWarn.bind(this);
         }
     }
@@ -80,7 +81,20 @@ class App extends React.Component<typeof Actions & {
             this.props.editorChangeTool("pointer");
         } else if (key == "d") {
             this.onRemove();
+        } else if (key == "z") {
+            this.props.addWall();
+        } else if (key == "x") {
+            this.props.addEnemy();
         }
+    }
+
+    private keyDown(evt: KeyboardEvent): boolean {
+        if (evt.key.toLowerCase() == "s" && (evt.ctrlKey || evt.metaKey)) {
+            evt.preventDefault();
+            this.onExport();
+            return false;
+        }
+       return true;
     }
 
     /**
@@ -257,8 +271,6 @@ class App extends React.Component<typeof Actions & {
      * @param res {AdvancedResult}
      */
     private advancedWindowOK(res: AdvancedResult): void {
-        this.props.updateGraphicWidth(res.graphicsX);
-        this.props.updateGraphicHeight(res.graphicsY);
         this.props.updateFPSLower(res.fpsLower);
         this.props.updateFPSUpper(res.fpsUpper);
         this.clearAction();

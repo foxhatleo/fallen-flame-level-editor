@@ -20,12 +20,14 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         id = p.level._editorInfo.chosen - 10000;
         wall = p.level.walls[id];
     }
-    const enet = enemy ? enemy.enemytype.substr(4) : "A";
+    let enet = enemy ? enemy.enemytype.substr(4) : "A";
+    if (enet === "A" && enemy && enemy.subtype === "pathing") {
+        enet = "AP";
+    }
     const wallt = wall ? wall.texture : "";
-    debugger;
 
-    function item(id: string, icon: IconProp, shortcut: string, defaultChecked: boolean = false) {
-        return <ToggleButton variant="light" type="radio" name="radio" defaultChecked={defaultChecked} value={id}>
+    function item(id: string, icon: IconProp, shortcut: string, defaultChecked: boolean = false, disabled: boolean = false) {
+        return <ToggleButton variant="light" type="radio" name="radio" disabled={disabled} defaultChecked={defaultChecked} value={id}>
             <FontAwesomeIcon icon={icon} />
             ({shortcut})
         </ToggleButton>;
@@ -36,20 +38,26 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         </ToggleButton>;
     }
     function chooseEnemyType(tp: string) {
-        p.changeEnemyType([id, "type" + tp]);
+        p.changeEnemyType([id, "type" + tp.substr(0, 1), tp.substr(1) === "P"]);
     }
     function chooseWallType(tp: string) {
         p.changeWallTexture([id, tp]);
     }
+
+    const pathEnabled = p.level.enemies.some((i) => {
+        return (i.subtype === "pathing");
+    });
 
     return <div className="toolbar">
         <ToggleButtonGroup value={p.level._editorInfo.tool}
                               onChange={p.editorChangeTool} type="radio" name="options" defaultValue="hand">
         {item("hand", "hand-paper", "A", true)}
         {item("pointer", "mouse-pointer", "S")}
+        {item("path", "project-diagram", "P", false, !pathEnabled)}
     </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseEnemyType} className={"ml-1" + (!enemy ? " toolbar-hide" : "")} value={enet} type="radio" name="options" defaultValue={"A"}>
             {simpleItem("A", "Regular (A)", true)}
+            {simpleItem("AP", "Pathing (A-pathing)")}
             {simpleItem("B", "Shooting (B)")}
         </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseWallType} className={"ml-1" + (!wall ? " toolbar-hide" : "")} value={wallt} type="radio" name="options" defaultValue={"wall-side-side"}>

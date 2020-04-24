@@ -22,7 +22,7 @@ const Item: FunctionComponent<{
     const movable = typeof p.movable === "undefined" ? true : p.movable;
     const xs = 50;//p.level.graphicSize[0] / p.level.physicsSize[0];
     const ys = 50;//p.level.graphicSize[1] / p.level.physicsSize[1];
-    const inArrow = p.level._editorInfo.tool == "pointer";
+    const inArrow = p.level._editorInfo.tool === "pointer";
     const xo = guardNumber(p.xOffset), yo = guardNumber(p.yOffset);
     const roundTo = (num: number, divisible: number, atLeastOne: boolean = true): number =>
         (divisible * Math.max(atLeastOne ? 1 : -Infinity, Math.round(num / divisible)));
@@ -70,21 +70,21 @@ const Item: FunctionComponent<{
             if (div) {
                 let oldNewW = newW;
                 newW = roundTo(newW, div);
-                let a = fourLines[0], b = fourLines[1];
                 fourLines[0] = fourLines[0] + (oldNewW - newW) / 2;
                 fourLines[1] = fourLines[1] - (oldNewW - newW) / 2;
-                console.log(oldNewW, newW, a, fourLines[0], b, fourLines[1], fourLines[1] - fourLines[0]);
                 let oldNewH = newH;
                 newH = roundTo(newH, div);
                 fourLines[2] = fourLines[2] - (oldNewH - newH) / 2;
                 fourLines[3] = fourLines[3] + (oldNewH - newH) / 2;
 
                 if (fourLines[0] < 0) {
+                    debugger;
                     fourLines[1] -= fourLines[0];
                     fourLines[0] = 0;
                 }
                 if (fourLines[1] > vx) {
-                    fourLines[0] -= (vx - fourLines[1]);
+                    debugger;
+                    fourLines[0] -= (fourLines[1] - vx);
                     fourLines[1] = vx;
                 }
                 if (fourLines[3] < 0) {
@@ -92,18 +92,29 @@ const Item: FunctionComponent<{
                     fourLines[3] = 0;
                 }
                 if (fourLines[2] > vy) {
-                    fourLines[3] -= (vy - fourLines[2]);
-                    fourLines[2] = vx;
+                    fourLines[3] -= (fourLines[2] - vy);
+                    fourLines[2] = vy;
                 }
             }
+
+            debugger;
 
             fourLines[2] = guardRange(fourLines[2], py + .25, vy);
             fourLines[3] = guardRange(fourLines[3], 0, vy);
             fourLines[0] = guardRange(fourLines[0], 0, px - .25);
             fourLines[1] = guardRange(fourLines[1], 0, vx);
 
+            debugger;
+
             newH = fourLines[2] - fourLines[3];
             newW = fourLines[1] - fourLines[0];
+
+            debugger;
+
+            if (div) {
+                newH = Math.round(newH / div) * div;
+                newW = Math.round(newW / div) * div;
+            }
 
             if (p.onResize) p.onResize(newW, newH);
             newY = (fourLines[2] + fourLines[3]) / 2;
@@ -154,10 +165,11 @@ const Item: FunctionComponent<{
         height: ${p.height * ys}px;
         left: ${3000 + (p.x - p.width / 2) * xs + xo}px;
         top: ${3000 + (p.level.physicsSize[1] - p.y - p.height / 2) * xs + yo}px;
+        z-index: 3;
         }
         .chosen {
             outline: 2px solid white;
-            z-index: 1;
+            z-index: 4;
         }
         .rs {
             display: ${p.chosen && p.resizable? "block" : "none"};

@@ -10,7 +10,7 @@ const Enemy: FunctionComponent<typeof Actions & {
     id: number;
 }> = (p) => {
     const enemy = p.level.enemies[p.id];
-    const t = enemy.enemytype.substr(4);
+    const t = enemy.enemytype.substr(4) + (enemy.subtype === "pathing" ? "P" : "");
     let texture = "/canvas/enemy-walking.png";
     switch (t) {
         case "B":
@@ -44,6 +44,7 @@ const Enemy: FunctionComponent<typeof Actions & {
             .type {
                 user-select:none;
                 position: absolute;
+                color: black;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);

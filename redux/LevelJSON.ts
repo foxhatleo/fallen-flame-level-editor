@@ -59,6 +59,7 @@ function checkEnemy(e: any, msgs: string[]): EnemyInfo {
             msgs.push("Unidentifiable enemy type. Using typeA by default.");
     }
     return {
+        ...e,
         enemypos: twoNums(e, "enemypos"),
         enemytype: type,
     };
@@ -99,7 +100,6 @@ function check0(level: object, msgs: string[]): LevelState{
     return {
         name: defaultName(level, msgs),
         physicsSize: twoInts(level, "physicsSize"),
-        graphicSize: twoInts(level, "graphicSize"),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),
         exitpos: twoNums(level, "exitpos"),
@@ -128,6 +128,7 @@ export function decode(level: object): ImportedLevel {
 
 export function encode(level: LevelState): object {
     const rj = JSON.parse(JSON.stringify(level));
+    rj["graphicSize"] = [800, 600];
     delete rj["_editorInfo"];
     delete rj["changed"];
     return rj;
