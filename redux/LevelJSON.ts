@@ -128,6 +128,16 @@ export function decode(level: object): ImportedLevel {
 
 export function encode(level: LevelState): object {
     const rj = JSON.parse(JSON.stringify(level));
+    function round(o) {
+        for (let oo of Object.keys(o)) {
+            if (typeof o[oo] === "object") {
+                round(o[oo]);
+            } else if (typeof o[oo] == "number") {
+                o[oo] = Math.round(o[oo] * 1000) / 1000;
+            }
+        }
+    }
+    round(rj);
     rj["graphicSize"] = [800, 600];
     delete rj["_editorInfo"];
     delete rj["changed"];
