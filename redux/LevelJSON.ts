@@ -99,7 +99,7 @@ function checkList<T>(c: any, k: string, msgs: string[], func: (item: any, msgs:
 function check0(level: object, msgs: string[]): LevelState{
     return {
         name: defaultName(level, msgs),
-        physicsSize: twoInts(level, "physicsSize"),
+        physicsSize: twoNums(level, "physicsSize"),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),
         exitpos: twoNums(level, "exitpos"),
