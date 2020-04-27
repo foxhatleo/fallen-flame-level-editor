@@ -31,10 +31,10 @@ const Grid: FunctionComponent<{
             height: ${ys}px;
         }
         .i:last-child {
-            width: ${xs * (l.physicsSize[1] % 1 || 1)};
+            width: ${Math.round(xs * (l.physicsSize[0] % 1 || 1))}px;
         }
         .o:last-child {
-            height: ${ys * (l.physicsSize[0] % 1 || 1)};
+            height: ${Math.round(ys * (l.physicsSize[1] % 1 || 1))}px;
         }
         `}</style>
     </table>;
