@@ -32,6 +32,10 @@ const Wall: FunctionComponent<typeof Actions & {
         const a = i / 1.28 % 1;
         return (a >= 0.99 || a <= 0.01);
     });
+    const wrongPos = (...p) => p.every((i) => {
+        const a = i / (1.28 / 2) % 1;
+        return (a >= 0.99 || a <= 0.01);
+    });
     return (
         <Item chosen={p.level._editorInfo.chosen == 10000 + p.id}
               level={p.level}
@@ -46,7 +50,7 @@ const Wall: FunctionComponent<typeof Actions & {
               onMove={moveWall}
               onResize={resizeWall}>
             <div className={"wall"} />
-            <div className={"warning"} style={wrongSize(...wall.size) ? {display: "none"} : {}} />
+            <div className={"warning"} style={wrongSize(...wall.size) || wrongPos(...wall.pos) ? {display: "none"} : {}} />
             <style jsx>{`
             .wall {
               position: absolute;

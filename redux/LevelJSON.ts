@@ -96,10 +96,17 @@ function checkList<T>(c: any, k: string, msgs: string[], func: (item: any, msgs:
     return c[k];
 }
 
+function physicsSize(a: [number, number], msgs: string[]): [number, number] {
+    if (a[0] % 1.28 != 0 || a[1] % 1.28 != 0) {
+        msgs.push("The level bound must be a multiple of 1.28. Increasing it to the next larger number dividable by 1.28.");
+    }
+    return [Math.ceil(a[0] / 1.28) * 1.28, Math.ceil(a[1] / 1.28) * 1.28];
+}
+
 function check0(level: object, msgs: string[]): LevelState{
     return {
         name: defaultName(level, msgs),
-        physicsSize: twoNums(level, "physicsSize"),
+        physicsSize: physicsSize(twoNums(level, "physicsSize"), msgs),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),
         exitpos: twoNums(level, "exitpos"),
