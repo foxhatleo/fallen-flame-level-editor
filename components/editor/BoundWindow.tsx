@@ -17,9 +17,11 @@ const BoundWindow: FunctionComponent<{
 
     const boundRow = template(1, 60, .1, false);
 
+    const ote = (e) => Math.ceil(Math.ceil(e / 1.28) * 1.28 / .05) * .1;
+
     useEffect(() => {
-        setX(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[0] : 16);
-        setY(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[1] : 12);
+        setX(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[0] : ote(16));
+        setY(!p.newLevelMode && p.currentLevel ? p.currentLevel.physicsSize[1] : ote(12));
     }, [p.show]);
 
     const checkOK = () => {
