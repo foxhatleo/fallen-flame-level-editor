@@ -20,10 +20,10 @@ export const newLevel: (psx: number, psy: number) => LevelState =
         "blur":			1
     },
     walls: [
-        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-top"),
-        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-side"),
-        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-side"),
-        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-top"),
+        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-side"),
+        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-top"),
+        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-top"),
+        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-side"),
     ],
     _editorInfo: newEditorInfo(),
 });
