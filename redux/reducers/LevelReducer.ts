@@ -190,7 +190,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 20000 + newnm.length - 1, level: action.level});
         case ActionType.ADD_WALL:
             const newwl = state.walls.concat();
-            newwl.push({pos: newItemPos(state), size: [1.28 * 2, 1.28 * 2], texture: "earth"});
+            newwl.push({pos: newItemPos(state), size: [1.28 * 2, 1.28 * 2], texture: "wall-side"});
             return LevelReducer({
                 ...state,changed: true,
                 walls: newwl
