@@ -20,10 +20,10 @@ export const newLevel: (psx: number, psy: number) => LevelState =
         "blur":			1
     },
     walls: [
-        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28]),
-        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28]),
-        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28]),
-        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28]),
+        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-top"),
+        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-side"),
+        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-side"),
+        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-top"),
     ],
     _editorInfo: newEditorInfo(),
 });
@@ -52,8 +52,8 @@ export const newEditorInfo = (): LevelEditorInfo => (
     }
 );
 
-export const newWall = (pos: [number, number], size: [number, number]): WallInfo => (
-    {pos: pos, size: size, texture: "wall-side"}
+export const newWall = (pos: [number, number], size: [number, number], texture: string): WallInfo => (
+    {pos: pos, size: size, texture: texture}
 )
 
 const PhysicsSizeReducer = PairReducer(
