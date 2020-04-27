@@ -34,6 +34,10 @@ const Item: FunctionComponent<{
         if (spot < 0) {
             newX = px + (e.clientX - cx) / xs;
             newY = py - (e.clientY - cy) / ys;
+            if (div) {
+                newX = Math.round((newX - pw / 2) / div * 2) * div / 2 + pw / 2;
+                newY = Math.round((newY - ph / 2) / div * 2) * div / 2 + ph / 2;
+            }
             newX = Math.min(vx - p.width / 2, Math.max(p.width / 2, newX));
             newY = Math.min(vy - p.height / 2, Math.max(p.height / 2, newY));
         } else {
@@ -78,12 +82,10 @@ const Item: FunctionComponent<{
                 fourLines[3] = fourLines[3] + (oldNewH - newH) / 2;
 
                 if (fourLines[0] < 0) {
-                    debugger;
                     fourLines[1] -= fourLines[0];
                     fourLines[0] = 0;
                 }
                 if (fourLines[1] > vx) {
-                    debugger;
                     fourLines[0] -= (fourLines[1] - vx);
                     fourLines[1] = vx;
                 }
@@ -134,7 +136,7 @@ const Item: FunctionComponent<{
         e.stopPropagation();
         e.preventDefault();
         document.onmouseup = closeDrag;
-        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, 1, -1);
+        document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, p.divisible, -1);
     }
 
     function resizeDown(spot: number, e: MouseEvent) {

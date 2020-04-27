@@ -14,8 +14,8 @@ const Grid: FunctionComponent<{
     }
     return <table>
         <tbody>
-        {[...Array(Math.ceil(l.physicsSize[1]))].map((_, i) => <tr key={i} className={"o"}>
-            {[...Array(Math.ceil(l.physicsSize[0]))].map((_, i) => <td key={i} className={"i"} />)}
+        {[...Array(Math.ceil(l.physicsSize[1] / 1.28))].map((_, i) => <tr key={i} className={"o"}>
+            {[...Array(Math.ceil(l.physicsSize[0] / 1.28))].map((_, i) => <td key={i} className={"i"} />)}
         </tr>)}
         </tbody>
         <style jsx>{`
@@ -24,17 +24,17 @@ const Grid: FunctionComponent<{
             background-repeat: repeat;
         }
         .i {
-            width: ${xs}px;
+            width: ${xs * 1.28}px;
             border: 1px solid rgba(0,0,0,.2);
         }
         .o {
-            height: ${ys}px;
+            height: ${ys * 1.28}px;
         }
         .i:last-child {
-            width: ${Math.round(xs * (l.physicsSize[0] % 1 || 1))}px;
+            width: ${Math.round(xs * (l.physicsSize[0] % 1.28 || 1.28))}px;
         }
         .o:last-child {
-            height: ${Math.round(ys * (l.physicsSize[1] % 1 || 1))}px;
+            height: ${Math.round(ys * (l.physicsSize[1] % 1.28 || 1.28))}px;
         }
         `}</style>
     </table>;
