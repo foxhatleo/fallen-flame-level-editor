@@ -1,4 +1,4 @@
-import {EnemyInfo, LevelState, LightingInfo, WallInfo} from "./StateType";
+import {BGM, EnemyInfo, LevelState, LightingInfo, WallInfo} from "./StateType";
 import {newEditorInfo} from "./reducers/LevelReducer";
 import {guardInt, guardNonEmptyString, guardNumber} from "./Validators";
 
@@ -103,12 +103,25 @@ function physicsSize(a: [number, number], msgs: string[]): [number, number] {
     return [Math.ceil(a[0] / 1.28) * 1.28, Math.ceil(a[1] / 1.28) * 1.28];
 }
 
+function checkBGM(bgm: string, msgs: string[]): BGM | undefined {
+    if (!bgm) {
+        msgs.push("A background music is not defined in this level. Please don't forget to choose one.");
+        return undefined;
+    }
+    if (!Object.values(bgm).includes(bgm)) {
+        msgs.push("This BGM is not supported by this editor. It will be removed from the level.");
+        return undefined;
+    }
+    return bgm as BGM;
+}
+
 function check0(level: object, msgs: string[]): LevelState{
     return {
         name: defaultName(level, msgs),
         physicsSize: physicsSize(twoNums(level, "physicsSize"), msgs),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),
+        bgm: checkBGM(level["bgm"], msgs),
         exitpos: twoNums(level, "exitpos"),
         background: checkBG(level["background"], msgs),
         enemies: checkList(level, "enemies", msgs, checkEnemy),
