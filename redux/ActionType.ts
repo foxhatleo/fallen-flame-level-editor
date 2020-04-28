@@ -1,5 +1,5 @@
 import {Action as ReduxAction} from "redux";
-import {LevelState} from "./StateType";
+import {BGM, LevelState} from "./StateType";
 
 export enum ActionType {
     UPDATE_NAME,
@@ -29,6 +29,7 @@ export enum ActionType {
     SET_VIEW_X,
     SET_VIEW_Y,
     UPDATE_PATH_COORS,
+    UPDATE_BGM,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -47,6 +48,7 @@ export interface NumberSetterAction<T extends ActionType> extends SetterAction<T
 
 export type Action =
     | StringSetterAction<ActionType.UPDATE_NAME>
+    | SetterAction<ActionType.UPDATE_BGM, BGM>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_WIDTH>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_HEIGHT>
     | NumberSetterAction<ActionType.UPDATE_SNEAL_VAL>

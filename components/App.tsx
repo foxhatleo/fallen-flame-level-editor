@@ -7,19 +7,27 @@ import CloseWarnWindow from "./editor/CloseWarnWindow";
 import AdvancedWindow, {AdvancedResult} from "./editor/AdvancedWindow";
 import ImportWindow from "./editor/ImportWindow";
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faHandPaper, faMousePointer, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
+import {
+    faExclamationTriangle,
+    faHandPaper,
+    faMousePointer,
+    faPlay,
+    faProjectDiagram,
+    faStop
+} from "@fortawesome/free-solid-svg-icons";
 import {LevelStore} from "redux/LevelStore";
 import {connect} from "react-redux";
 import * as Actions from "../redux/Actions";
 import {bindActionCreators} from "redux";
-import EditorState, {LevelState} from "../redux/StateType";
+import EditorState, {BGM, LevelState} from "../redux/StateType";
 import {newLevel} from "../redux/reducers/LevelReducer";
 import {encode, ImportedLevel} from "../redux/LevelJSON";
 import {download} from "../utils/JSON";
 import ImportWarnWindow from "./editor/ImportWarnWindow";
 import SneakValWindow from "./editor/SneakValWindow";
+import BGMWindow from "./editor/BGMWindow";
 
-library.add(faHandPaper, faMousePointer, faProjectDiagram);
+library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle);
 
 /**
  * An enum that indicates what action state the app is in at the moment.
@@ -35,6 +43,7 @@ enum CurrentAction {
     SNEAK_VAL,
     IMPORT,
     IMPORT_WARN,
+    BGM,
 }
 
 class App extends React.Component<typeof Actions & {
@@ -141,6 +150,10 @@ class App extends React.Component<typeof Actions & {
         this.setState({action: CurrentAction.BOUND_SETTING});
     }
 
+    private onBGM(): void {
+        this.setState({action: CurrentAction.BGM});
+    }
+
     /**
      * Triggered when "sneak val" menu item is chosen.
      */
@@ -237,6 +250,11 @@ class App extends React.Component<typeof Actions & {
         this.clearAction();
     }
 
+    private bgmWindowOK(b: BGM): void {
+        this.props.updateBGM(b);
+        this.clearAction();
+    }
+
     private _tempImport: ImportedLevel;
 
     /**
@@ -301,7 +319,8 @@ class App extends React.Component<typeof Actions & {
                         onAddEnemy={this.onAddEnemy.bind(this)}
                         onAddWall={this.onAddWall.bind(this)}
                         onRemove={this.onRemove.bind(this)}
-                        onBG={this.props.setBackground}/>
+                        onBG={this.props.setBackground}
+                        onBGM={this.onBGM.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
@@ -314,6 +333,9 @@ class App extends React.Component<typeof Actions & {
                          onOK={this.boundWindowOK.bind(this)}
                          onCancel={this.clearAction.bind(this)}
                          newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_BOUND_PROMPT} />
+            <BGMWindow show={this.state.action == CurrentAction.BGM}
+                       onOK={this.bgmWindowOK.bind(this)}
+                       onCancel={this.clearAction.bind(this)} />
             <CloseWarnWindow show={this.state.action == CurrentAction.CLOSE_WARN}
                              onOK={this.closeImmediately.bind(this)}
                              onCancel={this.clearAction.bind(this)}/>

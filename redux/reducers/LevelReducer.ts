@@ -37,10 +37,12 @@ const newPathCoorsIfNecessary = (p: [number, number][], e: EnemyInfo): [number, 
     return p;
 }
 
-const newItemPos = (l: LevelState): [number, number] => {
+const newItemPos = (l: LevelState, w?: number, h?: number): [number, number] => {
+    const wb = typeof w === "undefined" ? 0 : w / 2;
+    const hb = typeof h === "undefined" ? 0 : h / 2;
     return [
-        guardRange(- l._editorInfo.view[0] / 50 + 1.2, 0, l.physicsSize[0]),
-        guardRange((l.physicsSize[1] + l._editorInfo.view[1] / 50) - 4, 0, l.physicsSize[1]),
+        guardRange(- l._editorInfo.view[0] / 50 + 1.2, wb, l.physicsSize[0] - wb),
+        guardRange((l.physicsSize[1] + l._editorInfo.view[1] / 50) - 4, hb, l.physicsSize[1] - hb),
     ];
 };
 
@@ -80,6 +82,9 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.UPDATE_NAME:
             return {...state, changed: true,
                 name: guardNonEmptyString(action.newValue, "Untitled")};
+        case ActionType.UPDATE_BGM:
+            return {...state, changed: true,
+                bgm: action.newValue ? action.newValue : undefined};
         case ActionType.UPDATE_SNEAL_VAL:
             const {startSneakVal, ...stateDel} = state;
             const v = guardRange(guardInt(action.newValue), -1, 100000);
@@ -190,7 +195,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 20000 + newnm.length - 1, level: action.level});
         case ActionType.ADD_WALL:
             const newwl = state.walls.concat();
-            newwl.push({pos: newItemPos(state), size: [1.28 * 2, 1.28 * 2], texture: "wall-side"});
+            newwl.push({pos: newItemPos(state, 1.28 * 2, 1.28 * 2), size: [1.28 * 2, 1.28 * 2], texture: "wall-side"});
             return LevelReducer({
                 ...state,changed: true,
                 walls: newwl

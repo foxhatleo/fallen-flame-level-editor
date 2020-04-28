@@ -1,5 +1,5 @@
 import {Action, ActionType} from "./ActionType";
-import {LevelState} from "./StateType";
+import {BGM, LevelState} from "./StateType";
 
 const updater = <T> (type: ActionType):
     ((newValue: T, level?: number | LevelState) => Action) => ((newValue: T, level?: number | LevelState) =>
@@ -9,6 +9,7 @@ const marker = (type: ActionType): ((level?: number | LevelState) => Action) => 
 const pure = (type: ActionType): (() => Action) => (() => ({type} as Action));
 
 export const updateName = updater<string>(ActionType.UPDATE_NAME);
+export const updateBGM = updater<BGM>(ActionType.UPDATE_BGM);
 export const setBackground = updater<string>(ActionType.SET_BACKGROUND);
 export const updatePhysicsWidth = updater<number>(ActionType.UPDATE_PHYSICS_WIDTH);
 export const updatePhysicsHeight = updater<number>(ActionType.UPDATE_PHYSICS_HEIGHT);

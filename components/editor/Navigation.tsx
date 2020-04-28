@@ -2,6 +2,7 @@ import React, {FunctionComponent} from "react";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {connect} from "react-redux";
 import EditorState, {LevelState} from "../../redux/StateType";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 /**
  * The top navbar.
@@ -17,10 +18,13 @@ const Navigation: FunctionComponent<{
     onLevelAdvanced: () => void;
     onAddEnemy: () => void;
     onAddWall: () => void;
+    onBGM: () => void;
     onRemove: () => void;
     onBG: (string) => void;
     currentLevel: LevelState;
 }> = (p) => {
+    const w = <span style={{color: "#FF4500"}}><FontAwesomeIcon icon={'exclamation-triangle'} /></span>;
+    const wn = p.currentLevel && !p.currentLevel.bgm ? w : "";
     return <React.Fragment>
         <Navbar fixed="top" className="mb-2" bg="dark" variant="dark">
             <Nav className="mr-auto">
@@ -32,11 +36,13 @@ const Navigation: FunctionComponent<{
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onClose}>Close level</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title="Setting" id={"setting-nav"}>
+                <NavDropdown title={["Setting",wn]} id={"setting-nav"}>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelName}>Level name</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelBound}>Level bound</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onBGM}>{["Background music",wn]}</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onSneakVal}>Starting sneak value</NavDropdown.Item>
                     <NavDropdown.Divider />

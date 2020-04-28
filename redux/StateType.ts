@@ -3,6 +3,7 @@ export type LevelState = {
     physicsSize: [number, number];
     fpsRange: [number, number];
     playerpos: [number, number];
+    bgm?: BGM;
     exitpos: [number, number];
     enemies: EnemyInfo[];
     changed: boolean;
@@ -12,6 +13,23 @@ export type LevelState = {
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
 };
+
+export enum BGM {
+    // menu_music = "menu-music",
+    the_doll_thrown_away_in_rain = "the-doll-thrown-away-in-rain",
+    soul_of_a_girl = "soul-of-a-girl",
+    another_planet = "another-planet",
+    cursed_piano = "cursed-piano",
+    disturbing_haze = "disturbing-haze",
+    hazy_moon = "hazy-moon",
+    peaceful_early_evening = "peaceful-early-evening",
+    ruins = "ruins",
+    silence1 = "silence1",
+    silence2 = "silence2",
+    the_deep_long_tunnel = "the-deep-long-tunnel",
+    chess = "chess",
+    // feud_of_nora_dog_and_nora_cat = "feud-of-nora-dog-and-nora-cat",
+}
 
 export type EnemyInfo = {
     enemytype: string;
