@@ -26,8 +26,8 @@ const Navigation: FunctionComponent<{
 }> = (p) => {
     const w = <span style={{color: "#FF4500"}}><FontAwesomeIcon icon={'exclamation-triangle'} /></span>;
     const c1 = p.currentLevel && !p.currentLevel.bgm;
-    const c2 = p.currentLevel && typeof p.currentLevel.startFlareCount === "number" &&
-        typeof p.currentLevel.maxFlareCount === "number";
+    const c2 = p.currentLevel && (typeof p.currentLevel.startFlareCount !== "number" ||
+        typeof p.currentLevel.maxFlareCount === "number");
     const wn1 = c1 || c2 ? w : "";
     const wn2 = c1 ? w : "";
     const wn3 = c2 ? w : "";
