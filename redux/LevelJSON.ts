@@ -118,6 +118,9 @@ function checkBGM(bgm: string, msgs: string[]): BGM | undefined {
 function check0(level: object, msgs: string[]): LevelState{
     return {
         name: defaultName(level, msgs),
+        maxFlareCount: level["maxFlareCount"],
+        startFlareCount: level["startFlareCount"],
+        startSneakVal: level["startSneakVal"],
         physicsSize: physicsSize(twoNums(level, "physicsSize"), msgs),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),

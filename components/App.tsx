@@ -26,6 +26,7 @@ import {download} from "../utils/JSON";
 import ImportWarnWindow from "./editor/ImportWarnWindow";
 import SneakValWindow from "./editor/SneakValWindow";
 import BGMWindow from "./editor/BGMWindow";
+import FlareCountWindow from "./editor/FlareCountWindow";
 
 library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle);
 
@@ -44,6 +45,7 @@ enum CurrentAction {
     IMPORT,
     IMPORT_WARN,
     BGM,
+    FLARE_COUNT,
 }
 
 class App extends React.Component<typeof Actions & {
@@ -162,6 +164,13 @@ class App extends React.Component<typeof Actions & {
     }
 
     /**
+     * Triggered when "flare count" menu item is chosen.
+     */
+    private onFlareCount(): void {
+        this.setState({action: CurrentAction.FLARE_COUNT});
+    }
+
+    /**
      * Triggered when "change level name" menu item is chosen.
      */
     private onLevelName(): void {
@@ -219,6 +228,12 @@ class App extends React.Component<typeof Actions & {
 
     private sneakValOK(value: number): void {
         this.props.updateSneakVal(value);
+        this.clearAction();
+    }
+
+    private flareValOK(s: number, m: number): void {
+        this.props.updateStartFlareCount(s);
+        this.props.updateMaxFlareCount(m);
         this.clearAction();
     }
 
@@ -320,7 +335,8 @@ class App extends React.Component<typeof Actions & {
                         onAddWall={this.onAddWall.bind(this)}
                         onRemove={this.onRemove.bind(this)}
                         onBG={this.props.setBackground}
-                        onBGM={this.onBGM.bind(this)}/>
+                        onBGM={this.onBGM.bind(this)}
+                        onFlareCount={this.onFlareCount.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
@@ -329,6 +345,9 @@ class App extends React.Component<typeof Actions & {
             <SneakValWindow show={this.state.action == CurrentAction.SNEAK_VAL}
                             onOK={this.sneakValOK.bind(this)}
                             onCancel={this.clearAction.bind(this)} />
+            <FlareCountWindow show={this.state.action == CurrentAction.FLARE_COUNT}
+                              onOK={this.flareValOK.bind(this)}
+                              onCancel={this.clearAction.bind(this)} />
             <BoundWindow show={this.boundWindowShowing}
                          onOK={this.boundWindowOK.bind(this)}
                          onCancel={this.clearAction.bind(this)}

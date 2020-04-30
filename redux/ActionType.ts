@@ -30,6 +30,8 @@ export enum ActionType {
     SET_VIEW_Y,
     UPDATE_PATH_COORS,
     UPDATE_BGM,
+    UPDATE_START_FLARE_COUNT,
+    UPDATE_MAX_FLARE_COUNT,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -51,6 +53,8 @@ export type Action =
     | SetterAction<ActionType.UPDATE_BGM, BGM>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_WIDTH>
     | NumberSetterAction<ActionType.UPDATE_PHYSICS_HEIGHT>
+    | NumberSetterAction<ActionType.UPDATE_START_FLARE_COUNT>
+    | NumberSetterAction<ActionType.UPDATE_MAX_FLARE_COUNT>
     | NumberSetterAction<ActionType.UPDATE_SNEAL_VAL>
     | NumberSetterAction<ActionType.UPDATE_FPS_LOWER>
     | NumberSetterAction<ActionType.UPDATE_FPS_UPPER>

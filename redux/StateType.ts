@@ -2,6 +2,8 @@ export type LevelState = {
     name: string;
     physicsSize: [number, number];
     fpsRange: [number, number];
+    startFlareCount?: number;
+    maxFlareCount?: number;
     playerpos: [number, number];
     bgm?: BGM;
     exitpos: [number, number];

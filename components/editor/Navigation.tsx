@@ -20,11 +20,17 @@ const Navigation: FunctionComponent<{
     onAddWall: () => void;
     onBGM: () => void;
     onRemove: () => void;
+    onFlareCount: () => void;
     onBG: (string) => void;
     currentLevel: LevelState;
 }> = (p) => {
     const w = <span style={{color: "#FF4500"}}><FontAwesomeIcon icon={'exclamation-triangle'} /></span>;
-    const wn = p.currentLevel && !p.currentLevel.bgm ? w : "";
+    const c1 = p.currentLevel && !p.currentLevel.bgm;
+    const c2 = p.currentLevel && typeof p.currentLevel.startFlareCount === "number" &&
+        typeof p.currentLevel.maxFlareCount === "number";
+    const wn1 = c1 || c2 ? w : "";
+    const wn2 = c1 ? w : "";
+    const wn3 = c2 ? w : "";
     return <React.Fragment>
         <Navbar fixed="top" className="mb-2" bg="dark" variant="dark">
             <Nav className="mr-auto">
@@ -36,13 +42,15 @@ const Navigation: FunctionComponent<{
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onClose}>Close level</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title={["Setting",wn]} id={"setting-nav"}>
+                <NavDropdown title={["Setting",wn1]} id={"setting-nav"}>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelName}>Level name</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelBound}>Level bound</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
-                                      onClick={p.onBGM}>{["Background music",wn]}</NavDropdown.Item>
+                                      onClick={p.onBGM}>{["Background music",wn2]}</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onFlareCount}>{["Flare count",wn3]}</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onSneakVal}>Starting sneak value</NavDropdown.Item>
                     <NavDropdown.Divider />

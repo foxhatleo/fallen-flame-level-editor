@@ -85,6 +85,16 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.UPDATE_BGM:
             return {...state, changed: true,
                 bgm: action.newValue ? action.newValue : undefined};
+        case ActionType.UPDATE_START_FLARE_COUNT: {
+            const {startFlareCount, ...stateDel} = state;
+            const v = guardRange(guardInt(action.newValue), -1, 1000);
+            return {...stateDel, changed: true, ...(v < 0 ? {} : {startFlareCount: v})};
+        }
+        case ActionType.UPDATE_MAX_FLARE_COUNT: {
+            const {maxFlareCount, ...stateDel} = state;
+            const v = guardRange(guardInt(action.newValue), -1, 1000);
+            return {...stateDel, changed: true, ...(v < 0 ? {} : {maxFlareCount: v})};
+        }
         case ActionType.UPDATE_SNEAL_VAL:
             const {startSneakVal, ...stateDel} = state;
             const v = guardRange(guardInt(action.newValue), -1, 100000);
