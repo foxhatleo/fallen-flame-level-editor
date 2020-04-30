@@ -30,7 +30,7 @@ const Enemy: FunctionComponent<typeof Actions & {
               level={p.level}
               width={2}
               height={2}
-              xOffset={xo}
+              yOffset={xo}
               x={enemy.enemypos[0]}
               y={enemy.enemypos[1]}
               resizable={false}
