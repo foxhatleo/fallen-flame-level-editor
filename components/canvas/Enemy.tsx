@@ -11,10 +11,12 @@ const Enemy: FunctionComponent<typeof Actions & {
 }> = (p) => {
     const enemy = p.level.enemies[p.id];
     const t = enemy.enemytype.substr(4) + (enemy.subtype === "pathing" ? "P" : "");
-    let texture = "/canvas/enemy-walking.png";
+    let texture = "/canvas/new-enemya.png";
+    let xo = 30;
     switch (t) {
         case "B":
-            texture = "/canvas/enemyb-walking.png";
+            xo = 15;
+            texture = "/canvas/new-enemyb.png";
             break;
     }
     function chooseEnemy() {
@@ -26,8 +28,9 @@ const Enemy: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 20000 + p.id}
               level={p.level}
-              width={1.3}
-              height={1.3}
+              width={2}
+              height={2}
+              xOffset={xo}
               x={enemy.enemypos[0]}
               y={enemy.enemypos[1]}
               resizable={false}
