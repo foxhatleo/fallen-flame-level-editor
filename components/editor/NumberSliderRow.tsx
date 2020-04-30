@@ -11,7 +11,8 @@ function numberSliderRow(id: string,
                          min: number,
                          max: number,
                          step: number,
-                         int: boolean): ReactElement {
+                         int: boolean,
+                         invalid: boolean): ReactElement {
     const guard = int ? guardInt : guardNumber;
     return <Form.Group controlId={id} key={id}>
         <Form.Label>{name}</Form.Label>
@@ -23,6 +24,7 @@ function numberSliderRow(id: string,
                               max={max}
                               step={step}
                               value={value.toString()}
+                              isInvalid={invalid}
                               onChange={e => { setValue(guard(e.target.value, value)); }}/>
             </Col>
             <Col className="col-9 pl-2 pt-2">
@@ -31,6 +33,7 @@ function numberSliderRow(id: string,
                               max={max}
                               step={step}
                               value={value}
+                              isInvalid={invalid}
                               onChange={e => { setValue(guard(e.target.value, value)); }}/>
             </Col>
         </Row>
@@ -47,7 +50,8 @@ export function template (
 ): ((id: string,
      name: string,
      value: number,
-     setValue: (number) => void) => ReactElement){
-    return (id, name, value, setValue) =>
-        numberSliderRow(id, name, value, setValue, min, max, step, int);
+     setValue: (number) => void,
+     invalid?: boolean) => ReactElement){
+    return (id, name, value, setValue, invalid: boolean = false) =>
+        numberSliderRow(id, name, value, setValue, min, max, step, int, invalid);
 }

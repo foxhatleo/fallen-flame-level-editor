@@ -84,7 +84,7 @@ const ImportWindow: FunctionComponent<{
             </Alert> : ""}
             <Form onSubmit={e => { e.preventDefault(); }}>
                 <Form.Group controlId="exampleForm.ControlInput1">
-                    <Form.Control disabled={disabled}
+                    <Form.File disabled={disabled}
                                   required={true}
                                   accept=".json"
                                   type="file"

@@ -12,10 +12,10 @@ const Enemy: FunctionComponent<typeof Actions & {
     const enemy = p.level.enemies[p.id];
     const t = enemy.enemytype.substr(4) + (enemy.subtype === "pathing" ? "P" : "");
     let texture = "/canvas/new-enemya.png";
-    let xo = 30;
+    let yo = 30;
     switch (t) {
         case "B":
-            xo = 15;
+            yo = 15;
             texture = "/canvas/new-enemyb.png";
             break;
     }
@@ -30,7 +30,7 @@ const Enemy: FunctionComponent<typeof Actions & {
               level={p.level}
               width={2}
               height={2}
-              yOffset={xo}
+              yOffset={yo}
               x={enemy.enemypos[0]}
               y={enemy.enemypos[1]}
               resizable={false}

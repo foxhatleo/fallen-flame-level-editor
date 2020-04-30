@@ -34,8 +34,8 @@ const FlareCountWindow: FunctionComponent<{
         <Modal.Body>
             -1 means using global default value. (Not recommended)
             <Form onSubmit={e => { e.preventDefault(); checkOK(); }}>
-                {row("flare-start", "Start Flare Count", s, setS)}
-                {row("flare-max", "Max Flare Count", m, setM)}
+                {row("flare-start", "Start Flare Count", s, setS, s < 0)}
+                {row("flare-max", "Max Flare Count", m, setM, m < 0)}
             </Form>
         </Modal.Body>
         <Modal.Footer>
