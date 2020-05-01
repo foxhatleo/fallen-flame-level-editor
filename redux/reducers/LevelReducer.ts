@@ -13,6 +13,7 @@ export const newLevel: (psx: number, psy: number) => LevelState =
     background: {texture: "floor-tile"},
     changed: true,
     enemies: [],
+    items: [],
     lighting: {
         "color":	  	[0, 0, 0, 0],
         "gamma":		true,
@@ -123,6 +124,19 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...state,changed: true,
                 walls: newWalls
             };
+        case ActionType.MOVE_ITEM: {
+            const newWalls = state.items.concat();
+            let wall = newWalls[action.newValue[0]];
+            wall = {
+                ...wall,
+                itemPos: action.newValue[1],
+            };
+            newWalls[action.newValue[0]] = wall;
+            return {
+                ...state, changed: true,
+                items: newWalls
+            };
+        }
         case ActionType.CHANGE_WALL_TEXTURE: {
             const newWalls2 = state.walls.concat();
             let wall2 = newWalls2[action.newValue[0]];
@@ -196,6 +210,14 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 ...state,
                 playerpos: action.newValue,
             };
+        case ActionType.ADD_ITEM: {
+            const newnm = state.items.concat();
+            newnm.push({itemPos: newItemPos(state), itemType: "flare"});
+            return LevelReducer({
+                ...state, changed: true,
+                items: newnm
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: 30000 + newnm.length - 1, level: action.level});
+        }
         case ActionType.ADD_ENEMY:
             const newnm = state.enemies.concat();
             newnm.push({enemypos: newItemPos(state), enemytype: "typeA"});

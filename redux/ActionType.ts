@@ -32,6 +32,8 @@ export enum ActionType {
     UPDATE_BGM,
     UPDATE_START_FLARE_COUNT,
     UPDATE_MAX_FLARE_COUNT,
+    MOVE_ITEM,
+    ADD_ITEM,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -68,12 +70,14 @@ export type Action =
     | NumberSetterAction<ActionType.SET_VIEW_X>
     | NumberSetterAction<ActionType.SET_VIEW_Y>
     | SetterAction<ActionType.MOVE_WALL, [number, [number, number]]>
+    | SetterAction<ActionType.MOVE_ITEM, [number, [number, number]]>
     | SetterAction<ActionType.RESIZE_WALL, [number, [number, number]]>
     | SetterAction<ActionType.MOVE_PLAYER, [number, number]>
     | SetterAction<ActionType.MOVE_EXIT, [number, number]>
     | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number], boolean?]>
     | LevelAction<ActionType.ADD_ENEMY>
     | LevelAction<ActionType.ADD_WALL>
+    | LevelAction<ActionType.ADD_ITEM>
     | LevelAction<ActionType.REMOVE>
     | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>
     | SetterAction<ActionType.UPDATE_PATH_COORS, [number, [number, number][]]>

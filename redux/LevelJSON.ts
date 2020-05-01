@@ -1,4 +1,4 @@
-import {BGM, EnemyInfo, LevelState, LightingInfo, WallInfo} from "./StateType";
+import {BGM, EnemyInfo, Item, LevelState, LightingInfo, WallInfo} from "./StateType";
 import {newEditorInfo} from "./reducers/LevelReducer";
 import {guardInt, guardNonEmptyString, guardNumber} from "./Validators";
 
@@ -65,6 +65,10 @@ function checkEnemy(e: any, msgs: string[]): EnemyInfo {
     };
 }
 
+function checkItem(e: any, msgs: string[]): Item {
+    return e;
+}
+
 function checkWall(e: any, msgs: string[]): WallInfo {
     let texture = e["texture"];
     switch(texture) {
@@ -128,6 +132,7 @@ function check0(level: object, msgs: string[]): LevelState{
         exitpos: twoNums(level, "exitpos"),
         background: checkBG(level["background"], msgs),
         enemies: checkList(level, "enemies", msgs, checkEnemy),
+        items: checkList(level, "items", msgs, checkItem),
         lighting: checkLightings(level["lighting"], msgs),
         walls: checkList(level, "walls", msgs, checkWall),
         _editorInfo: null,

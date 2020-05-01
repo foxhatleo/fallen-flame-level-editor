@@ -9,6 +9,7 @@ import Enemy from "./Enemy";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
 import PathCoors from "./PathCoors";
+import FlarePickup from "./FlarePickup";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -48,6 +49,9 @@ const CanvasContent: FunctionComponent<typeof Actions & {
             {[...Array(p.level.enemies.length)].map((_, i) =>
                 [<Enemy level={p.level} id={i} key={i + 20000}/>, <PathCoors level={p.level} id={i} key={i}/>]
                 )}
+            {[...Array(p.level.items.length)].map((_, i) =>
+                <FlarePickup level={p.level} id={i} key={i + 30000}/>
+            )}
         </div>
         <style jsx>{`
             div.ctc {

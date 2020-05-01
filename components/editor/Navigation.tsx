@@ -21,6 +21,7 @@ const Navigation: FunctionComponent<{
     onBGM: () => void;
     onRemove: () => void;
     onFlareCount: () => void;
+    onAddFlare: () => void;
     onBG: (string) => void;
     currentLevel: LevelState;
 }> = (p) => {
@@ -62,6 +63,8 @@ const Navigation: FunctionComponent<{
                                       onClick={p.onAddWall}>Add wall (Z)</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onAddEnemy}>Add enemy (X)</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onAddFlare}>Add flare pickup (C)</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
                                       onClick={p.onRemove}>Remove selected... (D)</NavDropdown.Item>

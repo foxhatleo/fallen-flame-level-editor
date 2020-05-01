@@ -96,6 +96,8 @@ class App extends React.Component<typeof Actions & {
             this.props.addWall();
         } else if (key == "x") {
             this.props.addEnemy();
+        } else if (key == "c") {
+            this.props.addItem();
         }
     }
 
@@ -309,6 +311,10 @@ class App extends React.Component<typeof Actions & {
         this.clearAction();
     }
 
+    private onAddFlare(): void {
+        this.props.addItem();
+    }
+
     private onAddEnemy(): void {
         this.props.addEnemy();
     }
@@ -336,6 +342,7 @@ class App extends React.Component<typeof Actions & {
                         onRemove={this.onRemove.bind(this)}
                         onBG={this.props.setBackground}
                         onBGM={this.onBGM.bind(this)}
+                        onAddFlare={this.onAddFlare.bind(this)}
                         onFlareCount={this.onFlareCount.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}

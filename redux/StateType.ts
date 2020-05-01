@@ -6,6 +6,7 @@ export type LevelState = {
     maxFlareCount?: number;
     playerpos: [number, number];
     bgm?: BGM;
+    items?: Item[];
     exitpos: [number, number];
     enemies: EnemyInfo[];
     changed: boolean;
@@ -32,6 +33,11 @@ export enum BGM {
     chess = "chess",
     // feud_of_nora_dog_and_nora_cat = "feud-of-nora-dog-and-nora-cat",
 }
+
+export type Item = {
+    itemPos: [number, number];
+    itemType: "flare";
+};
 
 export type EnemyInfo = {
     enemytype: string;
