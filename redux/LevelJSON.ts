@@ -90,9 +90,13 @@ function checkLightings(e: any, msgs: string[]): LightingInfo {
     return e as LightingInfo;
 }
 
-function checkList<T>(c: any, k: string, msgs: string[], func: (item: any, msgs: string[]) => T): T[] {
+function checkList<T>(c: any, k: string, msgs: string[], func: (item: any, msgs: string[]) => T, bwc: boolean = false): T[] {
     if (!c.hasOwnProperty(k) || !c[k] || !Array.isArray(c[k])) {
-        throw new Error("\"" + k + "\" is not an array.");
+        if (!bwc) {
+            throw new Error("\"" + k + "\" is not an array.");
+        } else {
+            return [];
+        }
     }
     for (let i = 0, j = c[k].length; i < j; i++) {
         c[k][i] = func(c[k][i], msgs);
@@ -132,7 +136,7 @@ function check0(level: object, msgs: string[]): LevelState{
         exitpos: twoNums(level, "exitpos"),
         background: checkBG(level["background"], msgs),
         enemies: checkList(level, "enemies", msgs, checkEnemy),
-        items: checkList(level, "items", msgs, checkItem),
+        items: checkList(level, "items", msgs, checkItem, true),
         lighting: checkLightings(level["lighting"], msgs),
         walls: checkList(level, "walls", msgs, checkWall),
         _editorInfo: null,
