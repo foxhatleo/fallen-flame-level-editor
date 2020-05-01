@@ -244,6 +244,10 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 const newen = state.enemies.concat();
                 newen.splice(c - 20000, 1);
                 updates["enemies"] = newen;
+            } else if (c >= 30000 && c < 40000) {
+                const newen = state.items.concat();
+                newen.splice(c - 30000, 1);
+                updates["items"] = newen;
             }
             return LevelReducer({
                 ...state,changed: true,
