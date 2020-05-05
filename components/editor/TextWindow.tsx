@@ -13,7 +13,7 @@ const TextWindow: FunctionComponent<{
 
     const [value, setValue] = useState<string>("");
 
-    const filter = (i:string): string => i.trim().replace("\n", "").replace("\t", "").replace("\r", "");
+    const filter = (i:string): string => i.replace("\n", "").replace("\t", "").replace("\r", "");
 
     useEffect(() => {
         if (!p.currentLevel || p.newText) {
