@@ -15,6 +15,7 @@ export type LevelState = {
     startSneakVal?: number;
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
+    texts?: TextInfo[];
 };
 
 export enum BGM {
@@ -33,6 +34,12 @@ export enum BGM {
     chess = "chess",
     // feud_of_nora_dog_and_nora_cat = "feud-of-nora-dog-and-nora-cat",
 }
+
+export type TextInfo = {
+    pos: [number, number];
+    size: [number, number];
+    text: string;
+};
 
 export type Item = {
     itemPos: [number, number];

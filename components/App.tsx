@@ -8,6 +8,7 @@ import AdvancedWindow, {AdvancedResult} from "./editor/AdvancedWindow";
 import ImportWindow from "./editor/ImportWindow";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {
+    faClosedCaptioning,
     faExclamationTriangle,
     faHandPaper,
     faMousePointer,
@@ -27,8 +28,9 @@ import ImportWarnWindow from "./editor/ImportWarnWindow";
 import SneakValWindow from "./editor/SneakValWindow";
 import BGMWindow from "./editor/BGMWindow";
 import FlareCountWindow from "./editor/FlareCountWindow";
+import TextWindow from "./editor/TextWindow";
 
-library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle);
+library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle, faClosedCaptioning);
 
 /**
  * An enum that indicates what action state the app is in at the moment.
@@ -46,6 +48,8 @@ enum CurrentAction {
     IMPORT_WARN,
     BGM,
     FLARE_COUNT,
+    NEW_TEXT,
+    EDIT_TEXT,
 }
 
 class App extends React.Component<typeof Actions & {
@@ -86,10 +90,15 @@ class App extends React.Component<typeof Actions & {
 
     private keyPress(evt: KeyboardEvent): void {
         const key = evt.key.toLowerCase();
+        if (this.state.action != CurrentAction.NO_ACTION) return;
         if (key == "a") {
             this.props.editorChangeTool("hand");
         } else if (key == "s") {
             this.props.editorChangeTool("pointer");
+        } else if (key == "p") {
+            this.props.editorChangeTool("path");
+        } else if (key == "t") {
+            this.props.editorChangeTool("text");
         } else if (key == "d") {
             this.onRemove();
         } else if (key == "z") {
@@ -98,6 +107,8 @@ class App extends React.Component<typeof Actions & {
             this.props.addEnemy();
         } else if (key == "c") {
             this.props.addItem();
+        } else if (key == "v") {
+            this.onAddText();
         }
     }
 
@@ -323,6 +334,23 @@ class App extends React.Component<typeof Actions & {
         this.props.addWall();
     }
 
+    private onAddText(): void {
+        this.setState({action: CurrentAction.NEW_TEXT});
+    }
+
+    private onEditText(): void {
+        this.setState({action: CurrentAction.EDIT_TEXT});
+    }
+
+    private textOK(v: string): void {
+        if (this.state.action == CurrentAction.NEW_TEXT ) {
+            this.props.addText(v);
+        } else {
+            this.props.changeText([this.props.currentLevel._editorInfo.chosen - 100000, v]);
+        }
+        this.clearAction();
+    }
+
     private onRemove(): void {
         this.props.remove();
     }
@@ -343,12 +371,18 @@ class App extends React.Component<typeof Actions & {
                         onBG={this.props.setBackground}
                         onBGM={this.onBGM.bind(this)}
                         onAddFlare={this.onAddFlare.bind(this)}
+                        onAddText={this.onAddText.bind(this)}
+                        onEditText={this.onEditText.bind(this)}
                         onFlareCount={this.onFlareCount.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
                         onCancel={this.clearAction.bind(this)}
                         newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_NAME_PROMPT} />
+            <TextWindow show={this.state.action == CurrentAction.NEW_TEXT || this.state.action == CurrentAction.EDIT_TEXT}
+                        onOK={this.textOK.bind(this)}
+                        onCancel={this.clearAction.bind(this)}
+                        newText={this.state.action == CurrentAction.NEW_TEXT} />
             <SneakValWindow show={this.state.action == CurrentAction.SNEAK_VAL}
                             onOK={this.sneakValOK.bind(this)}
                             onCancel={this.clearAction.bind(this)} />

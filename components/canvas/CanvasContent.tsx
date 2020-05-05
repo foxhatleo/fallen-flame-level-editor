@@ -5,11 +5,12 @@ import {connect} from "react-redux";
 import Wall from "./Wall";
 import Player from "./Player";
 import Exit from "./Exit";
-import Enemy from "./Enemy";
+import Enemy, {getYO} from "./Enemy";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
 import PathCoors from "./PathCoors";
 import FlarePickup from "./FlarePickup";
+import Text from "./Text";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -47,10 +48,13 @@ const CanvasContent: FunctionComponent<typeof Actions & {
             <Player level={p.level} />
             <Exit level={p.level} />
             {[...Array(p.level.enemies.length)].map((_, i) =>
-                [<Enemy level={p.level} id={i} key={i + 20000}/>, <PathCoors level={p.level} id={i} key={i}/>]
+                [<Enemy level={p.level} id={i} key={i + 20000}/>, <PathCoors yo={getYO(p.level.enemies[i])} level={p.level} id={i} key={i}/>]
                 )}
             {[...Array(p.level.items.length)].map((_, i) =>
                 <FlarePickup level={p.level} id={i} key={i + 30000}/>
+            )}
+            {[...Array(p.level.texts.length)].map((_, i) =>
+                <Text level={p.level} id={i} key={i + 100000}/>
             )}
         </div>
         <style jsx>{`

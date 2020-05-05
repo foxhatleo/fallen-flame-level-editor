@@ -1,9 +1,19 @@
 import React, {FunctionComponent} from "react";
 import Item from "./Item";
-import {LevelState} from "../../redux/StateType";
+import {EnemyInfo, LevelState} from "../../redux/StateType";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
 import {connect} from "react-redux";
+
+export function getYO(enemy:EnemyInfo) {
+    const t = enemy.enemytype.substr(4) + (enemy.subtype === "pathing" ? "P" : "");
+    switch (t) {
+        case "B":
+            return 15;
+        default:
+            return 30;
+    }
+}
 
 const Enemy: FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -12,13 +22,12 @@ const Enemy: FunctionComponent<typeof Actions & {
     const enemy = p.level.enemies[p.id];
     const t = enemy.enemytype.substr(4) + (enemy.subtype === "pathing" ? "P" : "");
     let texture = "/canvas/new-enemya.png";
-    let yo = 30;
     switch (t) {
         case "B":
-            yo = 15;
             texture = "/canvas/new-enemyb.png";
             break;
     }
+    const yo = getYO(enemy);
     function chooseEnemy() {
         p.editorChoose(20000 + p.id);
     }
@@ -42,6 +51,7 @@ const Enemy: FunctionComponent<typeof Actions & {
             <style jsx>{`
             img {
               width: 100%;
+              position: absolute;
               height: 100%;
             }
             .type {
@@ -52,6 +62,7 @@ const Enemy: FunctionComponent<typeof Actions & {
                 left: 50%;
                 transform: translate(-50%, -50%);
                 font-size: 30px;
+                z-index: 2;
             }
             `}</style>
         </Item>

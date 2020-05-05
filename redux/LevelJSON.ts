@@ -99,7 +99,7 @@ function checkList<T>(c: any, k: string, msgs: string[], func: (item: any, msgs:
         }
     }
     for (let i = 0, j = c[k].length; i < j; i++) {
-        c[k][i] = func(c[k][i], msgs);
+        c[k][i] = !func ? c[k][i] : func(c[k][i], msgs);
     }
     return c[k];
 }
@@ -129,6 +129,7 @@ function check0(level: object, msgs: string[]): LevelState{
         maxFlareCount: level["maxFlareCount"],
         startFlareCount: level["startFlareCount"],
         startSneakVal: level["startSneakVal"],
+        texts: checkList(level, "texts", msgs, null),
         physicsSize: physicsSize(twoNums(level, "physicsSize"), msgs),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),

@@ -19,7 +19,7 @@ const Canvas: FunctionComponent<{
             right: 0;
             bottom: 0;
             margin-top: 56px;
-            background: rgb(99,148,237);
+            background: black;
             overflow: hidden;
         }
     `}</style>

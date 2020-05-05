@@ -32,6 +32,7 @@ const Player: FunctionComponent<typeof Actions & {
             img {
             width :100%;
             height: 100%;
+            position: absolute;
             }
             `}</style>
         </Item>

@@ -14,6 +14,7 @@ export const newLevel: (psx: number, psy: number) => LevelState =
     changed: true,
     enemies: [],
     items: [],
+    texts: [],
     lighting: {
         "color":	  	[0, 0, 0, 0],
         "gamma":		true,
@@ -76,7 +77,8 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 ...state,
                 _editorInfo: {
                     ...state._editorInfo,
-                    chosen: action.newValue === "pointer" ? state._editorInfo.chosen : -1,
+                    chosen: action.newValue === "pointer" && state._editorInfo.chosen < 100000 ? state._editorInfo.chosen :
+                        (action.newValue === "text" && state._editorInfo.chosen >= 100000 ? state._editorInfo.chosen : -1),
                     tool: action.newValue,
                 }
             };
@@ -110,7 +112,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
         case ActionType.EDITOR_CHOOSE:
             return {...state, _editorInfo: {
                     ...state._editorInfo,
-                    ...(action.newValue < 0 ? {} : {tool: "pointer"}),
+                    ...(action.newValue < 0 ? {} : (action.newValue >= 100000 ? {tool: "text"} : {tool: "pointer"})),
                     chosen: action.newValue,
                 }};
         case ActionType.MOVE_WALL:
@@ -124,6 +126,35 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...state,changed: true,
                 walls: newWalls
             };
+        case ActionType.CHANGE_TEXT: {
+            const newWalls = state.texts.concat();
+            let textInfo = newWalls[action.newValue[0]];
+            textInfo = {
+                ...textInfo,
+                text: guardNonEmptyString(guardNonEmptyString(action.newValue[1], "Hello, world!")
+                    .replace("\n","")
+                    .replace("\t","")
+                    .replace("\r",""), "Hello, world!"),
+            };
+            newWalls[action.newValue[0]] = textInfo;
+            return {
+                ...state, changed: true,
+                texts: newWalls
+            };
+        }
+        case ActionType.MOVE_TEXT: {
+            const newWalls = state.texts.concat();
+            let textInfo = newWalls[action.newValue[0]];
+            textInfo = {
+                ...textInfo,
+                pos: action.newValue[1],
+            };
+            newWalls[action.newValue[0]] = textInfo;
+            return {
+                ...state, changed: true,
+                texts: newWalls
+            };
+        }
         case ActionType.MOVE_ITEM: {
             const newWalls = state.items.concat();
             let wall = newWalls[action.newValue[0]];
@@ -205,6 +236,19 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...state,changed: true,
                 walls: newWalls2
             };
+        case ActionType.RESIZE_TEXT: {
+            const newWalls2 = state.texts.concat();
+            let text = newWalls2[action.newValue[0]];
+            text = {
+                ...text,
+                size: action.newValue[1],
+            };
+            newWalls2[action.newValue[0]] = text;
+            return {
+                ...state, changed: true,
+                texts: newWalls2
+            };
+        }
         case ActionType.MOVE_PLAYER:
             return {
                 ...state,
@@ -232,6 +276,14 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 ...state,changed: true,
                 walls: newwl
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 10000 + newwl.length - 1, level: action.level});
+        case ActionType.ADD_TEXT: {
+            const newwl = state.texts.concat();
+            newwl.push({pos: newItemPos(state, 5, 5), size: [5, 5], text: action.newValue});
+            return LevelReducer({
+                ...state, changed: true,
+                texts: newwl
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: 100000 + newwl.length - 1, level: action.level});
+        }
         case ActionType.REMOVE:
             const c = state._editorInfo.chosen;
             if (c < 10000) return state;
@@ -248,6 +300,10 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 const newen = state.items.concat();
                 newen.splice(c - 30000, 1);
                 updates["items"] = newen;
+            } else if (c >= 100000) {
+                const nt = state.texts.concat();
+                nt.splice(c - 100000, 1);
+                updates["texts"] = nt;
             }
             return LevelReducer({
                 ...state,changed: true,

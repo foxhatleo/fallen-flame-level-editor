@@ -98,7 +98,7 @@ const PathCoors: FunctionComponent<typeof Actions & {
         })}
         <style jsx>{`
         svg {
-          z-index: ${outMode ? 1 : 5};
+          z-index: ${outMode ? 1 : 8};
           opacity: ${outMode ? 0.5 : 1};
           pointer-events: ${editMode ? "unset" : "none"};
         }

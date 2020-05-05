@@ -17,18 +17,19 @@ const Exit: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 10}
               level={p.level}
-              width={1.25}
-              height={1.25}
+              width={90/50}
+              height={78/50}
               x={p.level.exitpos[0]}
               y={p.level.exitpos[1]}
               resizable={false}
               movable={true}
               onChoose={chooseExit}
               onMove={moveExit}>
-            <img src={"/canvas/helicopter.png"} />
+            <img src={"/canvas/exit.png"} />
             <style jsx>{`
             img {
               width: 100%;
+              position: absolute;
               height: 100%;
             }
             `}</style>

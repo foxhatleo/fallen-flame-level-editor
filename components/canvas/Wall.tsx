@@ -65,6 +65,7 @@ const Wall: FunctionComponent<typeof Actions & {
               top: 0;
               right: 0;
               bottom: 0;
+              z-index: 2;
               left: 0;
               position: absolute;
               border: 3px solid red;

@@ -17,12 +17,13 @@ const Item: FunctionComponent<{
     onResize?: (w: number, h: number) => void;
     onMove?: (x: number, y: number) => void;
     onChoose?: () => void;
+    textMode?: boolean;
 }> = (p) => {
     const resizable = typeof p.resizable === "undefined" ? false : p.resizable;
     const movable = typeof p.movable === "undefined" ? true : p.movable;
     const xs = 50;//p.level.graphicSize[0] / p.level.physicsSize[0];
     const ys = 50;//p.level.graphicSize[1] / p.level.physicsSize[1];
-    const inArrow = p.level._editorInfo.tool === "pointer";
+    const inArrow = p.textMode ? p.level._editorInfo.tool === "text" : p.level._editorInfo.tool === "pointer";
     const xo = guardNumber(p.xOffset), yo = guardNumber(p.yOffset);
     const roundTo = (num: number, divisible: number, atLeastOne: boolean = true): number =>
         (divisible * Math.max(atLeastOne ? 1 : -Infinity, Math.round(num / divisible)));
@@ -165,13 +166,13 @@ const Item: FunctionComponent<{
         position: absolute;
         width: ${p.width * xs}px;
         height: ${p.height * ys}px;
-        left: ${3000 + (p.x - p.width / 2) * xs + xo}px;
-        top: ${3000 + (p.level.physicsSize[1] - p.y - p.height / 2) * xs + yo}px;
-        z-index: 3;
+        left: ${3000 + (p.x - p.width / 2) * xs - xo}px;
+        top: ${3000 + (p.level.physicsSize[1] - p.y - p.height / 2) * xs - yo}px;
+        z-index: 5;
         }
         .chosen {
             outline: 2px solid white;
-            z-index: 4;
+            z-index: 9;
         }
         .rs {
             display: ${p.chosen && p.resizable? "block" : "none"};
