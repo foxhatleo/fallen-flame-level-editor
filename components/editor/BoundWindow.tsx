@@ -15,7 +15,7 @@ const BoundWindow: FunctionComponent<{
     const [x, setX] = useState(1);
     const [y, setY] = useState(1);
 
-    const boundRow = template(1.28, 120.32, 1.28, false);
+    const boundRow = template(1.28 * 3, 120.32, 1.28, false);
 
     const ote = (e) => Math.ceil(e / 1.28) * 1.28
 
