@@ -163,6 +163,7 @@ const Item: FunctionComponent<{
         <div className={"rs ctr"} />
         <style jsx>{`
         .item-out {
+        pointer-events: ${p.textMode && p.level._editorInfo.tool != "text" ? "none" : "unset"};
         position: absolute;
         width: ${p.width * xs}px;
         height: ${p.height * ys}px;

@@ -42,6 +42,7 @@ const Text: FunctionComponent<typeof Actions & {
               left: 0;
               right: 0;
               bottom: 0;
+              pointer-events: ${p.level._editorInfo.tool == "text" ? "unset" : "none"};
               background: rgba(233, 212, 96, ${p.level._editorInfo.tool == "text" ? .5 :.15});
               border: 1px solid rgba(233, 212, 96, ${p.level._editorInfo.tool == "text" ? 1 :.5});
               overflow: hidden;

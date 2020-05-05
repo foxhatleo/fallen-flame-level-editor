@@ -47,6 +47,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
     const pathEnabled = p.level.enemies.some((i) => {
         return (i.subtype === "pathing");
     });
+    const textEnabled = p.level.texts.length > 0;
 
     return <div className="toolbar">
         <ToggleButtonGroup value={p.level._editorInfo.tool}
@@ -54,7 +55,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         {item("hand", "hand-paper", "A", true)}
         {item("pointer", "mouse-pointer", "S")}
         {item("path", "project-diagram", "P", false, !pathEnabled)}
-        {item("text", "closed-captioning", "T", false)}
+        {item("text", "closed-captioning", "T", false, !textEnabled)}
     </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseEnemyType} className={"ml-1" + (!enemy ? " toolbar-hide" : "")} value={enet} type="radio" name="options" defaultValue={"A"}>
             {simpleItem("A", "Regular (A)", true)}
