@@ -335,6 +335,7 @@ class App extends React.Component<typeof Actions & {
     }
 
     private onAddText(): void {
+        if (!this.props.currentLevel) return;
         this.setState({action: CurrentAction.NEW_TEXT});
     }
 
