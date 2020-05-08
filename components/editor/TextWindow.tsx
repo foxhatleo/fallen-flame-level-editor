@@ -46,8 +46,8 @@ const TextWindow: FunctionComponent<{
         "reset",
         "sneak",
         "sprint",
-        "incLightrad",
-        "decLightrad",
+        "incLightRad",
+        "decLightRad",
     ];
 
     function toLink(l: string) {
