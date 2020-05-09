@@ -1,7 +1,7 @@
 import {Col, Form, Row} from "react-bootstrap";
 import React, {ReactElement} from "react";
 
-const guardNumber = (i, p = 1) => Number(i) || p;
+const guardNumber = (i, p = 1) => isNaN(Number(i)) ? p : Number(i);
 const guardInt = (i, p = 1) => Math.round(guardNumber(i, p));
 
 function numberSliderRow(id: string,
