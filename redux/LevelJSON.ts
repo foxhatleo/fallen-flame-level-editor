@@ -129,7 +129,7 @@ function check0(level: object, msgs: string[]): LevelState{
         maxFlareCount: level["maxFlareCount"],
         startFlareCount: level["startFlareCount"],
         startSneakVal: level["startSneakVal"],
-        texts: checkList(level, "texts", msgs, null),
+        texts: checkList(level, "texts", msgs, null, true),
         physicsSize: physicsSize(twoNums(level, "physicsSize"), msgs),
         fpsRange: twoInts(level, "fpsRange"),
         playerpos: twoNums(level, "playerpos"),
