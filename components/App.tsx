@@ -20,7 +20,7 @@ import {LevelStore} from "redux/LevelStore";
 import {connect} from "react-redux";
 import * as Actions from "../redux/Actions";
 import {bindActionCreators} from "redux";
-import EditorState, {BGM, LevelState} from "../redux/StateType";
+import EditorState, {BGM, LevelState, Themes} from "../redux/StateType";
 import {newLevel} from "../redux/reducers/LevelReducer";
 import {encode, ImportedLevel} from "../redux/LevelJSON";
 import {download} from "../utils/JSON";
@@ -29,6 +29,7 @@ import SneakValWindow from "./editor/SneakValWindow";
 import BGMWindow from "./editor/BGMWindow";
 import FlareCountWindow from "./editor/FlareCountWindow";
 import TextWindow from "./editor/TextWindow";
+import ThemeSelectWindow from "./editor/ThemeSelectWindow";
 
 library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle, faClosedCaptioning);
 
@@ -50,6 +51,8 @@ enum CurrentAction {
     FLARE_COUNT,
     NEW_TEXT,
     EDIT_TEXT,
+    EDIT_THEME,
+    NEW_LEVEL_THEME_PROMPT,
 }
 
 class App extends React.Component<typeof Actions & {
@@ -61,6 +64,9 @@ class App extends React.Component<typeof Actions & {
 
     /** Cached level name input. */
     private _cachedName: string;
+
+    /** Cached level bound input. */
+    private _cachedBound: [number, number];
 
     /**
      * @constructor
@@ -120,6 +126,11 @@ class App extends React.Component<typeof Actions & {
         }
        return true;
     }
+
+    // setState<K extends keyof { action: CurrentAction }>(state: ((prevState: Readonly<{ action: CurrentAction }>, props: Readonly<typeof Actions & { currentLevel: LevelState; anyChanged: boolean }>) => (Pick<{ action: CurrentAction }, K> | { action: CurrentAction } | null)) | Pick<{ action: CurrentAction }, K> | { action: CurrentAction } | null, callback?: () => void) {
+    //     debugger;
+    //     super.setState(state, callback);
+    // }
 
     /**
      * Triggered when "close" menu item is chosen.
@@ -264,10 +275,9 @@ class App extends React.Component<typeof Actions & {
     private boundWindowOK(x: number, y: number): void {
         switch (this.state.action) {
             case CurrentAction.NEW_LEVEL_BOUND_PROMPT:
-                const nl = newLevel(x, y);
-                nl.name = this._cachedName;
-                this.props.editorNewLevel(nl);
-                break;
+                this._cachedBound = [x, y];
+                this.setState({action: CurrentAction.NEW_LEVEL_THEME_PROMPT});
+                return;
             case CurrentAction.BOUND_SETTING:
                 this.props.updatePhysicsWidth(x);
                 this.props.updatePhysicsHeight(y);
@@ -330,6 +340,27 @@ class App extends React.Component<typeof Actions & {
         this.props.addEnemy();
     }
 
+    private get themeShowing(): boolean {
+        return this.state.action == CurrentAction.NEW_LEVEL_THEME_PROMPT ||
+            this.state.action == CurrentAction.EDIT_THEME;
+    }
+
+    private onTheme(): void {
+        if (!this.props.currentLevel) return;
+        this.setState({action: CurrentAction.EDIT_THEME});
+    }
+
+    private themeOK(t: Themes, all: boolean): void {
+        if (this.state.action == CurrentAction.NEW_LEVEL_THEME_PROMPT) {
+            const nl = newLevel(this._cachedBound[0], this._cachedBound[1], t);
+            nl.name = this._cachedName;
+            this.props.editorNewLevel(nl);
+        } else {
+            this.props.changeTheme([t, all]);
+        }
+        this.clearAction();
+    }
+
     private onAddWall(): void {
         this.props.addWall();
     }
@@ -374,7 +405,8 @@ class App extends React.Component<typeof Actions & {
                         onAddFlare={this.onAddFlare.bind(this)}
                         onAddText={this.onAddText.bind(this)}
                         onEditText={this.onEditText.bind(this)}
-                        onFlareCount={this.onFlareCount.bind(this)}/>
+                        onFlareCount={this.onFlareCount.bind(this)}
+                        onTheme={this.onTheme.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}
                         onOK={this.nameWindowOK.bind(this)}
@@ -394,6 +426,10 @@ class App extends React.Component<typeof Actions & {
                          onOK={this.boundWindowOK.bind(this)}
                          onCancel={this.clearAction.bind(this)}
                          newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_BOUND_PROMPT} />
+            <ThemeSelectWindow show={this.themeShowing}
+                       onOK={this.themeOK.bind(this)}
+                       onCancel={this.clearAction.bind(this)}
+                       newLevelMode={this.state.action == CurrentAction.NEW_LEVEL_THEME_PROMPT}/>
             <BGMWindow show={this.state.action == CurrentAction.BGM}
                        onOK={this.bgmWindowOK.bind(this)}
                        onCancel={this.clearAction.bind(this)} />

@@ -1,5 +1,5 @@
 import {Action as ReduxAction} from "redux";
-import {BGM, LevelState} from "./StateType";
+import {BackgroundTexture, BGM, LevelState, Themes, WallTexture} from "./StateType";
 
 export enum ActionType {
     UPDATE_NAME,
@@ -38,6 +38,7 @@ export enum ActionType {
     ADD_TEXT,
     RESIZE_TEXT,
     CHANGE_TEXT,
+    CHANGE_THEME,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -88,7 +89,8 @@ export type Action =
     | LevelAction<ActionType.REMOVE>
     | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>
     | SetterAction<ActionType.UPDATE_PATH_COORS, [number, [number, number][]]>
-    | SetterAction<ActionType.CHANGE_WALL_TEXTURE, [number, string]>
+    | SetterAction<ActionType.CHANGE_WALL_TEXTURE, [number, WallTexture]>
     | SetterAction<ActionType.CHANGE_TEXT, [number, string]>
-    | StringSetterAction<ActionType.SET_BACKGROUND>
+    | SetterAction<ActionType.SET_BACKGROUND, BackgroundTexture>
+    | SetterAction<ActionType.CHANGE_THEME, [Themes, boolean]>
     ;

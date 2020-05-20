@@ -1,5 +1,5 @@
 import {Action, ActionType} from "./ActionType";
-import {BGM, LevelState} from "./StateType";
+import {BackgroundTexture, BGM, LevelState, Themes, WallTexture} from "./StateType";
 
 const updater = <T> (type: ActionType):
     ((newValue: T, level?: number | LevelState) => Action) => ((newValue: T, level?: number | LevelState) =>
@@ -10,7 +10,7 @@ const pure = (type: ActionType): (() => Action) => (() => ({type} as Action));
 
 export const updateName = updater<string>(ActionType.UPDATE_NAME);
 export const updateBGM = updater<BGM>(ActionType.UPDATE_BGM);
-export const setBackground = updater<string>(ActionType.SET_BACKGROUND);
+export const setBackground = updater<BackgroundTexture>(ActionType.SET_BACKGROUND);
 export const updatePhysicsWidth = updater<number>(ActionType.UPDATE_PHYSICS_WIDTH);
 export const updatePhysicsHeight = updater<number>(ActionType.UPDATE_PHYSICS_HEIGHT);
 export const updateStartFlareCount = updater<number>(ActionType.UPDATE_START_FLARE_COUNT);
@@ -38,7 +38,8 @@ export const moveExit = updater<[number, number]>(ActionType.MOVE_EXIT);
 export const moveEnemy = updater<[number, [number, number], boolean?]>(ActionType.MOVE_ENEMY);
 export const changeEnemyType = updater<[number, string, boolean]>(ActionType.CHANGE_ENEMY_TYPE);
 export const updatePathCoors = updater<[number, [number, number][]]>(ActionType.UPDATE_PATH_COORS);
-export const changeWallTexture = updater<[number, string]>(ActionType.CHANGE_WALL_TEXTURE);
+export const changeWallTexture = updater<[number, WallTexture]>(ActionType.CHANGE_WALL_TEXTURE);
+export const changeTheme = updater<[Themes, boolean]>(ActionType.CHANGE_THEME);
 export const addEnemy = marker(ActionType.ADD_ENEMY);
 export const addWall = marker(ActionType.ADD_WALL);
 export const addItem = marker(ActionType.ADD_ITEM);

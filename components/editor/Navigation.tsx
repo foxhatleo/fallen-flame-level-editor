@@ -25,6 +25,7 @@ const Navigation: FunctionComponent<{
     onBG: (string) => void;
     onAddText: () => void;
     onEditText: () => void;
+    onTheme: () => void;
     currentLevel: LevelState;
 }> = (p) => {
     const w = <span style={{color: "#FF4500"}}><FontAwesomeIcon icon={'exclamation-triangle'} /></span>;
@@ -64,7 +65,9 @@ const Navigation: FunctionComponent<{
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onLevelName}>Level name</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
-                                      onClick={p.onLevelBound}>Level bound</NavDropdown.Item>
+                                      onClick={p.onLevelBound}>Canvas bound</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onTheme}>Theme</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onBGM}>{["Background music",wn2]}</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}

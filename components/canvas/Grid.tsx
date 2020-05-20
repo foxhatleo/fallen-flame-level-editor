@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from "react";
-import {LevelState} from "../../redux/StateType";
+import {BackgroundTexture, LevelState} from "../../redux/StateType";
 
 const Grid: FunctionComponent<{
     level: LevelState
@@ -9,8 +9,15 @@ const Grid: FunctionComponent<{
     const ys = 50;//l.graphicSize[1] / l.physicsSize[1];
     let textureImage = null;
     switch(p.level.background.texture) {
-        case "floor-tile":
+        case BackgroundTexture.FLOOR_TILE:
             textureImage = "floor-tile";
+            break;
+        case BackgroundTexture.FOREST_TILE:
+            textureImage = "forest-floor-tile";
+            break;
+        case BackgroundTexture.VOLCANO_TILE:
+            textureImage = "volcano-floor-tile";
+            break;
     }
     return <table>
         <tbody>

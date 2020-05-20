@@ -1,4 +1,4 @@
-import {BGM, EnemyInfo, Item, LevelState, LightingInfo, WallInfo} from "./StateType";
+import {BackgroundTexture, BGM, EnemyInfo, Item, LevelState, LightingInfo, WallInfo} from "./StateType";
 import {newEditorInfo} from "./reducers/LevelReducer";
 import {guardInt, guardNonEmptyString, guardNumber} from "./Validators";
 
@@ -38,14 +38,14 @@ function twoInts(c: any, k: string): [number, number] {
     return ck as [number, number];
 }
 
-function checkBG(bg: {texture: string} | undefined, msgs: string[]): {texture: string} {
+function checkBG(bg: {texture: string} | undefined, msgs: string[]): {texture: BackgroundTexture} {
     let confirmedTexture = "floor-tile";
     if (!bg || typeof bg !== "object" || typeof bg.texture !== "string") {
         msgs.push("No background provided or invalid background. Using floor-tile by default.");
-    } else if (bg.texture !== "floor-tile") {
+    }/* else if (bg.texture !== "floor-tile") {
         msgs.push("Unsupported background texture. Using floor-tile.");
-    }
-    return {texture: confirmedTexture};
+    }*/
+    return {texture: (confirmedTexture as BackgroundTexture)};
 }
 
 function checkEnemy(e: any, msgs: string[]): EnemyInfo {

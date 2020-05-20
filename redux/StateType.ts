@@ -11,12 +11,24 @@ export type LevelState = {
     enemies: EnemyInfo[];
     changed: boolean;
     lighting: LightingInfo;
-    background: {texture: string};
+    background: {texture: BackgroundTexture};
     startSneakVal?: number;
     walls: WallInfo[];
     _editorInfo: LevelEditorInfo;
     texts?: TextInfo[];
 };
+
+export enum BackgroundTexture {
+    FLOOR_TILE = "floor-tile",
+    VOLCANO_TILE = "volcano-tile",
+    FOREST_TILE = "forest-tile",
+}
+
+export enum Themes {
+    REGULAR = "Regular",
+    FOREST = "Forest (Not implemented in game yet)",
+    VOLCANO = "Volcano (Not implemented in game yet)",
+}
 
 export enum BGM {
     // menu_music = "menu-music",
@@ -63,8 +75,15 @@ export type LightingInfo = {
 export type WallInfo = {
     pos: [number, number];
     size: [number, number];
-    texture: string;
+    texture: WallTexture;
 };
+
+export enum WallTexture {
+    WALL_SIDE = "wall-side",
+    WALL_TOP = "wall-top",
+    VOLCANO_SIDE = "volcano-side",
+    VOLCANO_TOP = "volcano-top",
+}
 
 export type LevelEditorInfo = {
     tool: string;

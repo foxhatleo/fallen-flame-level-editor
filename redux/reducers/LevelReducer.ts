@@ -1,16 +1,49 @@
 import {Action, ActionType} from "../ActionType";
-import {EnemyInfo, LevelEditorInfo, LevelState, WallInfo} from "../StateType";
+import {BackgroundTexture, EnemyInfo, LevelEditorInfo, LevelState, Themes, WallInfo, WallTexture} from "../StateType";
 import {guardInt, guardNonEmptyString, guardRange} from "../Validators";
 import PairReducer from "./PairReducer";
 
-export const newLevel: (psx: number, psy: number) => LevelState =
-    (psx = 16, psy = 12) => ({
+export const themeOf = (t: LevelState): Themes => {
+    switch (t.background.texture) {
+        case BackgroundTexture.FLOOR_TILE:
+            return Themes.REGULAR;
+        case BackgroundTexture.VOLCANO_TILE:
+            return Themes.VOLCANO;
+        case BackgroundTexture.FOREST_TILE:
+            return Themes.FOREST;
+    }
+}
+
+export function textureOf(t: Themes): BackgroundTexture {
+    switch (t) {
+        case Themes.REGULAR:
+            return BackgroundTexture.FLOOR_TILE;
+        case Themes.FOREST:
+            return BackgroundTexture.FOREST_TILE;
+        case Themes.VOLCANO:
+            return BackgroundTexture.VOLCANO_TILE;
+    }
+}
+
+export function wallConvert(wt: WallTexture, t: Themes): WallTexture {
+    if (t == Themes.VOLCANO) {
+        if (wt == WallTexture.WALL_SIDE) return WallTexture.VOLCANO_SIDE;
+        if (wt == WallTexture.WALL_TOP) return WallTexture.VOLCANO_TOP;
+    } else {
+        if (wt == WallTexture.VOLCANO_SIDE) return WallTexture.WALL_SIDE;
+        if (wt == WallTexture.VOLCANO_TOP) return WallTexture.WALL_TOP;
+    }
+    return wt;
+}
+
+export const newLevel: (psx: number, psy: number, t: Themes) => LevelState =
+    (psx, psy, t) => ({
     name: "Untitled",
     physicsSize: [psx, psy],
     fpsRange: [20, 60],
     playerpos: [3, 3],
     exitpos: [3, 5.35],
-    background: {texture: "floor-tile"},
+    background: {texture: textureOf(t)},
     changed: true,
     enemies: [],
     items: [],
@@ -22,10 +55,14 @@ export const newLevel: (psx: number, psy: number) => LevelState =
         "blur":			1
     },
     walls: [
-        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-side"),
-        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-top"),
-        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28], "wall-top"),
-        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28], "wall-side"),
+        newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28],
+            wallConvert(WallTexture.WALL_SIDE, t)),
+        newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28],
+            wallConvert(WallTexture.WALL_TOP, t)),
+        newWall([psx - 1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28],
+            wallConvert(WallTexture.WALL_TOP, t)),
+        newWall([psx / 2, 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28],
+            wallConvert(WallTexture.WALL_SIDE, t)),
     ],
     _editorInfo: newEditorInfo(),
 });
@@ -56,7 +93,7 @@ export const newEditorInfo = (): LevelEditorInfo => (
     }
 );
 
-export const newWall = (pos: [number, number], size: [number, number], texture: string): WallInfo => (
+export const newWall = (pos: [number, number], size: [number, number], texture: WallTexture): WallInfo => (
     {pos: pos, size: size, texture: texture}
 )
 
@@ -104,7 +141,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...stateDel, changed: true, ...(v < 0 ? {} : {startSneakVal: v})};
         case ActionType.SET_BACKGROUND:
             return {...state, changed: true,
-                background: {texture: guardNonEmptyString(action.newValue, "floor-tile")}};
+                background: {texture: action.newValue}};
         case ActionType.MARK_CHANGED:
             return {...state, changed: true};
         case ActionType.MARK_UNCHANGED:
@@ -115,6 +152,13 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                     ...(action.newValue < 0 ? {} : (action.newValue >= 100000 ? {tool: "text"} : {tool: "pointer"})),
                     chosen: action.newValue,
                 }};
+        case ActionType.CHANGE_THEME: {
+            const t = action.newValue[0];
+            const nw = action.newValue[1] ? state.walls.map(i => {
+                return {...i, texture: wallConvert(i.texture, t)}
+            }) : state.walls;
+            return {...state, background: {texture: textureOf(t)}, walls: nw};
+        }
         case ActionType.MOVE_WALL:
             const newWalls = state.walls.concat();
             let wall = newWalls[action.newValue[0]];
@@ -173,7 +217,7 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             let wall2 = newWalls2[action.newValue[0]];
             wall2 = {
                 ...wall2,
-                texture: guardNonEmptyString(action.newValue[1], "wall-side"),
+                texture: action.newValue[1],
             };
             newWalls2[action.newValue[0]] = wall2;
             return {
@@ -271,7 +315,8 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 20000 + newnm.length - 1, level: action.level});
         case ActionType.ADD_WALL:
             const newwl = state.walls.concat();
-            newwl.push({pos: newItemPos(state, 1.28 * 2, 1.28 * 2), size: [1.28 * 2, 1.28 * 2], texture: "wall-side"});
+            newwl.push({pos: newItemPos(state, 1.28 * 2, 1.28 * 2), size: [1.28 * 2, 1.28 * 2],
+                texture: wallConvert(WallTexture.WALL_SIDE, themeOf(state))});
             return LevelReducer({
                 ...state,changed: true,
                 walls: newwl

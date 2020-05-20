@@ -5,7 +5,7 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
-import {EnemyInfo, LevelState, WallInfo} from "../../redux/StateType";
+import {EnemyInfo, LevelState, WallInfo, WallTexture} from "../../redux/StateType";
 
 const Toolbar: React.FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -41,7 +41,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         p.changeEnemyType([id, "type" + tp.substr(0, 1), tp.substr(1) === "P"]);
     }
     function chooseWallType(tp: string) {
-        p.changeWallTexture([id, tp]);
+        p.changeWallTexture([id, tp as WallTexture]);
     }
 
     const pathEnabled = p.level.enemies.some((i) => {
@@ -63,8 +63,10 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
             {simpleItem("B", "Shooting (B)")}
         </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseWallType} className={"ml-1" + (!wall ? " toolbar-hide" : "")} value={wallt} type="radio" name="options" defaultValue={"wall-side-side"}>
-            {simpleItem("wall-side", "Wall Side", true)}
-            {simpleItem("wall-top", "Wall Top")}
+            {simpleItem(WallTexture.WALL_SIDE, "Side", true)}
+            {simpleItem(WallTexture.WALL_TOP, "Top")}
+            {simpleItem(WallTexture.VOLCANO_SIDE, "Side (volcano)")}
+            {simpleItem(WallTexture.VOLCANO_TOP, "Top (volcano)")}
         </ToggleButtonGroup>
         <style jsx global>{`
         .toolbar {

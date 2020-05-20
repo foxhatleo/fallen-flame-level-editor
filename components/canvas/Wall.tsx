@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from "react";
 import Item from "./Item";
-import {LevelState} from "../../redux/StateType";
+import {LevelState, WallTexture} from "../../redux/StateType";
 import {bindActionCreators} from "redux";
 import * as Actions from "../../redux/Actions";
 import {connect} from "react-redux";
@@ -12,11 +12,17 @@ const Wall: FunctionComponent<typeof Actions & {
     const wall = p.level.walls[p.id];
     let textureImage = "wall-side";
     switch (wall.texture) {
-        case "wall-side":
+        case WallTexture.WALL_SIDE:
             textureImage = "wall-side";
             break;
-        case "wall-top":
+        case WallTexture.WALL_TOP:
             textureImage = "wall-top";
+            break;
+        case WallTexture.VOLCANO_SIDE:
+            textureImage = "volcano-wall-side";
+            break;
+        case WallTexture.VOLCANO_TOP:
+            textureImage = "volcano-wall-top";
             break;
     }
     function chooseWall() {
