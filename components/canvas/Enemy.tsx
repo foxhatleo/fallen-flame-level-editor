@@ -24,7 +24,7 @@ const Enemy: FunctionComponent<typeof Actions & {
     let texture = "/canvas/new-enemya.png";
     switch (t) {
         case "B":
-            texture = "/canvas/new-enemyb.png";
+            texture = "/canvas/new-enemyb-2.png";
             break;
     }
     const yo = getYO(enemy);
@@ -37,7 +37,7 @@ const Enemy: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 20000 + p.id}
               level={p.level}
-              width={2}
+              width={t == "B" ? 6 : 2}
               height={2}
               yOffset={yo}
               x={enemy.enemypos[0]}
