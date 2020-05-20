@@ -38,7 +38,7 @@ const Enemy: FunctionComponent<typeof Actions & {
         <Item chosen={p.level._editorInfo.chosen == 20000 + p.id}
               level={p.level}
               width={t == "B" ? 6 : 2}
-              height={2}
+              height={t == "B" ? 6 : 2}
               yOffset={yo}
               x={enemy.enemypos[0]}
               y={enemy.enemypos[1]}
