@@ -32,12 +32,12 @@ const Tree: FunctionComponent<typeof Actions & {
             <style jsx>{`
             .tree {
               position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
+              width: 152px;
+              height: 156px;
+              top: -80px;
+              left: -40px;
+              pointer-events: none;
               background: URL(/canvas/trees.png);
-              background-repeat: repeat;
             }
             `}</style>
         </Item>
