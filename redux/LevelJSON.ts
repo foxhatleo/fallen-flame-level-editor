@@ -122,7 +122,7 @@ function checkBGM(bgm: string, msgs: string[]): BGM | undefined {
         msgs.push("A background music is not defined in this level. Please don't forget to choose one.");
         return undefined;
     }
-    if (!Object.values(BGM).includes(bgm)) {
+    if (!Object.values(BGM).includes(bgm as BGM)) {
         msgs.push("This BGM is not supported by this editor. It will be removed from the level.");
         return undefined;
     }
