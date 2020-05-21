@@ -1,4 +1,14 @@
-import {BackgroundTexture, BGM, EnemyInfo, Item, LevelState, LightingInfo, TreeInfo, WallInfo} from "./StateType";
+import {
+    BackgroundTexture,
+    BGM,
+    EnemyInfo,
+    ExtraInfo,
+    Item,
+    LevelState,
+    LightingInfo,
+    TreeInfo,
+    WallInfo
+} from "./StateType";
 import {newEditorInfo} from "./reducers/LevelReducer";
 import {guardInt, guardNonEmptyString, guardNumber} from "./Validators";
 
@@ -117,6 +127,11 @@ function physicsSize(a: [number, number], msgs: string[]): [number, number] {
     return [Math.ceil(a[0] / 1.28) * 1.28, Math.ceil(a[1] / 1.28) * 1.28];
 }
 
+function checkExtra(o: object, msgs: string[]): ExtraInfo {
+    o["extraType"] = o["extraType"].substr(2);
+    return o as ExtraInfo;
+}
+
 function checkBGM(bgm: string, msgs: string[]): BGM | undefined {
     if (!bgm) {
         msgs.push("A background music is not defined in this level. Please don't forget to choose one.");
@@ -146,7 +161,7 @@ function check0(level: object, msgs: string[]): LevelState{
         items: checkList(level, "items", msgs, checkItem, true),
         trees: checkList(level, "trees", msgs, checkTrees, true),
         lighting: checkLightings(level["lighting"], msgs),
-        extras: checkList(level, "extras", msgs, null, true),
+        extras: checkList(level, "extras", msgs, checkExtra, true),
         walls: checkList(level, "walls", msgs, checkWall),
         _editorInfo: null,
         changed: false,
