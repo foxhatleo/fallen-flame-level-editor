@@ -48,8 +48,8 @@ const BGMWindow: FunctionComponent<{
             {p.newLevelMode ? [
                 <b>It is highly recommended that you do not change theme later, as it can be troublesome.</b>
                 , <br/>] : []}
-            Note that wall conversion between volcano and regular is possible, but trees and walls cannot be converted
-            automatically.
+            Note that level editor cannot convert walls to trees, nor the other way around. You will have to manually
+            change them.
             <Form onSubmit={e => { e.preventDefault(); checkOK(); }}>
                 {[
                 ...Object.values(Themes).map((i, ind) => themeItem(i, ind + 1))
