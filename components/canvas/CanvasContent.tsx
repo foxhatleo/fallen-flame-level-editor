@@ -83,7 +83,7 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         ...(p.level.enemies.map((c, i) =>
             ({t:"enemy",k:i,y:c.enemypos[1]}))),
         ...(p.level.items.map((c, i) =>
-            ({t:"enemy",k:i,y:c.itemPos[1]}))),
+            ({t:"item",k:i,y:c.itemPos[1]}))),
         ...(p.level.walls.map((c, i) =>
             ({t:"wall",k:i,y:c.pos[1]}))),
         ...(p.level.trees.map((c, i) =>
@@ -102,8 +102,7 @@ const CanvasContent: FunctionComponent<typeof Actions & {
                         case "exit":
                             return <Exit level={p.level} />;
                         case "enemy":
-                            return [<Enemy level={p.level} id={i.k} key={i.k + 20000}/>,
-                                <PathCoors yo={getYO(p.level.enemies[i.k])} level={p.level} id={i.k} key={"pc" + i.k}/>];
+                            return <Enemy level={p.level} id={i.k} key={i.k + 20000}/>;
                         case "item":
                             return <FlarePickup level={p.level} id={i.k} key={i.k + 30000}/>;
                         case "wall":
@@ -113,6 +112,7 @@ const CanvasContent: FunctionComponent<typeof Actions & {
                     }
                 })).flat()
             }
+            {p.level.enemies.map((_, ind) => <PathCoors yo={getYO(p.level.enemies[ind])} level={p.level} id={ind} key={"pc" + ind}/>)}
             {p.level.texts.map((_, ind) => <Text level={p.level} id={ind} key={"text" + ind} />)}
         </div>
         <style jsx>{`
