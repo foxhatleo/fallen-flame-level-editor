@@ -1,4 +1,4 @@
-import {BackgroundTexture, BGM, EnemyInfo, Item, LevelState, LightingInfo, WallInfo} from "./StateType";
+import {BackgroundTexture, BGM, EnemyInfo, Item, LevelState, LightingInfo, TreeInfo, WallInfo} from "./StateType";
 import {newEditorInfo} from "./reducers/LevelReducer";
 import {guardInt, guardNonEmptyString, guardNumber} from "./Validators";
 
@@ -86,6 +86,12 @@ function checkWall(e: any, msgs: string[]): WallInfo {
     };
 }
 
+function checkTrees(e: any, msgs: string[]): TreeInfo {
+    return {
+        pos: twoNums(e, "pos"),
+    };
+}
+
 function checkLightings(e: any, msgs: string[]): LightingInfo {
     return e as LightingInfo;
 }
@@ -138,6 +144,7 @@ function check0(level: object, msgs: string[]): LevelState{
         background: checkBG(level["background"], msgs),
         enemies: checkList(level, "enemies", msgs, checkEnemy),
         items: checkList(level, "items", msgs, checkItem, true),
+        trees: checkList(level, "trees", msgs, checkTrees, true),
         lighting: checkLightings(level["lighting"], msgs),
         walls: checkList(level, "walls", msgs, checkWall),
         _editorInfo: null,

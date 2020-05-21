@@ -11,6 +11,7 @@ import * as Actions from "../../redux/Actions";
 import PathCoors from "./PathCoors";
 import FlarePickup from "./FlarePickup";
 import Text from "./Text";
+import Tree from "./Tree";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -40,22 +41,41 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+    const renderedObjects = (p.level ? [
+        {t:"player",k:-1,y:p.level.playerpos[1]},
+        {t:"exit",k:-1,y:p.level.exitpos[1]},
+        ...(p.level.enemies.map((c, i) =>
+            ({t:"enemy",k:i,y:c.enemypos[1]}))),
+        ...(p.level.items.map((c, i) =>
+            ({t:"enemy",k:i,y:c.itemPos[1]}))),
+        ...(p.level.walls.map((c, i) =>
+            ({t:"wall",k:i,y:c.pos[1]}))),
+        ...(p.level.trees.map((c, i) =>
+            ({t:"tree",k:i,y:c.pos[1]}))),
+    ] : []).sort((a, b) => ((a["y"] < b["y"]) ? 1 : -1));
+
     return <div className={"ctc"} onMouseDown={dragMouseDown}>
         <div className={"in"}>
             <Grid level={p.level} />
-            {[...Array(p.level.walls.length)].map((_, i) =>
-                <Wall level={p.level} id={i} key={i + 10000}/>)}
-            <Player level={p.level} />
-            <Exit level={p.level} />
-            {[...Array(p.level.enemies.length)].map((_, i) =>
-                [<Enemy level={p.level} id={i} key={i + 20000}/>, <PathCoors yo={getYO(p.level.enemies[i])} level={p.level} id={i} key={i}/>]
-                )}
-            {[...Array(p.level.items.length)].map((_, i) =>
-                <FlarePickup level={p.level} id={i} key={i + 30000}/>
-            )}
-            {[...Array(p.level.texts.length)].map((_, i) =>
-                <Text level={p.level} id={i} key={i + 100000}/>
-            )}
+            {
+                (renderedObjects.map(i => {
+                    switch(i.t) {
+                        case "player":
+                            return <Player level={p.level} />;
+                        case "exit":
+                            return <Exit level={p.level} />;
+                        case "enemy":
+                            return [<Enemy level={p.level} id={i.k} key={i.k + 20000}/>,
+                                <PathCoors yo={getYO(p.level.enemies[i.k])} level={p.level} id={i.k} key={"pc" + i.k}/>];
+                        case "item":
+                            return <FlarePickup level={p.level} id={i.k} key={i.k + 30000}/>;
+                        case "wall":
+                            return <Wall level={p.level} id={i.k} key={i.k + 10000}/>;
+                        case "tree":
+                            return <Tree level={p.level} id={i.k} key={i.k + 40000}/>;
+                    }
+                })).flat()
+            }
         </div>
         <style jsx>{`
             div.ctc {

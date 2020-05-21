@@ -18,6 +18,7 @@ const Navigation: FunctionComponent<{
     onLevelAdvanced: () => void;
     onAddEnemy: () => void;
     onAddWall: () => void;
+    onAddTree: () => void;
     onBGM: () => void;
     onRemove: () => void;
     onFlareCount: () => void;
@@ -55,8 +56,10 @@ const Navigation: FunctionComponent<{
                                       onClick={p.onAddFlare}>Add flare pickup (C)</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel}
                                       onClick={p.onAddText}>Add text (V)</NavDropdown.Item>
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onAddTree}>Add tree (B)</NavDropdown.Item>
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 100000}
-                                      onClick={p.onEditText}>Edit selected text (B)</NavDropdown.Item>
+                                      onClick={p.onEditText}>Edit selected text (L)</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
                                       onClick={p.onRemove}>Remove selected... (D)</NavDropdown.Item>

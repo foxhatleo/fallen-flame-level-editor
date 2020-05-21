@@ -14,6 +14,7 @@ export type LevelState = {
     background: {texture: BackgroundTexture};
     startSneakVal?: number;
     walls: WallInfo[];
+    trees: TreeInfo[];
     _editorInfo: LevelEditorInfo;
     texts?: TextInfo[];
 };
@@ -76,6 +77,10 @@ export type WallInfo = {
     pos: [number, number];
     size: [number, number];
     texture: WallTexture;
+};
+
+export type TreeInfo = {
+    pos: [number, number];
 };
 
 export enum WallTexture {

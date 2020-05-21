@@ -48,6 +48,7 @@ export const newLevel: (psx: number, psy: number, t: Themes) => LevelState =
     enemies: [],
     items: [],
     texts: [],
+    trees: [],
     lighting: {
         "color":	  	[0, 0, 0, 0],
         "gamma":		true,
@@ -169,6 +170,17 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             newWalls[action.newValue[0]] = wall;
             return {...state,changed: true,
                 walls: newWalls
+            };
+        case ActionType.MOVE_TREE:
+            const tl2 = state.trees.concat();
+            let tli = tl2[action.newValue[0]];
+            tli = {
+                ...tli,
+                pos: action.newValue[1],
+            };
+            tl2[action.newValue[0]] = tli;
+            return {...state,changed: true,
+                trees: tl2
             };
         case ActionType.CHANGE_TEXT: {
             const newWalls = state.texts.concat();
@@ -321,6 +333,13 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 ...state,changed: true,
                 walls: newwl
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 10000 + newwl.length - 1, level: action.level});
+        case ActionType.ADD_TREE:
+            const tl = state.trees.concat();
+            tl.push({pos: newItemPos(state, 152 / 50, 156 / 50)});
+            return LevelReducer({
+                ...state,changed: true,
+                trees: tl
+            }, {type: ActionType.EDITOR_CHOOSE, newValue: 40000 + tl.length - 1, level: action.level});
         case ActionType.ADD_TEXT: {
             const newwl = state.texts.concat();
             newwl.push({pos: newItemPos(state, 5, 5), size: [5, 5], text: action.newValue});
@@ -345,6 +364,10 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 const newen = state.items.concat();
                 newen.splice(c - 30000, 1);
                 updates["items"] = newen;
+            } else if (c >= 40000 && c < 50000) {
+                const treeslst = state.trees.concat();
+                treeslst.splice(c - 40000, 1);
+                updates["trees"] = treeslst;
             } else if (c >= 100000) {
                 const nt = state.texts.concat();
                 nt.splice(c - 100000, 1);

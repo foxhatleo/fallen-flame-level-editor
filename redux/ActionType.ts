@@ -39,6 +39,8 @@ export enum ActionType {
     RESIZE_TEXT,
     CHANGE_TEXT,
     CHANGE_THEME,
+    ADD_TREE,
+    MOVE_TREE
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -75,6 +77,7 @@ export type Action =
     | NumberSetterAction<ActionType.SET_VIEW_X>
     | NumberSetterAction<ActionType.SET_VIEW_Y>
     | SetterAction<ActionType.MOVE_WALL, [number, [number, number]]>
+    | SetterAction<ActionType.MOVE_TREE, [number, [number, number]]>
     | SetterAction<ActionType.MOVE_TEXT, [number, [number, number]]>
     | SetterAction<ActionType.MOVE_ITEM, [number, [number, number]]>
     | SetterAction<ActionType.RESIZE_WALL, [number, [number, number]]>
@@ -85,6 +88,7 @@ export type Action =
     | LevelAction<ActionType.ADD_ENEMY>
     | LevelAction<ActionType.ADD_WALL>
     | LevelAction<ActionType.ADD_ITEM>
+    | LevelAction<ActionType.ADD_TREE>
     | StringSetterAction<ActionType.ADD_TEXT>
     | LevelAction<ActionType.REMOVE>
     | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>

@@ -108,13 +108,17 @@ class App extends React.Component<typeof Actions & {
         } else if (key == "d") {
             this.onRemove();
         } else if (key == "z") {
-            this.props.addWall();
+            this.onAddWall();
         } else if (key == "x") {
-            this.props.addEnemy();
+            this.onAddEnemy();
         } else if (key == "c") {
-            this.props.addItem();
+            this.onAddFlare();
         } else if (key == "v") {
             this.onAddText();
+        } else if (key == "b") {
+            this.onAddTree();
+        } else if (key == "l") {
+            this.onEditText();
         }
     }
 
@@ -333,10 +337,12 @@ class App extends React.Component<typeof Actions & {
     }
 
     private onAddFlare(): void {
+        if (!this.props.currentLevel) return;
         this.props.addItem();
     }
 
     private onAddEnemy(): void {
+        if (!this.props.currentLevel) return;
         this.props.addEnemy();
     }
 
@@ -362,7 +368,13 @@ class App extends React.Component<typeof Actions & {
     }
 
     private onAddWall(): void {
+        if (!this.props.currentLevel) return;
         this.props.addWall();
+    }
+
+    private onAddTree(): void {
+        if (!this.props.currentLevel) return;
+        this.props.addTree();
     }
 
     private onAddText(): void {
@@ -404,6 +416,7 @@ class App extends React.Component<typeof Actions & {
                         onBGM={this.onBGM.bind(this)}
                         onAddFlare={this.onAddFlare.bind(this)}
                         onAddText={this.onAddText.bind(this)}
+                        onAddTree={this.onAddTree.bind(this)}
                         onEditText={this.onEditText.bind(this)}
                         onFlareCount={this.onFlareCount.bind(this)}
                         onTheme={this.onTheme.bind(this)}/>
