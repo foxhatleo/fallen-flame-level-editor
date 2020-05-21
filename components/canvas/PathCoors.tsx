@@ -80,7 +80,8 @@ const PathCoors: FunctionComponent<typeof Actions & {
         p.updatePathCoors([p.id, newCoors]);
     }
 
-    return <svg height="3000" width="3000" style={{position: "absolute", top: 0, left: 0, marginLeft: 3000, marginTop: 3000}}>
+    return p.level._editorInfo.backgroundEdit ? <React.Fragment /> :
+        <svg height="3000" width="3000" style={{position: "absolute", top: 0, left: 0, marginLeft: 3000, marginTop: 3000}}>
         {pcp.map(([[x1, y1], [x2, y2]], i) => {
             return <line ref={lineRefs[i]} key={1000 + i} x1={v(x1)} y1={y(y1)} x2={v(x2)} y2={y(y2)} className={"l1"} />;
         })}
