@@ -61,8 +61,8 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         ry < 0 || ry > p.level.physicsSize[1] * 50) return;
         p.addTreeAt([
            [
-               rx / 50,
-               p.level.physicsSize[1] - ry / 50
+               Math.round((rx / 50) / 1.28 * 2) * 1.28 / 2,
+               Math.round(((p.level.physicsSize[1] - ry / 50)) / 1.28 * 2) * 1.28 / 2,
            ], false
         ]);
     }

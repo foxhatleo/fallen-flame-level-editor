@@ -45,6 +45,8 @@ const BGMWindow: FunctionComponent<{
             <Modal.Title>Choose theme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+            Note that wall conversion between volcano and regular is possible, but trees and walls cannot be converted
+            automatically.
             <Form onSubmit={e => { e.preventDefault(); checkOK(); }}>
                 {[
                 ...Object.values(Themes).map((i, ind) => themeItem(i, ind + 1))

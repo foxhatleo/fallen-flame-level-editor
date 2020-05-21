@@ -19,12 +19,12 @@ const Tree: FunctionComponent<typeof Actions & {
     return (
         <Item chosen={p.level._editorInfo.chosen == 40000 + p.id}
               level={p.level}
-              width={152/50}
-              height={156/50}
+              width={1.28}
+              height={1.28}
               x={tree.pos[0]}
               y={tree.pos[1]}
-              yOffset={40}
               resizable={false}
+              divisible={1.28}
               movable={true}
               onChoose={chooseTree}
               onMove={moveTree}>
