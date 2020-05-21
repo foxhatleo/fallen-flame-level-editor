@@ -56,6 +56,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
         {item("pointer", "mouse-pointer", "S")}
         {item("path", "project-diagram", "P", false, !pathEnabled)}
         {item("text", "closed-captioning", "T", false, !textEnabled)}
+        {item("tree", "tree", "Y", false)}
     </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseEnemyType} className={"ml-1" + (!enemy ? " toolbar-hide" : "")} value={enet} type="radio" name="options" defaultValue={"A"}>
             {simpleItem("A", "Regular (A)", true)}

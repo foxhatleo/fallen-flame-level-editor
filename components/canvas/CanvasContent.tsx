@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from "react";
+import React, {FunctionComponent, MutableRefObject, Ref, useRef, useState} from "react";
 import EditorState, {LevelState} from "../../redux/StateType";
 import Grid from "./Grid";
 import {connect} from "react-redux";
@@ -12,9 +12,11 @@ import PathCoors from "./PathCoors";
 import FlarePickup from "./FlarePickup";
 import Text from "./Text";
 import Tree from "./Tree";
+import {addTree} from "../../redux/Actions";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
+    ctcRef: MutableRefObject<HTMLDivElement>;
 }> = (p) => {
     const px = p.level._editorInfo.view[0];
     const py = p.level._editorInfo.view[1];
@@ -24,10 +26,13 @@ const CanvasContent: FunctionComponent<typeof Actions & {
     function dragMouseDown(e) {
         e.preventDefault();
         p.editorChoose(-1);
+        window["__dragged"] = false;
         document.onmouseup = closeDrag;
         document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, px, py);
     }
     function eleDrag(cx, cy, px, py, e) {
+        if (Math.abs(cx - e.clientX) > 3 || Math.abs(cy - e.clientY) > 3)
+            window["__dragged"] = true;
         e.preventDefault();
         // calculate the new cursor position:
         p.editorUpdateViewX(px - cx + e.clientX);
@@ -36,11 +41,32 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         // elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         // elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
-    function closeDrag() {
+    function closeDrag(e: MouseEvent) {
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
+        if (!window["__dragged"] && tool == "tree")
+            dropTree(e.clientX, e.clientY);
     }
+
+    function dropTree(cx: number, cy: number) {
+        if (!p.ctcRef.current) return;
+        const bcr = p.ctcRef.current.getBoundingClientRect();
+        const cvx = cx - bcr.left;
+        const cvy = cy - bcr.top;
+        const rx = cvx - px;
+        const ry = cvy - py;
+        console.log(cvx, cvy, rx, ry, rx / 50, p.level.physicsSize[1] - ry / 50);
+        if (rx < 0 || rx > p.level.physicsSize[0] * 50 ||
+        ry < 0 || ry > p.level.physicsSize[1] * 50) return;
+        p.addTreeAt([
+           [
+               rx / 50,
+               p.level.physicsSize[1] - ry / 50
+           ], false
+        ]);
+    }
+
     const renderedObjects = (p.level ? [
         {t:"player",k:-1,y:p.level.playerpos[1]},
         {t:"exit",k:-1,y:p.level.exitpos[1]},
@@ -79,7 +105,8 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         </div>
         <style jsx>{`
             div.ctc {
-                cursor: ${tool == "hand" ? "grab" : "unset"};
+                cursor: ${tool == "hand" ? "grab" :
+            (tool == "tree" ? "copy" : "unset")};
                 margin-top: ${py - 3000}px;
                 margin-left: ${px - 3000}px;
                 position: absolute;

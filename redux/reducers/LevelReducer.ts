@@ -334,12 +334,16 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 walls: newwl
             }, {type: ActionType.EDITOR_CHOOSE, newValue: 10000 + newwl.length - 1, level: action.level});
         case ActionType.ADD_TREE:
+            return LevelReducer(state, {type: ActionType.ADD_TREE_AT,
+                newValue: [newItemPos(state, 152 / 50, 156 / 50), true], level: action.level});
+        case ActionType.ADD_TREE_AT:
             const tl = state.trees.concat();
-            tl.push({pos: newItemPos(state, 152 / 50, 156 / 50)});
-            return LevelReducer({
+            tl.push({pos: action.newValue[0]});
+            const st = {
                 ...state,changed: true,
                 trees: tl
-            }, {type: ActionType.EDITOR_CHOOSE, newValue: 40000 + tl.length - 1, level: action.level});
+            };
+            return action.newValue[1] ? LevelReducer(st, {type: ActionType.EDITOR_CHOOSE, newValue: 40000 + tl.length - 1, level: action.level}) : st;
         case ActionType.ADD_TEXT: {
             const newwl = state.texts.concat();
             newwl.push({pos: newItemPos(state, 5, 5), size: [5, 5], text: action.newValue});

@@ -45,5 +45,6 @@ export const addEnemy = marker(ActionType.ADD_ENEMY);
 export const addWall = marker(ActionType.ADD_WALL);
 export const addItem = marker(ActionType.ADD_ITEM);
 export const addTree = marker(ActionType.ADD_TREE);
+export const addTreeAt = updater<[[number, number], boolean]>(ActionType.ADD_TREE_AT);
 export const addText = updater<string>(ActionType.ADD_TEXT);
 export const remove = marker(ActionType.REMOVE);

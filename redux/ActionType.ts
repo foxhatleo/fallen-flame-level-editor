@@ -40,6 +40,7 @@ export enum ActionType {
     CHANGE_TEXT,
     CHANGE_THEME,
     ADD_TREE,
+    ADD_TREE_AT,
     MOVE_TREE
 }
 
@@ -89,6 +90,7 @@ export type Action =
     | LevelAction<ActionType.ADD_WALL>
     | LevelAction<ActionType.ADD_ITEM>
     | LevelAction<ActionType.ADD_TREE>
+    | SetterAction<ActionType.ADD_TREE_AT, [[number, number], boolean]>
     | StringSetterAction<ActionType.ADD_TEXT>
     | LevelAction<ActionType.REMOVE>
     | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>

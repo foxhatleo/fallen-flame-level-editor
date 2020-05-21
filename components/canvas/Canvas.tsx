@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from "react";
+import React, {FunctionComponent, useRef} from "react";
 import Toolbar from "./Toolbar";
 import CanvasContent from "./CanvasContent";
 import {LevelState} from "../../redux/StateType";
@@ -7,9 +7,10 @@ import Warning from "./Warning";
 const Canvas: FunctionComponent<{
     level: LevelState;
 }> = (p) => {
-    return <div className={"canvas"}>
+    const ctcRef = useRef<HTMLDivElement>();
+    return <div className={"canvas"} ref={ctcRef}>
         <Toolbar level={p.level} />
-        <CanvasContent level={p.level} />
+        <CanvasContent level={p.level} ctcRef={ctcRef} />
         <Warning level={p.level} />
         <style jsx>{`
         .canvas {

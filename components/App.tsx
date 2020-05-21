@@ -14,7 +14,7 @@ import {
     faMousePointer,
     faPlay,
     faProjectDiagram,
-    faStop
+    faStop, faTree
 } from "@fortawesome/free-solid-svg-icons";
 import {LevelStore} from "redux/LevelStore";
 import {connect} from "react-redux";
@@ -31,7 +31,7 @@ import FlareCountWindow from "./editor/FlareCountWindow";
 import TextWindow from "./editor/TextWindow";
 import ThemeSelectWindow from "./editor/ThemeSelectWindow";
 
-library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faExclamationTriangle, faClosedCaptioning);
+library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faTree, faExclamationTriangle, faClosedCaptioning);
 
 /**
  * An enum that indicates what action state the app is in at the moment.
