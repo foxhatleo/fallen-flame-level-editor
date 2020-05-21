@@ -29,7 +29,7 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
     function item(id: string, icon: IconProp, shortcut: string, defaultChecked: boolean = false, disabled: boolean = false) {
         return <ToggleButton variant="light" type="radio" name="radio" disabled={disabled} defaultChecked={defaultChecked} value={id}>
             <FontAwesomeIcon icon={icon} />
-            ({shortcut})
+            {shortcut ? `(${shortcut})` : ""}
         </ToggleButton>;
     }
     function simpleItem(id: string, friendly: string, defaultChecked: boolean = false) {
@@ -54,9 +54,14 @@ const Toolbar: React.FunctionComponent<typeof Actions & {
                               onChange={p.editorChangeTool} type="radio" name="options" defaultValue="hand">
         {item("hand", "hand-paper", "A", true)}
         {item("pointer", "mouse-pointer", "S")}
-        {item("path", "project-diagram", "P", false, !pathEnabled)}
-        {item("text", "closed-captioning", "T", false, !textEnabled)}
-        {item("tree", "tree", "Y", false)}
+        {!p.level._editorInfo.backgroundEdit ? [item("path", "project-diagram", "P", false, !pathEnabled)
+        ,item("text", "closed-captioning", "T", false, !textEnabled)
+        ,item("tree", "tree", "Y", false)] : [
+            item("bg-v", "grip-vertical", null, false)
+            ,item("bg-h", "grip-horizontal", null, false)
+            ,item("bg-s", "square", null, false)
+            ,item("bg-p", "smog", null, false)
+        ]}
     </ToggleButtonGroup>
         <ToggleButtonGroup onChange={chooseEnemyType} className={"ml-1" + (!enemy ? " toolbar-hide" : "")} value={enet} type="radio" name="options" defaultValue={"A"}>
             {simpleItem("A", "Regular (A)", true)}

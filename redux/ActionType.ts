@@ -1,5 +1,5 @@
 import {Action as ReduxAction} from "redux";
-import {BackgroundTexture, BGM, LevelState, Themes, WallTexture} from "./StateType";
+import {BackgroundTexture, BGM, ExtraType, LevelState, Themes, WallTexture} from "./StateType";
 
 export enum ActionType {
     UPDATE_NAME,
@@ -41,7 +41,10 @@ export enum ActionType {
     CHANGE_THEME,
     ADD_TREE,
     ADD_TREE_AT,
-    MOVE_TREE
+    MOVE_TREE,
+    TOGGLE_BG,
+    MOVE_EXTRA,
+    ADD_EXTRA,
 }
 
 interface PureAction<T extends ActionType> extends ReduxAction<T> { }
@@ -70,6 +73,7 @@ export type Action =
     | NumberSetterAction<ActionType.UPDATE_FPS_UPPER>
     | LevelAction<ActionType.MARK_CHANGED>
     | LevelAction<ActionType.MARK_UNCHANGED>
+    | LevelAction<ActionType.TOGGLE_BG>
     | SetterAction<ActionType.EDITOR_NEW_LEVEL, LevelState>
     | StringSetterAction<ActionType.EDITOR_CHANGE_TOOL>
     | PureAction<ActionType.EDITOR_CLOSE_LEVEL>
@@ -86,11 +90,13 @@ export type Action =
     | SetterAction<ActionType.MOVE_PLAYER, [number, number]>
     | SetterAction<ActionType.MOVE_EXIT, [number, number]>
     | SetterAction<ActionType.MOVE_ENEMY, [number, [number, number], boolean?]>
+    | SetterAction<ActionType.MOVE_EXTRA, [number, [number, number]]>
     | LevelAction<ActionType.ADD_ENEMY>
     | LevelAction<ActionType.ADD_WALL>
     | LevelAction<ActionType.ADD_ITEM>
     | LevelAction<ActionType.ADD_TREE>
     | SetterAction<ActionType.ADD_TREE_AT, [[number, number], boolean]>
+    | SetterAction<ActionType.ADD_EXTRA, [[number, number], ExtraType]>
     | StringSetterAction<ActionType.ADD_TEXT>
     | LevelAction<ActionType.REMOVE>
     | SetterAction<ActionType.CHANGE_ENEMY_TYPE, [number, string, boolean]>

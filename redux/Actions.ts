@@ -1,5 +1,5 @@
 import {Action, ActionType} from "./ActionType";
-import {BackgroundTexture, BGM, LevelState, Themes, WallTexture} from "./StateType";
+import {BackgroundTexture, BGM, ExtraType, LevelState, Themes, WallTexture} from "./StateType";
 
 const updater = <T> (type: ActionType):
     ((newValue: T, level?: number | LevelState) => Action) => ((newValue: T, level?: number | LevelState) =>
@@ -28,6 +28,7 @@ export const editorUpdateViewX = updater<number>(ActionType.SET_VIEW_X);
 export const editorUpdateViewY = updater<number>(ActionType.SET_VIEW_Y);
 export const editorChoose = updater<number>(ActionType.EDITOR_CHOOSE);
 export const moveWall = updater<[number, [number, number]]>(ActionType.MOVE_WALL);
+export const moveExtra = updater<[number, [number, number]]>(ActionType.MOVE_EXTRA);
 export const moveText = updater<[number, [number, number]]>(ActionType.MOVE_TEXT);
 export const moveItem = updater<[number, [number, number]]>(ActionType.MOVE_ITEM);
 export const resizeWall = updater<[number, [number, number]]>(ActionType.RESIZE_WALL);
@@ -42,9 +43,11 @@ export const updatePathCoors = updater<[number, [number, number][]]>(ActionType.
 export const changeWallTexture = updater<[number, WallTexture]>(ActionType.CHANGE_WALL_TEXTURE);
 export const changeTheme = updater<[Themes, boolean]>(ActionType.CHANGE_THEME);
 export const addEnemy = marker(ActionType.ADD_ENEMY);
+export const toggleBackground = marker(ActionType.TOGGLE_BG);
 export const addWall = marker(ActionType.ADD_WALL);
 export const addItem = marker(ActionType.ADD_ITEM);
 export const addTree = marker(ActionType.ADD_TREE);
 export const addTreeAt = updater<[[number, number], boolean]>(ActionType.ADD_TREE_AT);
+export const addExtra = updater<[[number, number], ExtraType]>(ActionType.ADD_EXTRA);
 export const addText = updater<string>(ActionType.ADD_TEXT);
 export const remove = marker(ActionType.REMOVE);

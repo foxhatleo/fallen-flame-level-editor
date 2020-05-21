@@ -27,6 +27,7 @@ const Navigation: FunctionComponent<{
     onAddText: () => void;
     onEditText: () => void;
     onTheme: () => void;
+    onToggleBackgroundEdit: () => void;
     currentLevel: LevelState;
 }> = (p) => {
     const w = <span style={{color: "#FF4500"}}><FontAwesomeIcon icon={'exclamation-triangle'} /></span>;
@@ -37,7 +38,8 @@ const Navigation: FunctionComponent<{
     const wn2 = c1 ? w : "";
     const wn3 = c2 ? w : "";
     return <React.Fragment>
-        <Navbar fixed="top" className="mb-2" bg="dark" variant="dark">
+        <Navbar fixed="top" className="mb-2" bg={p.currentLevel && p.currentLevel._editorInfo.backgroundEdit ? "info" : "dark"}
+                variant={p.currentLevel && p.currentLevel._editorInfo.backgroundEdit ? "light" : "dark"}>
             <Nav className="mr-auto">
                 <NavDropdown title="File" id={"file-nav"}>
                     <NavDropdown.Item onClick={p.onNew}>New empty level</NavDropdown.Item>
@@ -48,18 +50,21 @@ const Navigation: FunctionComponent<{
                                       onClick={p.onClose}>Close level</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown title="Edit" id={"add-nav"}>
-                    <NavDropdown.Item disabled={!p.currentLevel}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit}
                                       onClick={p.onAddWall}>Add wall (Z)</NavDropdown.Item>
-                    <NavDropdown.Item disabled={!p.currentLevel}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit}
                                       onClick={p.onAddEnemy}>Add enemy (X)</NavDropdown.Item>
-                    <NavDropdown.Item disabled={!p.currentLevel}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit}
                                       onClick={p.onAddFlare}>Add flare pickup (C)</NavDropdown.Item>
-                    <NavDropdown.Item disabled={!p.currentLevel}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit}
                                       onClick={p.onAddText}>Add text (V)</NavDropdown.Item>
-                    <NavDropdown.Item disabled={!p.currentLevel}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit}
                                       onClick={p.onAddTree}>Add tree (B)</NavDropdown.Item>
-                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 100000}
+                    <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.backgroundEdit || p.currentLevel._editorInfo.chosen < 100000}
                                       onClick={p.onEditText}>Edit selected text (L)</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item disabled={!p.currentLevel}
+                                      onClick={p.onToggleBackgroundEdit}>{p.currentLevel && p.currentLevel._editorInfo.backgroundEdit ? "Leave" : "Enter"} background edit (M)</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item disabled={!p.currentLevel || p.currentLevel._editorInfo.chosen < 10000}
                                       onClick={p.onRemove}>Remove selected... (D)</NavDropdown.Item>

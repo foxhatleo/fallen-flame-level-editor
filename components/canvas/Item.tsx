@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import React, {FunctionComponent} from "react";
 import {LevelState} from "../../redux/StateType";
 import {guardNumber, guardRange} from "../../redux/Validators";
 
@@ -18,6 +18,7 @@ const Item: FunctionComponent<{
     onMove?: (x: number, y: number) => void;
     onChoose?: () => void;
     textMode?: boolean;
+    neverHide?: boolean;
 }> = (p) => {
     const resizable = typeof p.resizable === "undefined" ? false : p.resizable;
     const movable = typeof p.movable === "undefined" ? true : p.movable;
@@ -150,7 +151,7 @@ const Item: FunctionComponent<{
         document.onmousemove = eleDrag.bind(this, e.clientX, e.clientY, p.x, p.y, p.width, p.height, p.divisible, spot);
     }
 
-    return <div onMouseDown={mouseDown} className={"item-out" + (p.chosen ? " chosen" : "")}>
+    return p.neverHide || !p.level._editorInfo.backgroundEdit ? <div onMouseDown={mouseDown} className={"item-out" + (p.chosen ? " chosen" : "")}>
         {p.children}
         <div className={"rs tl"} onMouseDown={resizeDown.bind(this, 0)} />
         <div className={"rs t"} onMouseDown={resizeDown.bind(this, 1)} />
@@ -200,7 +201,7 @@ const Item: FunctionComponent<{
         .b { top: 100%; left: 50%; cursor: ns-resize; }
         .br { top: 100%; left: 100%; cursor: nwse-resize; }
         `}</style>
-        </div>;
+        </div> : <React.Fragment />;
 }
 
 export default Item;

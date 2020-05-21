@@ -9,11 +9,11 @@ import ImportWindow from "./editor/ImportWindow";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {
     faClosedCaptioning,
-    faExclamationTriangle,
+    faExclamationTriangle, faGripHorizontal, faGripVertical,
     faHandPaper,
     faMousePointer,
     faPlay,
-    faProjectDiagram,
+    faProjectDiagram, faSmog, faSquare,
     faStop, faTree
 } from "@fortawesome/free-solid-svg-icons";
 import {LevelStore} from "redux/LevelStore";
@@ -31,7 +31,9 @@ import FlareCountWindow from "./editor/FlareCountWindow";
 import TextWindow from "./editor/TextWindow";
 import ThemeSelectWindow from "./editor/ThemeSelectWindow";
 
-library.add(faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faTree, faExclamationTriangle, faClosedCaptioning);
+library.add(
+    faGripVertical, faGripHorizontal, faSquare, faSmog,
+    faHandPaper, faMousePointer, faProjectDiagram, faPlay, faStop, faTree, faExclamationTriangle, faClosedCaptioning);
 
 /**
  * An enum that indicates what action state the app is in at the moment.
@@ -119,6 +121,8 @@ class App extends React.Component<typeof Actions & {
             this.onAddTree();
         } else if (key == "l") {
             this.onEditText();
+        } else if (key == "m") {
+            this.onToggleBackground();
         }
     }
 
@@ -399,6 +403,10 @@ class App extends React.Component<typeof Actions & {
         this.props.remove();
     }
 
+    private onToggleBackground(): void {
+        this.props.toggleBackground();
+    }
+
     render() {
         return <React.Fragment>
             <Navigation onClose={this.onClose.bind(this)}
@@ -419,6 +427,7 @@ class App extends React.Component<typeof Actions & {
                         onAddTree={this.onAddTree.bind(this)}
                         onEditText={this.onEditText.bind(this)}
                         onFlareCount={this.onFlareCount.bind(this)}
+                        onToggleBackgroundEdit={this.onToggleBackground.bind(this)}
                         onTheme={this.onTheme.bind(this)}/>
             <TabScreen />
             <NameWindow show={this.nameWindowShowing}

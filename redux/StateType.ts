@@ -15,6 +15,7 @@ export type LevelState = {
     startSneakVal?: number;
     walls: WallInfo[];
     trees: TreeInfo[];
+    extras: ExtraInfo[];
     _editorInfo: LevelEditorInfo;
     texts?: TextInfo[];
 };
@@ -46,6 +47,18 @@ export enum BGM {
     the_deep_long_tunnel = "the-deep-long-tunnel",
     chess = "chess",
     // feud_of_nora_dog_and_nora_cat = "feud-of-nora-dog-and-nora-cat",
+}
+
+export type ExtraInfo = {
+    extraPos: [number, number];
+    extraType: ExtraType;
+}
+
+export enum ExtraType {
+    HORIZONTAL = "horizontal",
+    SQUARE = "square",
+    VERTICAL = "vertical",
+    PATCH = "patch"
 }
 
 export type TextInfo = {
@@ -94,6 +107,7 @@ export type LevelEditorInfo = {
     tool: string;
     chosen: number;
     view: [number, number];
+    backgroundEdit: boolean;
 };
 
 declare type EditorState = {

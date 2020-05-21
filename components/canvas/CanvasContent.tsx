@@ -1,5 +1,5 @@
 import React, {FunctionComponent, MutableRefObject, Ref, useRef, useState} from "react";
-import EditorState, {LevelState} from "../../redux/StateType";
+import EditorState, {ExtraType, LevelState} from "../../redux/StateType";
 import Grid from "./Grid";
 import {connect} from "react-redux";
 import Wall from "./Wall";
@@ -13,6 +13,7 @@ import FlarePickup from "./FlarePickup";
 import Text from "./Text";
 import Tree from "./Tree";
 import {addTree} from "../../redux/Actions";
+import Extra from "./Extra";
 
 const CanvasContent: FunctionComponent<typeof Actions & {
     level: LevelState;
@@ -45,11 +46,22 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
-        if (!window["__dragged"] && tool == "tree")
-            dropTree(e.clientX, e.clientY);
+        if (!window["__dragged"]) {
+            if (tool == "tree") {
+                drop((x, y) => { p.addTreeAt([[x,y],false]);  }, e.clientX, e.clientY);
+            } else if (tool == "bg-v") {
+                drop((x,y)=>{p.addExtra([[x,y],ExtraType.VERTICAL]);}, e.clientX, e.clientY);
+            } else if (tool == "bg-h") {
+                drop((x,y)=>{p.addExtra([[x,y],ExtraType.HORIZONTAL]);}, e.clientX, e.clientY);
+            } else if (tool == "bg-s") {
+                drop((x,y)=>{p.addExtra([[x,y],ExtraType.SQUARE]);}, e.clientX, e.clientY);
+            } else if (tool == "bg-p") {
+                drop((x,y)=>{p.addExtra([[x,y],ExtraType.PATCH]);}, e.clientX, e.clientY);
+            }
+        }
     }
 
-    function dropTree(cx: number, cy: number) {
+    function drop(func: (x: number, y: number) => void, cx: number, cy: number) {
         if (!p.ctcRef.current) return;
         const bcr = p.ctcRef.current.getBoundingClientRect();
         const cvx = cx - bcr.left;
@@ -59,12 +71,10 @@ const CanvasContent: FunctionComponent<typeof Actions & {
         console.log(cvx, cvy, rx, ry, rx / 50, p.level.physicsSize[1] - ry / 50);
         if (rx < 0 || rx > p.level.physicsSize[0] * 50 ||
         ry < 0 || ry > p.level.physicsSize[1] * 50) return;
-        p.addTreeAt([
-           [
-               Math.round((rx / 50) / 1.28 * 2) * 1.28 / 2,
-               Math.round(((p.level.physicsSize[1] - ry / 50)) / 1.28 * 2) * 1.28 / 2,
-           ], false
-        ]);
+        func(
+            Math.round((rx / 50) / 1.28 * 2) * 1.28 / 2,
+            Math.round(((p.level.physicsSize[1] - ry / 50)) / 1.28 * 2) * 1.28 / 2
+        );
     }
 
     const renderedObjects = (p.level ? [
@@ -83,6 +93,7 @@ const CanvasContent: FunctionComponent<typeof Actions & {
     return <div className={"ctc"} onMouseDown={dragMouseDown}>
         <div className={"in"}>
             <Grid level={p.level} />
+            {p.level.extras.map((_, ind) => <Extra level={p.level} id={ind} key={"ext" + ind} />)}
             {
                 (renderedObjects.map(i => {
                     switch(i.t) {
@@ -102,11 +113,12 @@ const CanvasContent: FunctionComponent<typeof Actions & {
                     }
                 })).flat()
             }
+            {p.level.texts.map((_, ind) => <Text level={p.level} id={ind} key={"text" + ind} />)}
         </div>
         <style jsx>{`
             div.ctc {
                 cursor: ${tool == "hand" ? "grab" :
-            (tool == "tree" ? "copy" : "unset")};
+            (tool == "tree" || tool.substr(0, 2) == "bg" ? "copy" : "unset")};
                 margin-top: ${py - 3000}px;
                 margin-left: ${px - 3000}px;
                 position: absolute;

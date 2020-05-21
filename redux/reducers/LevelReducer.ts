@@ -1,7 +1,7 @@
 import {Action, ActionType} from "../ActionType";
 import {
     BackgroundTexture,
-    EnemyInfo,
+    EnemyInfo, ExtraInfo,
     LevelEditorInfo,
     LevelState,
     Themes,
@@ -70,8 +70,9 @@ export const newLevel: (psx: number, psy: number, t: Themes) => LevelState =
     changed: true,
     enemies: [],
     items: [],
+    extras: [],
     texts: [],
-    trees: Themes.FOREST ? [
+    trees: t == Themes.FOREST ? [
         ...trees([1.28/2, 1.28/2], [1.28/2, psy-1.28/2]),
         ...trees([1.28/2, psy-1.28/2], [psx-1.28/2, psy-1.28/2]),
         ...trees([psx-1.28/2, 1.28/2], [psx-1.28/2, psy-1.28/2]),
@@ -119,6 +120,7 @@ export const newEditorInfo = (): LevelEditorInfo => (
         chosen: -1,
         tool: "hand",
         view: [0, 0],
+        backgroundEdit: false,
     }
 );
 
@@ -181,6 +183,13 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                     ...(action.newValue < 0 ? {} : (action.newValue >= 100000 ? {tool: "text"} : {tool: "pointer"})),
                     chosen: action.newValue,
                 }};
+        case ActionType.TOGGLE_BG:
+            return {...state, _editorInfo: {
+                    ...state._editorInfo,
+                    tool: "pointer",
+                    backgroundEdit: !state._editorInfo.backgroundEdit,
+                    chosen: -1,
+                }};
         case ActionType.CHANGE_THEME: {
             const t = action.newValue[0];
             const nw = action.newValue[1] ? state.walls.map(i => {
@@ -199,6 +208,18 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
             return {...state,changed: true,
                 walls: newWalls
             };
+        case ActionType.MOVE_EXTRA: {
+            const newe = state.extras.concat();
+            let e: ExtraInfo = newe[action.newValue[0]];
+            e = {
+                ...e,
+                extraPos: action.newValue[1],
+            };
+            newe[action.newValue[0]] = e;
+            return {...state,changed: true,
+                extras: newe
+            };
+        }
         case ActionType.MOVE_TREE:
             const tl2 = state.trees.concat();
             let tli = tl2[action.newValue[0]];
@@ -372,6 +393,16 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 trees: tl
             };
             return action.newValue[1] ? LevelReducer(st, {type: ActionType.EDITOR_CHOOSE, newValue: 40000 + tl.length - 1, level: action.level}) : st;
+        case ActionType.ADD_EXTRA:
+            const ex = state.extras.concat();
+            ex.push({
+                extraPos: action.newValue[0],
+                extraType: action.newValue[1],
+            });
+            return {
+                ...state,changed: true,
+                extras: ex
+            };
         case ActionType.ADD_TEXT: {
             const newwl = state.texts.concat();
             newwl.push({pos: newItemPos(state, 5, 5), size: [5, 5], text: action.newValue});
@@ -400,6 +431,10 @@ export default function LevelReducer(state: LevelState, action: Action): LevelSt
                 const treeslst = state.trees.concat();
                 treeslst.splice(c - 40000, 1);
                 updates["trees"] = treeslst;
+            } else if (c >= 50000 && c < 70000) {
+                const exl = state.extras.concat();
+                exl.splice(c - 50000, 1);
+                updates["extras"] = exl;
             } else if (c >= 100000) {
                 const nt = state.texts.concat();
                 nt.splice(c - 100000, 1);

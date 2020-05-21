@@ -146,6 +146,7 @@ function check0(level: object, msgs: string[]): LevelState{
         items: checkList(level, "items", msgs, checkItem, true),
         trees: checkList(level, "trees", msgs, checkTrees, true),
         lighting: checkLightings(level["lighting"], msgs),
+        extras: checkList(level, "extras", msgs, null, true),
         walls: checkList(level, "walls", msgs, checkWall),
         _editorInfo: null,
         changed: false,
@@ -178,6 +179,21 @@ export function encode(level: LevelState): object {
         }
     }
     round(rj);
+    let etp;
+    switch(level.background.texture) {
+        case BackgroundTexture.FLOOR_TILE:
+            etp = "c";
+            break;
+        case BackgroundTexture.VOLCANO_TILE:
+            etp = "v";
+            break;
+        case BackgroundTexture.FOREST_TILE:
+            etp = "f";
+            break;
+    }
+    for (let o of rj["extras"]) {
+        o["extraType"] = etp + "-" + o["extraType"];
+    }
     rj["graphicSize"] = [800, 600];
     delete rj["_editorInfo"];
     delete rj["changed"];
