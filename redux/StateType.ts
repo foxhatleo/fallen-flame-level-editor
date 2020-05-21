@@ -26,9 +26,9 @@ export enum BackgroundTexture {
 }
 
 export enum Themes {
-    REGULAR = "Regular",
-    FOREST = "Forest (Not implemented in game yet)",
-    VOLCANO = "Volcano (Not implemented in game yet)",
+    REGULAR = "Cave",
+    FOREST = "Forest",
+    VOLCANO = "Volcano",
 }
 
 export enum BGM {

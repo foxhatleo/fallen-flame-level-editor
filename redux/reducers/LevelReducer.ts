@@ -1,5 +1,14 @@
 import {Action, ActionType} from "../ActionType";
-import {BackgroundTexture, EnemyInfo, LevelEditorInfo, LevelState, Themes, WallInfo, WallTexture} from "../StateType";
+import {
+    BackgroundTexture,
+    EnemyInfo,
+    LevelEditorInfo,
+    LevelState,
+    Themes,
+    TreeInfo,
+    WallInfo,
+    WallTexture
+} from "../StateType";
 import {guardInt, guardNonEmptyString, guardRange} from "../Validators";
 import PairReducer from "./PairReducer";
 
@@ -36,6 +45,20 @@ export function wallConvert(wt: WallTexture, t: Themes): WallTexture {
     return wt;
 }
 
+function trees(from: [number, number], to: [number, number]): TreeInfo[] {
+    const lst = [];
+    let x = from[0];
+    while (x <= to[0]) {
+        let y = from[1];
+        while (y <= to[1]) {
+            lst.push({pos:[x, y]});
+            y += 1.28;
+        }
+        x += 1.28;
+    }
+    return lst;
+}
+
 export const newLevel: (psx: number, psy: number, t: Themes) => LevelState =
     (psx, psy, t) => ({
     name: "Untitled",
@@ -48,14 +71,19 @@ export const newLevel: (psx: number, psy: number, t: Themes) => LevelState =
     enemies: [],
     items: [],
     texts: [],
-    trees: [],
+    trees: Themes.FOREST ? [
+        ...trees([1.28/2, 1.28/2], [1.28/2, psy-1.28/2]),
+        ...trees([1.28/2, psy-1.28/2], [psx-1.28/2, psy-1.28/2]),
+        ...trees([psx-1.28/2, 1.28/2], [psx-1.28/2, psy-1.28/2]),
+        ...trees([1.28/2, 1.28/2], [psx-1.28/2, 1.28/2]),
+    ] : [],
     lighting: {
         "color":	  	[0, 0, 0, 0],
         "gamma":		true,
         "diffuse":		true,
         "blur":			1
     },
-    walls: [
+    walls: t == Themes.FOREST ? [] : [
         newWall([psx / 2, psy - 1.28 / 2], [Math.floor(psx / 1.28) * 1.28, 1.28],
             wallConvert(WallTexture.WALL_SIDE, t)),
         newWall([1.28 / 2, psy / 2], [1.28, Math.floor(psy / 1.28) * 1.28],
