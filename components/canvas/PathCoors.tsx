@@ -100,7 +100,7 @@ const PathCoors: FunctionComponent<typeof Actions & {
         svg {
           z-index: ${outMode ? 1 : 8};
           opacity: ${outMode ? 0.5 : 1};
-          pointer-events: ${editMode ? "unset" : "none"};
+          pointer-events: none;
         }
         text {
         font-weight: 800;
@@ -118,17 +118,20 @@ const PathCoors: FunctionComponent<typeof Actions & {
           cursor: copy;
           stroke: rgba(255,0,0, .01);
           stroke-width: 12px;
+          pointer-events: ${editMode ? "auto" : "none"};
         }
         .node {
           fill: white;
           stroke: rgba(255,0,0, 1);
           stroke-width: 3px;
           transform: translate(-5px, -5px);
+          pointer-events: ${editMode ? "auto" : "none"};
         }
         .node2 {
           fill: rgba(255,255,255,.01);
           stroke: rgba(255,0,0,,.01);
           transform: translate(-10px, -10px);
+          pointer-events: ${editMode ? "auto" : "none"};
         }
         `}</style>
     </svg>;
