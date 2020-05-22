@@ -49,13 +49,12 @@ function twoInts(c: any, k: string): [number, number] {
 }
 
 function checkBG(bg: {texture: string} | undefined, msgs: string[]): {texture: BackgroundTexture} {
-    let confirmedTexture = "floor-tile";
     if (!bg || typeof bg !== "object" || typeof bg.texture !== "string") {
         msgs.push("No background provided or invalid background. Using floor-tile by default.");
     }/* else if (bg.texture !== "floor-tile") {
         msgs.push("Unsupported background texture. Using floor-tile.");
     }*/
-    return {texture: (confirmedTexture as BackgroundTexture)};
+    return {texture: (bg["texture"] as BackgroundTexture)};
 }
 
 function checkEnemy(e: any, msgs: string[]): EnemyInfo {
