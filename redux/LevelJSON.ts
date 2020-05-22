@@ -81,14 +81,6 @@ function checkItem(e: any, msgs: string[]): Item {
 
 function checkWall(e: any, msgs: string[]): WallInfo {
     let texture = e["texture"];
-    switch(texture) {
-        case "wall-top":
-        case "wall-side":
-            break;
-        default:
-            texture = "wall-side";
-            msgs.push("Unidentifiable wall texture. Using wall-side by default.");
-    }
     return {
         pos: twoNums(e, "pos"),
         size: twoNums(e, "size"),
